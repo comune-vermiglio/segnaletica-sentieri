@@ -1,10 +1,12 @@
 import 'dart:math';
 
-class Position {
+import 'package:equatable/equatable.dart';
+
+class Position extends Equatable {
   final double latitude;
   final double longitude;
 
-  Position({required this.latitude, required this.longitude});
+  const Position({required this.latitude, required this.longitude});
 
   double getDistanceTo(Position other) {
     const earthRadius = 6371e3; // meters
@@ -18,4 +20,10 @@ class Position {
     final c = 2 * atan2(sqrt(a), sqrt(1 - a));
     return earthRadius * c;
   }
+
+  @override
+  List<Object?> get props => [latitude, longitude];
+
+  @override
+  String toString() => 'Position(latitude: $latitude, longitude: $longitude)';
 }

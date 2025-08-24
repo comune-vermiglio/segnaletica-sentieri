@@ -7,6 +7,8 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
+  exif: ^3.3.0
+  equatable: ^2.0.7
   # path: ^1.8.0
 
 dev_dependencies:
