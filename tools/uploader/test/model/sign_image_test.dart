@@ -1,13 +1,13 @@
 import 'dart:io';
 
 import 'package:test/test.dart';
-import 'package:uploader/model/image.dart';
+import 'package:uploader/model/sign_image.dart';
 import 'package:uploader/model/position.dart';
 
 void main() {
-  group('Image', () {
+  group('SignImage', () {
     test('position', () async {
-      final image = Image(File('test/data/IMG_7788.HEIC'));
+      final image = SignImage(File('test/data/IMG_7788.HEIC'));
       final position = await image.position;
       expect(
         position,

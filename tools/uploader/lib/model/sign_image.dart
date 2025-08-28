@@ -4,10 +4,10 @@ import 'package:exif/exif.dart';
 
 import 'position.dart';
 
-class Image {
+class SignImage {
   final File file;
 
-  const Image(this.file);
+  const SignImage(this.file);
 
   Future<Position?> get position async {
     final fileBytes = await file.readAsBytes();
