@@ -8,8 +8,8 @@ enum SignPoleStatus {
   notNeeded,
   onlyMark;
 
-  factory SignPoleStatus.fromCsv(List<String> values) {
-    switch (values[1]) {
+  factory SignPoleStatus.fromCsv(String value) {
+    switch (value) {
       case 'Ok':
         return SignPoleStatus.ok;
       case 'Nuovo':
@@ -23,7 +23,7 @@ enum SignPoleStatus {
       case 'Solo segno rosso':
         return SignPoleStatus.onlyMark;
       default:
-        throw ArgumentError('Unknown SignPoleStatus: ${values[1]}');
+        throw ArgumentError('Unknown SignPoleStatus: ${value[1]}');
     }
   }
 }
@@ -33,8 +33,8 @@ class SignPole extends Equatable {
 
   const SignPole({required this.status});
 
-  factory SignPole.fromCsv(List<String> values) {
-    return SignPole(status: SignPoleStatus.fromCsv(values));
+  factory SignPole.fromCsv(List<String> row) {
+    return SignPole(status: SignPoleStatus.fromCsv(row[1]));
   }
 
   @override

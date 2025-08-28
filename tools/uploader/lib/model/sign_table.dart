@@ -62,15 +62,13 @@ class SignTable extends Equatable {
     thirdString,
   ];
 
-  factory SignTable.fromCsv(List<String> values) {
+  factory SignTable.fromCsv(List<String> row) {
     return SignTable(
-      status: SignTableStatus.fromString(values[2]),
-      direction: SignTableDirection.fromString(values[3]),
-      firstString: values.length > 4 && values[4].isNotEmpty ? values[4] : null,
-      secondString: values.length > 5 && values[5].isNotEmpty
-          ? values[5]
-          : null,
-      thirdString: values.length > 6 && values[6].isNotEmpty ? values[6] : null,
+      status: SignTableStatus.fromString(row[2]),
+      direction: SignTableDirection.fromString(row[3]),
+      firstString: row.length > 4 && row[4].isNotEmpty ? row[4] : null,
+      secondString: row.length > 5 && row[5].isNotEmpty ? row[5] : null,
+      thirdString: row.length > 6 && row[6].isNotEmpty ? row[6] : null,
     );
   }
 }
