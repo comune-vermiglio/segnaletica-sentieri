@@ -1,12 +1,10 @@
-import 'package:uploader/model/position.dart';
-
-class SignTable {}
-
-class Pole {}
+import 'position.dart';
+import 'sign_pole.dart';
+import 'sign_table.dart';
 
 class Sign {
   final List<SignTable> tables;
-  final Pole pole;
+  final SignPole pole;
   final Position position;
 
   const Sign({
