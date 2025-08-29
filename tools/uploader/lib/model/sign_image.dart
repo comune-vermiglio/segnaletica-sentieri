@@ -6,10 +6,18 @@ import 'position.dart';
 
 class SignImage {
   final File file;
+  Position? _position;
 
-  const SignImage(this.file);
+  SignImage(this.file);
 
   Future<Position?> get position async {
+    if (_position == null) {
+      await _computePosition();
+    }
+    return _position;
+  }
+
+  Future<void> _computePosition() async {
     final fileBytes = await file.readAsBytes();
     final data = await readExifFromBytes(fileBytes);
     final rawLat = data['GPS GPSLatitude'];
@@ -18,13 +26,14 @@ class SignImage {
       final latValues = rawLat.values.toList();
       final lonValues = rawLon.values.toList();
       if (latValues.length == 3 && lonValues.length == 3) {
-        return Position(
+        _position = Position(
           latitude: _convertDmsValuesToDecimal(latValues as List<Ratio>),
           longitude: _convertDmsValuesToDecimal(lonValues as List<Ratio>),
         );
+        return;
       }
     }
-    return null;
+    _position = null;
   }
 
   double _convertDmsValuesToDecimal(List<Ratio> dmsValues) {
