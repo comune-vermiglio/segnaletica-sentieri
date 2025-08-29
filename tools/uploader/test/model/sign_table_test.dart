@@ -12,7 +12,7 @@ void main() {
         'Non necessario',
         'Cambiare',
         'Sinistra',
-        firstString,
+        ' Laghetti di San Leonardo ',
         secondString,
         thirdString,
       ];
@@ -23,7 +23,7 @@ void main() {
           SignTable(
             status: SignTableStatus.change,
             direction: SignTableDirection.left,
-            firstString: firstString,
+            firstString: 'Laghetti di San Leonardo',
             secondString: secondString,
             thirdString: thirdString,
           ),

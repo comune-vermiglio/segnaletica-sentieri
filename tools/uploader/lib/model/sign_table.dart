@@ -66,9 +66,15 @@ class SignTable extends Equatable {
     return SignTable(
       status: SignTableStatus.fromString(row[2]),
       direction: SignTableDirection.fromString(row[3]),
-      firstString: row.length > 4 && row[4].isNotEmpty ? row[4] : null,
-      secondString: row.length > 5 && row[5].isNotEmpty ? row[5] : null,
-      thirdString: row.length > 6 && row[6].isNotEmpty ? row[6] : null,
+      firstString: row.length > 4 && row[4].isNotEmpty
+          ? row[4].trimLeft().trimRight()
+          : null,
+      secondString: row.length > 5 && row[5].isNotEmpty
+          ? row[5].trimLeft().trimRight()
+          : null,
+      thirdString: row.length > 6 && row[6].isNotEmpty
+          ? row[6].trimLeft().trimRight()
+          : null,
     );
   }
 }
