@@ -1,10 +1,11 @@
 import 'dart:io';
 
+import 'package:equatable/equatable.dart';
 import 'package:exif/exif.dart';
 
 import 'position.dart';
 
-class SignImage {
+class SignImage extends Equatable {
   final File file;
 
   const SignImage(this.file);
@@ -33,4 +34,7 @@ class SignImage {
         dmsValues[1].toDouble() / 60 +
         dmsValues[2].toDouble() / 3600;
   }
+
+  @override
+  List<Object?> get props => [file];
 }
