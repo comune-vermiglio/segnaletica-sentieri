@@ -27,7 +27,7 @@ class SignManager extends ChangeNotifier {
       final values = row.substring(endLng + 2).split(',');
       values.insert(0, row.trimLeft().substring(1, endLng));
       if (values.length != 7) {
-        throw ArgumentError('Each row must have exactly 7 columns');
+        throw ArgumentError('$row does not have 7 columns');
       }
       final tmp = values[0];
       if (tmp != currentPosition) {
