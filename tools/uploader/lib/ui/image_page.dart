@@ -70,13 +70,14 @@ class _ImagePageState extends State<ImagePage> {
                   ),
                   itemCount: manager.images.length,
                   itemBuilder: (context, index) {
+                    final img = manager.images[index];
                     return ClipRRect(
                       borderRadius: BorderRadius.circular(20),
                       child: Stack(
                         fit: StackFit.expand,
                         children: [
                           Image.file(
-                            manager.images[index].file,
+                            img.file,
                             fit: BoxFit.cover,
                             frameBuilder:
                                 (
@@ -93,46 +94,35 @@ class _ImagePageState extends State<ImagePage> {
                                   );
                                 },
                           ),
-                          FutureBuilder(
-                            future: manager.images[index].position,
-                            builder: (context, snap) {
-                              return Positioned(
-                                left: 0,
-                                right: 0,
-                                bottom: 0,
-                                height: 30,
-                                child: Container(
-                                  color: snap.hasData
-                                      ? snap.data != null
-                                            ? Colors.green.withAlpha(180)
-                                            : Colors.red.withAlpha(180)
-                                      : Colors.black.withAlpha(180),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 20,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Tooltip(
-                                          message:
-                                              manager.images[index].file.path,
-                                          child: Icon(Icons.image, size: 16),
-                                        ),
-                                        const SizedBox(width: 10),
-                                        Tooltip(
-                                          message: snap.data?.toString() ?? '',
-                                          child: Icon(
-                                            Icons.location_on,
-                                            size: 16,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
+                          Positioned(
+                            left: 0,
+                            right: 0,
+                            bottom: 0,
+                            height: 30,
+                            child: Container(
+                              color: img.position != null
+                                  ? Colors.green.withAlpha(180)
+                                  : Colors.red.withAlpha(180),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 20,
                                 ),
-                              );
-                            },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Tooltip(
+                                      message: img.file.path,
+                                      child: Icon(Icons.image, size: 16),
+                                    ),
+                                    const SizedBox(width: 10),
+                                    Tooltip(
+                                      message: img.position?.toString() ?? '',
+                                      child: Icon(Icons.location_on, size: 16),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),

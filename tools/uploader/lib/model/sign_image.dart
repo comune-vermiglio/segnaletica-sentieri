@@ -7,10 +7,17 @@ import 'position.dart';
 
 class SignImage extends Equatable {
   final File file;
+  final Position? position;
 
-  const SignImage(this.file);
+  const SignImage._(this.file, this.position);
 
-  Future<Position?> get position async {
+  static Future<SignImage> fromFile(File file) async {
+    final position = await _computePosition(file);
+    final signImage = SignImage._(file, position);
+    return signImage;
+  }
+
+  static Future<Position?> _computePosition(File file) async {
     final fileBytes = await file.readAsBytes();
     final data = await readExifFromBytes(fileBytes);
     final rawLat = data['GPS GPSLatitude'];
@@ -28,7 +35,7 @@ class SignImage extends Equatable {
     return null;
   }
 
-  double _convertDmsValuesToDecimal(List<Ratio> dmsValues) {
+  static double _convertDmsValuesToDecimal(List<Ratio> dmsValues) {
     assert(dmsValues.length == 3);
     return dmsValues[0].toDouble() +
         dmsValues[1].toDouble() / 60 +
@@ -36,5 +43,5 @@ class SignImage extends Equatable {
   }
 
   @override
-  List<Object?> get props => [file];
+  List<Object?> get props => [file, position];
 }
