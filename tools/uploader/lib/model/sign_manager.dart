@@ -20,7 +20,7 @@ class SignManager extends ChangeNotifier {
     String currentPosition = '';
     List<List<String>> currentRows = [];
     for (var row in rows.skip(1)) {
-      if (!row.startsWith('"')) {
+      if (!row.trimLeft().startsWith('"')) {
         break;
       }
       final endLng = row.trimLeft().indexOf('"', 1);

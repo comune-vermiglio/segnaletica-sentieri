@@ -25,5 +25,5 @@ class Position extends Equatable {
   List<Object?> get props => [latitude, longitude];
 
   @override
-  String toString() => 'Position(latitude: $latitude, longitude: $longitude)';
+  String toString() => 'Lat: $latitude, Lng: $longitude';
 }
