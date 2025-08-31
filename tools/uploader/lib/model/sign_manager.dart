@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 
 import 'sign.dart';
@@ -16,20 +17,18 @@ class SignManager extends ChangeNotifier {
 
   Future<void> loadCsv(File csvFile) async {
     _signs.clear();
-    final rows = await csvFile.readAsLines();
+    final content = await csvFile.readAsString();
+    final rows = const CsvToListConverter().convert(content);
     String currentPosition = '';
-    List<List<String>> currentRows = [];
-    for (var row in rows.skip(1)) {
-      if (!row.trimLeft().startsWith('"')) {
+    List<List<dynamic>> currentRows = [];
+    for (var values in rows.skip(1)) {
+      if (values.length != 7) {
+        throw ArgumentError('$values does not have 7 columns');
+      }
+      if (values[0].isEmpty) {
         break;
       }
-      final endLng = row.trimLeft().indexOf('"', 1);
-      final values = row.substring(endLng + 2).split(',');
-      values.insert(0, row.trimLeft().substring(1, endLng));
-      if (values.length != 7) {
-        throw ArgumentError('$row does not have 7 columns');
-      }
-      final tmp = values[0];
+      final tmp = values[0].trim();
       if (tmp != currentPosition) {
         if (currentRows.isNotEmpty) {
           _signs.add(Sign.fromCsv(currentRows));

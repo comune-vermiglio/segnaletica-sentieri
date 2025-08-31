@@ -1,6 +1,6 @@
 POSIZIONE,PALO,TABELLA,DIREZIONE FRECCIA,STRINGA 1,STRINGA 2,STRINGA 3
-"(46.2906727, 10.6815487)",Non necessario,Cambiare,Sinistra,Laghetti di San Leonardo ,Volpaia ,
-"(46.2860383, 10.6739416)",Ok,Cambiare,Destra,Volpaia ,Stavel,
+"(46.2906727, 10.6815487) ",Non necessario,Cambiare,Sinistra,Laghetti di San Leonardo ,Volpaia ,
+" (46.2860383, 10.6739416)",Ok,Cambiare,Destra,Volpaia ,Stavel,
 "(46.2860383, 10.6739416)",Ok,Eliminare,Sinistra,,,
 ,Ok,Ok,Sinistra,,,
 ,Ok,Ok,Sinistra,,,

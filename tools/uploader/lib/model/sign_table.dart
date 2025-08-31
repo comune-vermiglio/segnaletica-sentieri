@@ -62,7 +62,7 @@ class SignTable extends Equatable {
     thirdString,
   ];
 
-  factory SignTable.fromCsv(List<String> row) {
+  factory SignTable.fromCsv(List<dynamic> row) {
     return SignTable(
       status: SignTableStatus.fromString(row[2]),
       direction: SignTableDirection.fromString(row[3]),

@@ -15,17 +15,17 @@ class Sign extends Equatable {
     required this.position,
   });
 
-  factory Sign.fromCsv(List<List<String>> table) {
+  factory Sign.fromCsv(List<List<dynamic>> table) {
     if (table.isEmpty || table[0].isEmpty) {
       throw ArgumentError('Invalid CSV data');
     }
-    final positionRaw = table.first[0];
+    final positionRaw = table.first[0].trim();
     final poleStatusRaw = table.first[1];
     for (final row in table) {
       if (row.length < 7) {
         throw ArgumentError('Each row must have at least 7 columns');
       }
-      if (row[0] != positionRaw) {
+      if (row[0].trim() != positionRaw) {
         throw ArgumentError('Inconsistent position data');
       }
       if (row[1] != poleStatusRaw) {
@@ -40,8 +40,8 @@ class Sign extends Equatable {
       tables: table.map((row) => SignTable.fromCsv(row)).toList(),
       pole: SignPole.fromCsv(table.first),
       position: Position(
-        latitude: double.parse(latLonStrs[0]),
-        longitude: double.parse(latLonStrs[1]),
+        latitude: double.parse(latLonStrs[0].trim()),
+        longitude: double.parse(latLonStrs[1].trim()),
       ),
     );
   }

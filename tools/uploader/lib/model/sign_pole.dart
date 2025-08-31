@@ -33,7 +33,7 @@ class SignPole extends Equatable {
 
   const SignPole({required this.status});
 
-  factory SignPole.fromCsv(List<String> row) {
+  factory SignPole.fromCsv(List<dynamic> row) {
     return SignPole(status: SignPoleStatus.fromCsv(row[1]));
   }
 

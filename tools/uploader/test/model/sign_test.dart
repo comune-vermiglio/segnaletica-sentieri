@@ -9,7 +9,7 @@ void main() {
     test('from CSV', () {
       final csvData = [
         [
-          '(46.292476, 10.686197)',
+          '(46.292476, 10.686197) ',
           'Non necessario',
           'Cambiare',
           'Sinistra',
@@ -18,7 +18,7 @@ void main() {
           'info3',
         ],
         [
-          '(46.292476, 10.686197)',
+          ' (46.292476, 10.686197)',
           'Non necessario',
           'Ok',
           'Destra',
