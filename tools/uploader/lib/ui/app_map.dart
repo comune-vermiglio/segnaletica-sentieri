@@ -52,12 +52,27 @@ class AppMap extends StatelessWidget {
                     .map(
                       (img) => Marker(
                         point: img.position!.latLng,
-                        child: Icon(
-                          Icons.image,
-                          color: img == imageHighLight
-                              ? Colors.red
-                              : Colors.black,
-                          size: img == imageHighLight ? 30 : 20,
+                        child: Tooltip(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                          ),
+                          padding: EdgeInsets.zero,
+                          richMessage: WidgetSpan(
+                            child: SizedBox(
+                              width: 400,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: Image.file(img.file),
+                              ),
+                            ),
+                          ),
+                          child: Icon(
+                            Icons.image,
+                            color: img == imageHighLight
+                                ? Colors.red
+                                : Colors.black,
+                            size: img == imageHighLight ? 30 : 20,
+                          ),
                         ),
                       ),
                     ),

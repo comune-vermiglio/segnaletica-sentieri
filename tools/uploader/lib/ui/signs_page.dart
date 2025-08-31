@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:uploader/model/image_manager.dart';
 import 'package:uploader/ui/app_map.dart';
@@ -17,6 +18,8 @@ class SignsPage extends StatefulWidget {
   @override
   State<SignsPage> createState() => _SignsPageState();
 }
+
+const _distanceOk = 20.0;
 
 class _SignsPageState extends State<SignsPage> {
   var _loading = false;
@@ -168,8 +171,8 @@ class SignDataTable extends StatelessWidget {
                               closerImgs.isNotEmpty &&
                               closerImgs.first.position!.distanceTo(
                                     sign.position,
-                                  ) <
-                                  10;
+                                  ) <=
+                                  _distanceOk;
                           return Icon(
                             ok
                                 ? Icons.check_circle_outline
@@ -258,14 +261,14 @@ class SignTitle extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(bottom: 8.0, top: first ? 0 : 20),
-      child: Text(text, style: Theme.of(context).textTheme.titleMedium),
+      child: Text(text, style: Theme.of(context).textTheme.titleLarge),
     );
   }
 }
 
 class SignTableWidget extends StatelessWidget {
   static const arrowWidth = 50.0;
-  static const endMarkerWidth = 40.0;
+  static const endMarkerWidth = 60.0;
   final SignTable table;
   const SignTableWidget(this.table, {super.key});
 
@@ -307,7 +310,7 @@ class SignTableWidget extends StatelessWidget {
                     ? arrowWidth
                     : null,
                 width: endMarkerWidth,
-                height: 30,
+                height: 40,
                 top: 0,
                 child: Container(color: Colors.red),
               ),
@@ -319,7 +322,7 @@ class SignTableWidget extends StatelessWidget {
                     ? arrowWidth
                     : null,
                 width: endMarkerWidth,
-                height: 30,
+                height: 40,
                 bottom: 0,
                 child: Container(color: Colors.red),
               ),
@@ -333,7 +336,7 @@ class SignTableWidget extends StatelessWidget {
                 top: 0,
                 bottom: 0,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     crossAxisAlignment:
@@ -350,7 +353,7 @@ class SignTableWidget extends StatelessWidget {
                             str!,
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 20,
+                              fontSize: 26,
                               color: Colors.black,
                             ),
                           );
@@ -415,9 +418,21 @@ class SignImage extends StatelessWidget {
       context,
       listen: false,
     ).getCloserImages(sign.position);
-    if (images.isEmpty) {
-      return Text('Nessuna immagine trovata');
+    if (images.isEmpty ||
+        images.first.position!.distanceTo(sign.position) > _distanceOk) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SignTitle('Immagine'),
+          Text('Nessuna immagine vicina trovata.'),
+          if (images.isNotEmpty)
+            Text(
+              'Distanza immagine più vicina: ${images.first.position!.distanceTo(sign.position).toStringAsFixed(2)}m',
+            ),
+        ],
+      );
     }
+    final image = images.first;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -427,17 +442,18 @@ class SignImage extends StatelessWidget {
             width: 600,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(10),
-              child: Image.file(images.first.file),
+              child: Image.file(image.file),
             ),
           ),
         ),
         const SizedBox(height: 10),
+        Text('File immagine: ${basename(image.file.path)}'),
         Text(
-          'Distanza immagine ${images.first.position!.distanceTo(sign.position).toStringAsFixed(2)}m',
+          'Distanza immagine: ${image.position!.distanceTo(sign.position).toStringAsFixed(2)}m',
         ),
         if (images.length > 1) ...[
           Text(
-            'Distanza prossima immagine ${images[1].position!.distanceTo(sign.position).toStringAsFixed(2)}m',
+            'Distanza prossima immagine: ${images[1].position!.distanceTo(sign.position).toStringAsFixed(2)}m',
           ),
         ],
       ],
