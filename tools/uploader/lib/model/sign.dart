@@ -17,19 +17,21 @@ class Sign extends Equatable {
 
   factory Sign.fromCsv(List<List<dynamic>> table) {
     if (table.isEmpty || table[0].isEmpty) {
-      throw ArgumentError('Invalid CSV data');
+      throw ArgumentError('Tabella vuota o prima riga vuota');
     }
     final positionRaw = table.first[0].trim();
     final poleStatusRaw = table.first[1];
     for (final row in table) {
       if (row.length < 7) {
-        throw ArgumentError('Each row must have at least 7 columns');
+        throw ArgumentError('Ogni riga deve avere almeno 7 colonne');
       }
       if (row[0].trim() != positionRaw) {
-        throw ArgumentError('Inconsistent position data');
+        throw ArgumentError('Dati di posizione incoerenti');
       }
       if (row[1] != poleStatusRaw) {
-        throw ArgumentError('Inconsistent pole status data');
+        throw ArgumentError(
+          'Dati di stato del palo incoerenti per la posizione $positionRaw',
+        );
       }
     }
     final latLonStrs = positionRaw

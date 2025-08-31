@@ -1,0 +1,409 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:uploader/model/image_manager.dart';
+import 'package:uploader/ui/utils.dart';
+
+import '../model/sign.dart';
+import '../model/sign_manager.dart';
+import '../model/sign_table.dart';
+
+class SignsPage extends StatefulWidget {
+  const SignsPage({super.key});
+
+  @override
+  State<SignsPage> createState() => _SignsPageState();
+}
+
+class _SignsPageState extends State<SignsPage> {
+  var _loading = false;
+  var _indexSelected = 0;
+
+  set loading(bool value) {
+    if (value != _loading) {
+      setState(() => _loading = value);
+    }
+  }
+
+  set indexSelected(int value) {
+    if (value != _indexSelected) {
+      setState(() => _indexSelected = value);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: UiUtils.pagePadding,
+      child: Consumer<SignManager>(
+        builder: (context, manager, _) {
+          return _loading
+              ? Center(child: CircularProgressIndicator())
+              : manager.signs.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Nessun cartello trovato'),
+                      const SizedBox(height: 20),
+                      FilledButton(
+                        onPressed: () async {
+                          final snack = ScaffoldMessenger.of(context);
+                          final selectedCsvFile = await FilePicker.platform
+                              .pickFiles(
+                                allowedExtensions: ['csv'],
+                                type: FileType.custom,
+                              );
+                          if (selectedCsvFile != null &&
+                              selectedCsvFile.files.isNotEmpty &&
+                              selectedCsvFile.files.single.path != null) {
+                            loading = true;
+                            try {
+                              await manager.loadCsv(
+                                File(selectedCsvFile.files.single.path!),
+                              );
+                            } catch (e) {
+                              final snackBar = SnackBar(
+                                content: Text('Errore nel file CSV. $e'),
+                                duration: const Duration(minutes: 1),
+                                showCloseIcon: true,
+                              );
+                              snack.showSnackBar(snackBar);
+                            } finally {
+                              loading = false;
+                            }
+                          }
+                        },
+                        child: const Text('Apri file CSV'),
+                      ),
+                    ],
+                  ),
+                )
+              : Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SignDataTable(
+                      manager: manager,
+                      indexSelected: _indexSelected,
+                      onSelected: (value) => indexSelected = value,
+                    ),
+                    const SizedBox(width: 40),
+                    Expanded(
+                      child: Card(
+                        child: SignSelectedWidget(
+                          sign: manager.signs[_indexSelected],
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+        },
+      ),
+    );
+  }
+}
+
+class SignDataTable extends StatelessWidget {
+  final SignManager manager;
+  final int indexSelected;
+  final Function(int) onSelected;
+
+  const SignDataTable({
+    super.key,
+    required this.manager,
+    required this.indexSelected,
+    required this.onSelected,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Card(
+          child: DataTable(
+            columns: const <DataColumn>[
+              DataColumn(
+                label: Text(
+                  'Posizione',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+              DataColumn(
+                label: Text(
+                  '# tabelle',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
+            ],
+            rows: [
+              for (final (index, sign) in manager.signs.indexed)
+                DataRow(
+                  cells: [
+                    DataCell(Text(sign.position.toString())),
+                    DataCell(
+                      Expanded(
+                        child: Text(
+                          sign.tables.length.toString(),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  ],
+                  selected: manager.signs.indexOf(sign) == indexSelected,
+                  onSelectChanged: (selected) {
+                    if (selected ?? false) {
+                      onSelected(index);
+                    }
+                  },
+                ),
+            ],
+          ),
+        ),
+        const SizedBox(height: 20),
+        FilledButton(
+          onPressed: () => manager.clean(),
+          child: Row(
+            children: [
+              Text('Cancella'),
+              const SizedBox(width: 8),
+              Icon(Icons.delete),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class SignSelectedWidget extends StatelessWidget {
+  final Sign sign;
+
+  const SignSelectedWidget({super.key, required this.sign});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView(
+      padding: const EdgeInsets.all(20),
+      children: [
+        SignTitle('Posizione', first: true),
+        Text('${sign.position.latitude}, ${sign.position.longitude}'),
+        SignTitle('Palo'),
+        Text(sign.pole.status.toString()),
+        SignTitle('Tabelle'),
+        for (final (index, table) in sign.tables.indexed)
+          Row(
+            children: [
+              Text('${index + 1}.'),
+              const SizedBox(width: 6),
+              Text(table.status.toString()),
+            ],
+          ),
+        const SizedBox(height: 20),
+        for (final table in sign.tables) ...[
+          SignTableWidget(table),
+          const SizedBox(height: 20),
+        ],
+        SignImage(sign),
+      ],
+    );
+  }
+}
+
+class SignTitle extends StatelessWidget {
+  final String text;
+  final bool first;
+  const SignTitle(this.text, {super.key, this.first = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.only(bottom: 8.0, top: first ? 0 : 20),
+      child: Text(text, style: Theme.of(context).textTheme.titleMedium),
+    );
+  }
+}
+
+class SignTableWidget extends StatelessWidget {
+  static const arrowWidth = 50.0;
+  static const endMarkerWidth = 40.0;
+  final SignTable table;
+  const SignTableWidget(this.table, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (table.status != SignTableStatus.remove) {
+      return Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: 600,
+            maxHeight: 140,
+            minHeight: 140,
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned(
+                left: arrowWidth,
+                right: arrowWidth,
+                top: 0,
+                bottom: 0,
+                child: Container(color: Colors.white),
+              ),
+              Positioned(
+                left: table.direction == SignTableDirection.left ? 0 : null,
+                right: table.direction == SignTableDirection.right ? 0 : null,
+                width: arrowWidth,
+                top: 0,
+                bottom: 0,
+                child: CustomPaint(
+                  painter: TrianglePainter(direction: table.direction),
+                ),
+              ),
+              Positioned(
+                left: table.direction == SignTableDirection.right
+                    ? arrowWidth
+                    : null,
+                right: table.direction == SignTableDirection.left
+                    ? arrowWidth
+                    : null,
+                width: endMarkerWidth,
+                height: 30,
+                top: 0,
+                child: Container(color: Colors.red),
+              ),
+              Positioned(
+                left: table.direction == SignTableDirection.right
+                    ? arrowWidth
+                    : null,
+                right: table.direction == SignTableDirection.left
+                    ? arrowWidth
+                    : null,
+                width: endMarkerWidth,
+                height: 30,
+                bottom: 0,
+                child: Container(color: Colors.red),
+              ),
+              Positioned(
+                left: table.direction == SignTableDirection.right
+                    ? arrowWidth + endMarkerWidth
+                    : null,
+                right: table.direction == SignTableDirection.left
+                    ? arrowWidth + endMarkerWidth
+                    : null,
+                top: 0,
+                bottom: 0,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    crossAxisAlignment:
+                        table.direction == SignTableDirection.left
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
+                    children:
+                        [
+                          if (table.firstString != null) table.firstString,
+                          if (table.secondString != null) table.secondString,
+                          if (table.thirdString != null) table.thirdString,
+                        ].map((str) {
+                          return Text(
+                            str!,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          );
+                        }).toList(),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
+  }
+}
+
+class TrianglePainter extends CustomPainter {
+  final SignTableDirection direction;
+
+  TrianglePainter({required this.direction});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    Paint paint = Paint()
+      ..color = Colors.red
+      ..style = PaintingStyle.fill;
+
+    canvas.drawPath(getTrianglePath(size.width, size.height), paint);
+  }
+
+  Path getTrianglePath(double x, double y) {
+    switch (direction) {
+      case SignTableDirection.left:
+        return Path()
+          ..moveTo(x, 0)
+          ..lineTo(0, y / 2)
+          ..lineTo(x, y)
+          ..lineTo(x, 0);
+      case SignTableDirection.right:
+        return Path()
+          ..moveTo(0, 0)
+          ..lineTo(x, y / 2)
+          ..lineTo(0, y)
+          ..lineTo(0, 0);
+    }
+  }
+
+  @override
+  bool shouldRepaint(TrianglePainter oldDelegate) {
+    return oldDelegate.direction != direction;
+  }
+}
+
+class SignImage extends StatelessWidget {
+  final Sign sign;
+  const SignImage(this.sign, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final images = Provider.of<ImageManager>(
+      context,
+      listen: false,
+    ).getCloserImages(sign.position);
+    if (images.isEmpty) {
+      return Text('Nessuna immagine trovata');
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SignTitle('Immagine'),
+        Center(
+          child: SizedBox(
+            width: 600,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.file(images.first.file),
+            ),
+          ),
+        ),
+        const SizedBox(height: 10),
+        Text(
+          'Distanza immagine ${images.first.position!.distanceTo(sign.position).toStringAsFixed(3)}m',
+        ),
+        if (images.length > 1) ...[
+          Text(
+            'Distanza prossima immagine ${images[1].position!.distanceTo(sign.position).toStringAsFixed(3)}m',
+          ),
+        ],
+      ],
+    );
+  }
+}

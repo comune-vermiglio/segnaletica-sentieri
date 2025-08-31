@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'app_drawer.dart';
-import 'image_page.dart';
+import 'images_page.dart';
+import 'signs_page.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -47,7 +48,8 @@ class _MyHomePageState extends State<MyHomePage> {
             selectedIndex: selectedIndex,
             onDestinationSelected: onDestinationSelected,
           ),
-          if (selectedIndex == 0) Expanded(child: const ImagePage()),
+          if (selectedIndex == 0) Expanded(child: const ImagesPage()),
+          if (selectedIndex == 1) Expanded(child: const SignsPage()),
         ],
       ),
     );

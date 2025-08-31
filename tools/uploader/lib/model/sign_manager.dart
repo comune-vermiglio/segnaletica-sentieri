@@ -21,9 +21,9 @@ class SignManager extends ChangeNotifier {
     final rows = const CsvToListConverter().convert(content);
     String currentPosition = '';
     List<List<dynamic>> currentRows = [];
-    for (var values in rows.skip(1)) {
+    for (final values in rows.skip(1)) {
       if (values.length != 7) {
-        throw ArgumentError('$values does not have 7 columns');
+        throw ArgumentError('$values non ha 7 colonne');
       }
       if (values[0].isEmpty) {
         break;

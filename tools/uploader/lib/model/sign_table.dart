@@ -17,7 +17,21 @@ enum SignTableStatus {
       case 'Eliminare':
         return SignTableStatus.remove;
       default:
-        throw ArgumentError('Unknown status: $value');
+        throw ArgumentError('Stato della tabella sconosciuto: $value');
+    }
+  }
+
+  @override
+  String toString() {
+    switch (this) {
+      case SignTableStatus.ok:
+        return 'Ok';
+      case SignTableStatus.add:
+        return 'Nuova';
+      case SignTableStatus.change:
+        return 'Cambiare';
+      case SignTableStatus.remove:
+        return 'Eliminare';
     }
   }
 }
@@ -33,7 +47,7 @@ enum SignTableDirection {
       case 'Destra':
         return SignTableDirection.right;
       default:
-        throw ArgumentError('Unknown direction: $value');
+        throw ArgumentError('Direzione sconosciuta: $value');
     }
   }
 }

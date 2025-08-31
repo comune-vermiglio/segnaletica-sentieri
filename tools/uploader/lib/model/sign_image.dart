@@ -43,5 +43,5 @@ class SignImage extends Equatable {
   }
 
   @override
-  List<Object?> get props => [file, position];
+  List<Object?> get props => [file.path, position];
 }

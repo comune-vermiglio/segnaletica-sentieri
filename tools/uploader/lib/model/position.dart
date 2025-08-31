@@ -8,7 +8,7 @@ class Position extends Equatable {
 
   const Position({required this.latitude, required this.longitude});
 
-  double getDistanceTo(Position other) {
+  double distanceTo(Position other) {
     const earthRadius = 6371e3; // meters
     final lat1 = latitude * (pi / 180);
     final lat2 = other.latitude * (pi / 180);

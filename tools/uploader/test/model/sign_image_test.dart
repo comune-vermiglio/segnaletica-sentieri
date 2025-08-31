@@ -7,7 +7,9 @@ import 'package:uploader/model/position.dart';
 void main() {
   group('SignImage', () {
     test('position', () async {
-      final image = await SignImage.fromFile(File('test/data/IMG_7788.HEIC'));
+      final image = await SignImage.fromFile(
+        File('test/data/imgs/IMG_7788.HEIC'),
+      );
       final position = image.position;
       expect(
         position,

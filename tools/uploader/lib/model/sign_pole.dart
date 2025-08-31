@@ -23,8 +23,20 @@ enum SignPoleStatus {
       case 'Solo segno rosso':
         return SignPoleStatus.onlyMark;
       default:
-        throw ArgumentError('Unknown SignPoleStatus: ${value[1]}');
+        throw ArgumentError('Stato del palo sconosciuto: ${value[1]}');
     }
+  }
+
+  @override
+  String toString() {
+    return switch (this) {
+      SignPoleStatus.ok => 'Ok',
+      SignPoleStatus.add => 'Nuovo',
+      SignPoleStatus.change => 'Cambiare',
+      SignPoleStatus.remove => 'Eliminare',
+      SignPoleStatus.notNeeded => 'Non necessario',
+      SignPoleStatus.onlyMark => 'Solo segno rosso',
+    };
   }
 }
 
