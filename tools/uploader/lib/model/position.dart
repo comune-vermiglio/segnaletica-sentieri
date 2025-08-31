@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
+import 'package:latlong2/latlong.dart';
 
 class Position extends Equatable {
   final double latitude;
@@ -26,4 +27,6 @@ class Position extends Equatable {
 
   @override
   String toString() => 'Lat: $latitude, Lng: $longitude';
+
+  LatLng get latLng => LatLng(latitude, longitude);
 }

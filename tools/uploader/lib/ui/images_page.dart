@@ -92,7 +92,7 @@ class _ImagesPageState extends State<ImagesPage> {
                       itemBuilder: (context, index) {
                         final img = manager.images[index];
                         return ClipRRect(
-                          borderRadius: BorderRadius.circular(20),
+                          borderRadius: BorderRadius.circular(10),
                           child: Stack(
                             fit: StackFit.expand,
                             children: [

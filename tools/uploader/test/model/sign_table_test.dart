@@ -53,7 +53,7 @@ void main() {
       csv = [
         '(46.2906727, 10.6815487)',
         'Non necessario',
-        'Nuova',
+        'Nuovo',
         'Destra',
         firstString,
         '',

@@ -1,0 +1,17 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Flutter",
+            "request": "launch",
+            "type": "dart",
+            "toolArgs": [
+                "--dart-define=MAP_URL=https://tile.thunderforest.com/outdoors/{z}/{x}/{y}.png?apikey=17e2237d7ee44c7e864fd753ef0a903b",
+            ],
+            "flutterMode": "debug"
+        },
+    ]
+}

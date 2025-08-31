@@ -10,7 +10,7 @@ enum SignTableStatus {
     switch (value) {
       case 'Ok':
         return SignTableStatus.ok;
-      case 'Nuova':
+      case 'Nuovo':
         return SignTableStatus.add;
       case 'Cambiare':
         return SignTableStatus.change;
@@ -27,7 +27,7 @@ enum SignTableStatus {
       case SignTableStatus.ok:
         return 'Ok';
       case SignTableStatus.add:
-        return 'Nuova';
+        return 'Nuovo';
       case SignTableStatus.change:
         return 'Cambiare';
       case SignTableStatus.remove:

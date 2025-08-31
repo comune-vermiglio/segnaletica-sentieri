@@ -4,6 +4,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:uploader/model/image_manager.dart';
+import 'package:uploader/ui/app_map.dart';
 import 'package:uploader/ui/utils.dart';
 
 import '../model/sign.dart';
@@ -84,10 +85,12 @@ class _SignsPageState extends State<SignsPage> {
               : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SignDataTable(
-                      manager: manager,
-                      indexSelected: _indexSelected,
-                      onSelected: (value) => indexSelected = value,
+                    Expanded(
+                      child: SignDataTable(
+                        manager: manager,
+                        indexSelected: _indexSelected,
+                        onSelected: (value) => indexSelected = value,
+                      ),
                     ),
                     const SizedBox(width: 40),
                     Expanded(
@@ -119,11 +122,11 @@ class SignDataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Card(
-          child: DataTable(
+    return Card(
+      child: ListView(
+        padding: const EdgeInsets.only(bottom: 20, left: 20, right: 20),
+        children: [
+          DataTable(
             columns: const <DataColumn>[
               DataColumn(
                 label: Text(
@@ -137,6 +140,12 @@ class SignDataTable extends StatelessWidget {
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
+              DataColumn(
+                label: Text(
+                  'Immagine',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
             ],
             rows: [
               for (final (index, sign) in manager.signs.indexed)
@@ -144,11 +153,32 @@ class SignDataTable extends StatelessWidget {
                   cells: [
                     DataCell(Text(sign.position.toString())),
                     DataCell(
-                      Expanded(
-                        child: Text(
-                          sign.tables.length.toString(),
-                          textAlign: TextAlign.center,
-                        ),
+                      Text(
+                        sign.tables.length.toString(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    DataCell(
+                      Consumer<ImageManager>(
+                        builder: (context, imgMan, _) {
+                          final closerImgs = imgMan.getCloserImages(
+                            sign.position,
+                          );
+                          final ok =
+                              closerImgs.isNotEmpty &&
+                              closerImgs.first.position!.distanceTo(
+                                    sign.position,
+                                  ) <
+                                  10;
+                          return Icon(
+                            ok
+                                ? Icons.check_circle_outline
+                                : Icons.error_outline,
+                            color: ok
+                                ? Colors.green.withAlpha(120)
+                                : Colors.red.withAlpha(120),
+                          );
+                        },
                       ),
                     ),
                   ],
@@ -161,19 +191,20 @@ class SignDataTable extends StatelessWidget {
                 ),
             ],
           ),
-        ),
-        const SizedBox(height: 20),
-        FilledButton(
-          onPressed: () => manager.clean(),
-          child: Row(
-            children: [
-              Text('Cancella'),
-              const SizedBox(width: 8),
-              Icon(Icons.delete),
-            ],
+          const SizedBox(height: 30),
+          FilledButton(
+            onPressed: () => manager.clean(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Cancella'),
+                const SizedBox(width: 8),
+                Icon(Icons.delete),
+              ],
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -189,7 +220,13 @@ class SignSelectedWidget extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       children: [
         SignTitle('Posizione', first: true),
-        Text('${sign.position.latitude}, ${sign.position.longitude}'),
+        SizedBox(
+          height: 240,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(12),
+            child: AppMap(signHighlight: sign, key: UniqueKey()),
+          ),
+        ),
         SignTitle('Palo'),
         Text(sign.pole.status.toString()),
         SignTitle('Tabelle'),
@@ -342,10 +379,10 @@ class TrianglePainter extends CustomPainter {
       ..color = Colors.red
       ..style = PaintingStyle.fill;
 
-    canvas.drawPath(getTrianglePath(size.width, size.height), paint);
+    canvas.drawPath(getPath(size.width, size.height), paint);
   }
 
-  Path getTrianglePath(double x, double y) {
+  Path getPath(double x, double y) {
     switch (direction) {
       case SignTableDirection.left:
         return Path()
@@ -396,11 +433,11 @@ class SignImage extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         Text(
-          'Distanza immagine ${images.first.position!.distanceTo(sign.position).toStringAsFixed(3)}m',
+          'Distanza immagine ${images.first.position!.distanceTo(sign.position).toStringAsFixed(2)}m',
         ),
         if (images.length > 1) ...[
           Text(
-            'Distanza prossima immagine ${images[1].position!.distanceTo(sign.position).toStringAsFixed(3)}m',
+            'Distanza prossima immagine ${images[1].position!.distanceTo(sign.position).toStringAsFixed(2)}m',
           ),
         ],
       ],
