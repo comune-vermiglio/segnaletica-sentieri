@@ -22,8 +22,8 @@ class Sign extends Equatable {
     final positionRaw = table.first[0].trim();
     final poleStatusRaw = table.first[1];
     for (final row in table) {
-      if (row.length < 7) {
-        throw ArgumentError('Ogni riga deve avere almeno 7 colonne');
+      if (row.length < 8) {
+        throw ArgumentError('Ogni riga deve avere almeno 8 colonne');
       }
       if (row[0].trim() != positionRaw) {
         throw ArgumentError('Dati di posizione incoerenti');

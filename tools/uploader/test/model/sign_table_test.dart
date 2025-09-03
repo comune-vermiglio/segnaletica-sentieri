@@ -1,4 +1,6 @@
 import 'package:test/test.dart';
+import 'package:uploader/model/direction_table.dart';
+import 'package:uploader/model/place_table.dart';
 import 'package:uploader/model/sign_table.dart';
 
 void main() {
@@ -11,6 +13,7 @@ void main() {
         '(46.2906727, 10.6815487)',
         'Non necessario',
         'Cambiare',
+        'Direzione',
         'Sinistra',
         ' Laghetti di San Leonardo ',
         secondString,
@@ -20,7 +23,7 @@ void main() {
       expect(
         signTable,
         equals(
-          SignTable(
+          DirectionTable(
             status: SignTableStatus.change,
             direction: SignTableDirection.left,
             firstString: 'Laghetti di San Leonardo',
@@ -33,6 +36,7 @@ void main() {
         '(46.2906727, 10.6815487)',
         'Non necessario',
         'Ok',
+        'Direzione',
         'Destra',
         firstString,
         secondString,
@@ -42,7 +46,7 @@ void main() {
       expect(
         signTable,
         equals(
-          SignTable(
+          DirectionTable(
             status: SignTableStatus.ok,
             direction: SignTableDirection.right,
             firstString: firstString,
@@ -54,6 +58,7 @@ void main() {
         '(46.2906727, 10.6815487)',
         'Non necessario',
         'Nuovo',
+        'Direzione',
         'Destra',
         firstString,
         '',
@@ -63,7 +68,7 @@ void main() {
       expect(
         signTable,
         equals(
-          SignTable(
+          DirectionTable(
             status: SignTableStatus.add,
             direction: SignTableDirection.right,
             firstString: firstString,
@@ -73,7 +78,25 @@ void main() {
       csv = [
         '(46.2906727, 10.6815487)',
         'Non necessario',
+        'Nuovo',
+        'Località',
+        'Destra',
+        firstString,
+        '',
+        '',
+      ];
+      signTable = SignTable.fromCsv(csv);
+      expect(
+        signTable,
+        equals(
+          PlaceTable(status: SignTableStatus.add, firstString: firstString),
+        ),
+      );
+      csv = [
+        '(46.2906727, 10.6815487)',
+        'Non necessario',
         'Eliminare',
+        'Direzione',
         'Sinistra',
         '',
         '',
@@ -83,7 +106,7 @@ void main() {
       expect(
         signTable,
         equals(
-          SignTable(
+          DirectionTable(
             status: SignTableStatus.remove,
             direction: SignTableDirection.left,
           ),
@@ -93,6 +116,7 @@ void main() {
         '(46.2906727, 10.6815487)',
         'Non necessario',
         'Wrong value',
+        'Direzione',
         'Sinistra',
         '',
         '',

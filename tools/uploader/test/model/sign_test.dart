@@ -1,4 +1,5 @@
 import 'package:test/test.dart';
+import 'package:uploader/model/direction_table.dart';
 import 'package:uploader/model/position.dart';
 import 'package:uploader/model/sign.dart';
 import 'package:uploader/model/sign_pole.dart';
@@ -12,6 +13,7 @@ void main() {
           '(46.292476, 10.686197) ',
           'Non necessario',
           'Cambiare',
+          'Direzione',
           'Sinistra',
           'info1',
           'info2',
@@ -21,6 +23,7 @@ void main() {
           ' (46.292476, 10.686197)',
           'Non necessario',
           'Ok',
+          'Direzione',
           'Destra',
           'info11',
           'info12',
@@ -33,14 +36,14 @@ void main() {
         equals(
           Sign(
             tables: [
-              SignTable(
+              DirectionTable(
                 direction: SignTableDirection.left,
                 status: SignTableStatus.change,
                 firstString: 'info1',
                 secondString: 'info2',
                 thirdString: 'info3',
               ),
-              SignTable(
+              DirectionTable(
                 direction: SignTableDirection.right,
                 status: SignTableStatus.ok,
                 firstString: 'info11',

@@ -4,7 +4,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
+import 'package:uploader/model/direction_table.dart';
 import 'package:uploader/model/image_manager.dart';
+import 'package:uploader/model/place_table.dart';
 import 'package:uploader/ui/app_map.dart';
 import 'package:uploader/ui/utils.dart';
 
@@ -149,12 +151,22 @@ class SignDataTable extends StatelessWidget {
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
+              DataColumn(
+                label: Text(
+                  'Tabelle',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
             ],
             rows: [
               for (final (index, sign) in manager.signs.indexed)
                 DataRow(
                   cells: [
-                    DataCell(Text(sign.position.toString())),
+                    DataCell(
+                      Text(
+                        '${sign.position.latitude.toString()},${sign.position.longitude.toString()}',
+                      ),
+                    ),
                     DataCell(
                       Text(
                         sign.tables.length.toString(),
@@ -178,8 +190,25 @@ class SignDataTable extends StatelessWidget {
                                 ? Icons.check_circle_outline
                                 : Icons.error_outline,
                             color: ok
-                                ? Colors.green.withAlpha(120)
-                                : Colors.red.withAlpha(120),
+                                ? Colors.green.withAlpha(160)
+                                : Colors.red.withAlpha(160),
+                          );
+                        },
+                      ),
+                    ),
+                    DataCell(
+                      Builder(
+                        builder: (context) {
+                          final ok = sign.tables
+                              .map((table) => table.isOk)
+                              .reduce((el, val) => val = val & el);
+                          return Icon(
+                            ok
+                                ? Icons.check_circle_outline
+                                : Icons.error_outline,
+                            color: ok
+                                ? Colors.green.withAlpha(160)
+                                : Colors.red.withAlpha(160),
                           );
                         },
                       ),
@@ -243,7 +272,8 @@ class SignSelectedWidget extends StatelessWidget {
           ),
         const SizedBox(height: 20),
         for (final table in sign.tables) ...[
-          SignTableWidget(table),
+          if (table is DirectionTable) DirectionTableWidget(table),
+          if (table is PlaceTable) PlaceTableWidget(table),
           const SizedBox(height: 20),
         ],
         SignImage(sign),
@@ -266,11 +296,13 @@ class SignTitle extends StatelessWidget {
   }
 }
 
-class SignTableWidget extends StatelessWidget {
+const _tableHeight = 140.0;
+
+class DirectionTableWidget extends StatelessWidget {
   static const arrowWidth = 50.0;
   static const endMarkerWidth = 60.0;
-  final SignTable table;
-  const SignTableWidget(this.table, {super.key});
+  final DirectionTable table;
+  const DirectionTableWidget(this.table, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -279,8 +311,8 @@ class SignTableWidget extends StatelessWidget {
         child: ConstrainedBox(
           constraints: BoxConstraints(
             maxWidth: 600,
-            maxHeight: 140,
-            minHeight: 140,
+            maxHeight: _tableHeight,
+            minHeight: _tableHeight,
           ),
           child: Stack(
             fit: StackFit.expand,
@@ -405,6 +437,52 @@ class TrianglePainter extends CustomPainter {
   @override
   bool shouldRepaint(TrianglePainter oldDelegate) {
     return oldDelegate.direction != direction;
+  }
+}
+
+class PlaceTableWidget extends StatelessWidget {
+  final PlaceTable table;
+  const PlaceTableWidget(this.table, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    if (table.status != SignTableStatus.remove) {
+      return Center(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            color: Colors.white,
+          ),
+          constraints: BoxConstraints(
+            maxWidth: 260,
+            maxHeight: _tableHeight,
+            minHeight: _tableHeight,
+          ),
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:
+                  [
+                    if (table.firstString != null) table.firstString,
+                    if (table.secondString != null) table.secondString,
+                    if (table.thirdString != null) table.thirdString,
+                  ].map((str) {
+                    return Text(
+                      str!,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
+                        color: Colors.black,
+                      ),
+                    );
+                  }).toList(),
+            ),
+          ),
+        ),
+      );
+    } else {
+      return const SizedBox.shrink();
+    }
   }
 }
 

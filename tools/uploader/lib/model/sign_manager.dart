@@ -22,8 +22,8 @@ class SignManager extends ChangeNotifier {
     String currentPosition = '';
     List<List<dynamic>> currentRows = [];
     for (final values in rows.skip(1)) {
-      if (values.length != 7) {
-        throw ArgumentError('$values non ha 7 colonne');
+      if (values.length != 8) {
+        throw ArgumentError('$values non ha 8 colonne');
       }
       if (values[0].isEmpty) {
         break;

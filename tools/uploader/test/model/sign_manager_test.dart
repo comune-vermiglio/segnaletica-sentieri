@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:test/test.dart';
+import 'package:uploader/model/direction_table.dart';
+import 'package:uploader/model/place_table.dart';
 import 'package:uploader/model/position.dart';
 import 'package:uploader/model/sign.dart';
 import 'package:uploader/model/sign_manager.dart';
@@ -19,7 +21,7 @@ void main() {
         const DeepCollectionEquality().equals(manager.signs, [
           Sign(
             tables: [
-              SignTable(
+              DirectionTable(
                 status: SignTableStatus.change,
                 direction: SignTableDirection.left,
                 firstString: 'Laghetti di San Leonardo',
@@ -31,16 +33,17 @@ void main() {
           ),
           Sign(
             tables: [
-              SignTable(
+              DirectionTable(
                 status: SignTableStatus.change,
                 direction: SignTableDirection.right,
                 firstString: 'Volpaia',
                 secondString: 'Stavel',
               ),
-              SignTable(
+              DirectionTable(
                 status: SignTableStatus.remove,
                 direction: SignTableDirection.left,
               ),
+              PlaceTable(status: SignTableStatus.add, firstString: 'Volpaia'),
             ],
             pole: SignPole(status: SignPoleStatus.ok),
             position: Position(latitude: 46.2860383, longitude: 10.6739416),
