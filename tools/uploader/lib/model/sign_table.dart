@@ -66,7 +66,8 @@ abstract class SignTable extends Equatable {
     }
   }
 
-  bool get isNotOk => status != SignTableStatus.remove && firstString == null;
+  bool get isNotOk =>
+      status != SignTableStatus.remove && (firstString?.isEmpty ?? true);
 
   bool get isOk => !isNotOk;
 }
