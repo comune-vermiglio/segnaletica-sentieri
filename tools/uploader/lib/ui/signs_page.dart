@@ -21,7 +21,7 @@ class SignsPage extends StatefulWidget {
   State<SignsPage> createState() => _SignsPageState();
 }
 
-const _distanceOk = 20.0;
+const _distanceOk = 10.0;
 
 class _SignsPageState extends State<SignsPage> {
   var _loading = false;
