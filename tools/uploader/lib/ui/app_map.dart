@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:uploader/model/image_manager.dart';
 import 'package:uploader/model/sign_manager.dart';
@@ -62,7 +63,32 @@ class AppMap extends StatelessWidget {
                               width: 400,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(10),
-                                child: Image.file(img.file),
+                                child: Stack(
+                                  children: [
+                                    Image.file(img.file),
+                                    Positioned(
+                                      left: 0,
+                                      right: 0,
+                                      bottom: 0,
+                                      height: 20,
+                                      child: Container(
+                                        color: Colors.black.withAlpha(100),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 20,
+                                          ),
+                                          child: Text(
+                                            basename(img.file.path),
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
