@@ -71,7 +71,6 @@ class _SignsPageState extends State<SignsPage> {
                         manager: manager,
                         indexSelected: _indexSelected,
                         onSelected: (value) => indexSelected = value,
-                        loadingCallback: (val) => loading = val,
                       ),
                     ),
                     const SizedBox(width: 40),
@@ -131,14 +130,12 @@ class SignDataTable extends StatelessWidget {
   final SignManager manager;
   final int indexSelected;
   final Function(int) onSelected;
-  final Function(bool) loadingCallback;
 
   const SignDataTable({
     super.key,
     required this.manager,
     required this.indexSelected,
     required this.onSelected,
-    required this.loadingCallback,
   });
 
   @override
@@ -248,8 +245,6 @@ class SignDataTable extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 30),
-          _LoadButton(manager: manager, loadingCallback: loadingCallback),
-          const SizedBox(height: 10),
           FilledButton(
             onPressed: () => manager.clean(),
             child: Row(
