@@ -6,7 +6,9 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:uploader/model/direction_table.dart';
 import 'package:uploader/model/image_manager.dart';
+import 'package:uploader/model/only_mark_sign.dart';
 import 'package:uploader/model/place_table.dart';
+import 'package:uploader/model/sign_with_tables.dart';
 import 'package:uploader/ui/app_map.dart';
 import 'package:uploader/ui/utils.dart';
 
@@ -54,35 +56,9 @@ class _SignsPageState extends State<SignsPage> {
                     children: [
                       Text('Nessun cartello trovato'),
                       const SizedBox(height: 20),
-                      FilledButton(
-                        onPressed: () async {
-                          final snack = ScaffoldMessenger.of(context);
-                          final selectedCsvFile = await FilePicker.platform
-                              .pickFiles(
-                                allowedExtensions: ['csv'],
-                                type: FileType.custom,
-                              );
-                          if (selectedCsvFile != null &&
-                              selectedCsvFile.files.isNotEmpty &&
-                              selectedCsvFile.files.single.path != null) {
-                            loading = true;
-                            try {
-                              await manager.loadCsv(
-                                File(selectedCsvFile.files.single.path!),
-                              );
-                            } catch (e) {
-                              final snackBar = SnackBar(
-                                content: Text('Errore nel file CSV. $e'),
-                                duration: const Duration(minutes: 1),
-                                showCloseIcon: true,
-                              );
-                              snack.showSnackBar(snackBar);
-                            } finally {
-                              loading = false;
-                            }
-                          }
-                        },
-                        child: const Text('Apri file CSV'),
+                      _LoadButton(
+                        manager: manager,
+                        loadingCallback: (val) => loading = val,
                       ),
                     ],
                   ),
@@ -95,6 +71,7 @@ class _SignsPageState extends State<SignsPage> {
                         manager: manager,
                         indexSelected: _indexSelected,
                         onSelected: (value) => indexSelected = value,
+                        loadingCallback: (val) => loading = val,
                       ),
                     ),
                     const SizedBox(width: 40),
@@ -113,16 +90,55 @@ class _SignsPageState extends State<SignsPage> {
   }
 }
 
+class _LoadButton extends StatelessWidget {
+  final SignManager manager;
+  final Function(bool) loadingCallback;
+  const _LoadButton({required this.manager, required this.loadingCallback});
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: () async {
+        final snack = ScaffoldMessenger.of(context);
+        final selectedCsvFile = await FilePicker.platform.pickFiles(
+          allowedExtensions: ['csv'],
+          type: FileType.custom,
+        );
+        if (selectedCsvFile != null &&
+            selectedCsvFile.files.isNotEmpty &&
+            selectedCsvFile.files.single.path != null) {
+          loadingCallback(true);
+          try {
+            await manager.loadCsv(File(selectedCsvFile.files.single.path!));
+          } catch (e) {
+            final snackBar = SnackBar(
+              content: Text('Errore nel file CSV. $e'),
+              duration: const Duration(minutes: 1),
+              showCloseIcon: true,
+            );
+            snack.showSnackBar(snackBar);
+          } finally {
+            loadingCallback(false);
+          }
+        }
+      },
+      child: const Text('Apri file CSV'),
+    );
+  }
+}
+
 class SignDataTable extends StatelessWidget {
   final SignManager manager;
   final int indexSelected;
   final Function(int) onSelected;
+  final Function(bool) loadingCallback;
 
   const SignDataTable({
     super.key,
     required this.manager,
     required this.indexSelected,
     required this.onSelected,
+    required this.loadingCallback,
   });
 
   @override
@@ -167,12 +183,15 @@ class SignDataTable extends StatelessWidget {
                         '${sign.position.latitude.toString()},${sign.position.longitude.toString()}',
                       ),
                     ),
-                    DataCell(
-                      Text(
-                        sign.tables.length.toString(),
-                        textAlign: TextAlign.center,
+                    if (sign is SignWithTables)
+                      DataCell(
+                        Text(
+                          sign.tables.length.toString(),
+                          textAlign: TextAlign.center,
+                        ),
                       ),
-                    ),
+                    if (sign is OnlyMarkSign)
+                      DataCell(Text('---', textAlign: TextAlign.center)),
                     DataCell(
                       Consumer<ImageManager>(
                         builder: (context, imgMan, _) {
@@ -199,9 +218,14 @@ class SignDataTable extends StatelessWidget {
                     DataCell(
                       Builder(
                         builder: (context) {
-                          final ok = sign.tables
-                              .map((table) => table.isOk)
-                              .reduce((el, val) => val = val & el);
+                          bool ok;
+                          if (sign is SignWithTables) {
+                            ok = sign.tables
+                                .map((table) => table.isOk)
+                                .reduce((el, val) => val = val & el);
+                          } else {
+                            ok = true;
+                          }
                           return Icon(
                             ok
                                 ? Icons.check_circle_outline
@@ -224,6 +248,8 @@ class SignDataTable extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 30),
+          _LoadButton(manager: manager, loadingCallback: loadingCallback),
+          const SizedBox(height: 10),
           FilledButton(
             onPressed: () => manager.clean(),
             child: Row(
@@ -259,22 +285,29 @@ class SignSelectedWidget extends StatelessWidget {
             child: AppMap(signHighlight: sign, key: UniqueKey()),
           ),
         ),
-        SignTitle('Palo'),
-        Text(sign.pole.status.toString()),
-        SignTitle('Tabelle'),
-        for (final (index, table) in sign.tables.indexed)
-          Row(
-            children: [
-              Text('${index + 1}.'),
-              const SizedBox(width: 6),
-              Text(table.status.toString()),
-            ],
+        if (sign is OnlyMarkSign)
+          Padding(
+            padding: const EdgeInsets.only(top: 20),
+            child: Text('Solo segno rosso/bianco'),
           ),
-        const SizedBox(height: 20),
-        for (final table in sign.tables) ...[
-          if (table is DirectionTable) DirectionTableWidget(table),
-          if (table is PlaceTable) PlaceTableWidget(table),
+        if (sign is SignWithTables) ...[
+          SignTitle('Palo'),
+          Text((sign as SignWithTables).pole.status.toString()),
+          SignTitle('Tabelle'),
+          for (final (index, table) in (sign as SignWithTables).tables.indexed)
+            Row(
+              children: [
+                Text('${index + 1}.'),
+                const SizedBox(width: 6),
+                Text(table.status.toString()),
+              ],
+            ),
           const SizedBox(height: 20),
+          for (final table in (sign as SignWithTables).tables) ...[
+            if (table is DirectionTable) DirectionTableWidget(table),
+            if (table is PlaceTable) PlaceTableWidget(table),
+            const SizedBox(height: 20),
+          ],
         ],
         SignImage(sign),
       ],

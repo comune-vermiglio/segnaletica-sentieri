@@ -15,7 +15,6 @@ class ImageManager extends ChangeNotifier {
   }
 
   Future<void> loadDirectory(Directory dir) async {
-    _images.clear();
     await for (var file in dir.list().where((e) => e is File)) {
       final image = await SignImage.fromFile(file as File);
       _images.add(image);
