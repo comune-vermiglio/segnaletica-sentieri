@@ -3,12 +3,13 @@ import 'dart:io';
 import 'package:collection/collection.dart';
 import 'package:test/test.dart';
 import 'package:uploader/model/direction_table.dart';
+import 'package:uploader/model/only_mark_sign.dart';
 import 'package:uploader/model/place_table.dart';
 import 'package:uploader/model/position.dart';
-import 'package:uploader/model/sign.dart';
 import 'package:uploader/model/sign_manager.dart';
 import 'package:uploader/model/sign_pole.dart';
 import 'package:uploader/model/sign_table.dart';
+import 'package:uploader/model/sign_with_tables.dart';
 
 void main() {
   group('SignManager', () {
@@ -19,7 +20,7 @@ void main() {
       await manager.loadCsv(file);
       expect(
         const DeepCollectionEquality().equals(manager.signs, [
-          Sign(
+          SignWithTables(
             tables: [
               DirectionTable(
                 status: SignTableStatus.change,
@@ -31,7 +32,7 @@ void main() {
             pole: SignPole(status: SignPoleStatus.notNeeded),
             position: Position(latitude: 46.2906727, longitude: 10.6815487),
           ),
-          Sign(
+          SignWithTables(
             tables: [
               DirectionTable(
                 status: SignTableStatus.change,
@@ -47,6 +48,9 @@ void main() {
             ],
             pole: SignPole(status: SignPoleStatus.ok),
             position: Position(latitude: 46.2860383, longitude: 10.6739416),
+          ),
+          OnlyMarkSign(
+            position: Position(latitude: 46.3008268, longitude: 10.6500200),
           ),
         ]),
         isTrue,

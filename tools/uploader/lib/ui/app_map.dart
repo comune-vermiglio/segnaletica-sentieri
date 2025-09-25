@@ -6,6 +6,7 @@ import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 import 'package:uploader/model/image_manager.dart';
 import 'package:uploader/model/sign_manager.dart';
+import 'package:uploader/model/sign_with_tables.dart';
 
 import '../model/sign.dart';
 import '../model/sign_image.dart';
@@ -42,7 +43,9 @@ class AppMap extends StatelessWidget {
                   (sign) => Marker(
                     point: sign.position.latLng,
                     child: Icon(
-                      Icons.signpost,
+                      sign is SignWithTables
+                          ? Icons.signpost
+                          : Icons.drag_handle_rounded,
                       color: sign == signHighlight ? Colors.red : Colors.black,
                       size: sign == signHighlight ? 30 : 20,
                     ),

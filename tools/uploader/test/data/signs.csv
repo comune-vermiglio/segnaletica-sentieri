@@ -3,6 +3,7 @@ POSIZIONE,PALO,TABELLA,DIREZIONE FRECCIA,STRINGA 1,STRINGA 2,STRINGA 3
 " (46.2860383, 10.6739416)",Ok,Cambiare,Direzione,Destra,Volpaia ,Stavel,
 "(46.2860383, 10.6739416)",Ok,Eliminare,Direzione,Sinistra,,,
 "(46.2860383, 10.6739416)",Ok,Nuovo,Località,Sinistra,Volpaia ,,
+"(46.3008268, 10.6500200)",Solo segno rosso,Ok,Direzione,Sinistra,,,
 ,Ok,Ok,Sinistra,,,,
 ,Ok,Ok,Sinistra,,,,
 ,Ok,Ok,Sinistra,,,,

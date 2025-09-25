@@ -1,19 +1,13 @@
 import 'package:equatable/equatable.dart';
+import 'package:uploader/model/only_mark_sign.dart';
+import 'package:uploader/model/sign_with_tables.dart';
 
 import 'position.dart';
-import 'sign_pole.dart';
-import 'sign_table.dart';
 
-class Sign extends Equatable {
-  final List<SignTable> tables;
-  final SignPole pole;
+abstract class Sign extends Equatable {
   final Position position;
 
-  const Sign({
-    required this.tables,
-    required this.pole,
-    required this.position,
-  });
+  const Sign({required this.position});
 
   factory Sign.fromCsv(List<List<dynamic>> table) {
     if (table.isEmpty || table[0].isEmpty) {
@@ -34,20 +28,14 @@ class Sign extends Equatable {
         );
       }
     }
-    final latLonStrs = positionRaw
-        .trim()
-        .substring(1, positionRaw.length - 1)
-        .split(',');
-    return Sign(
-      tables: table.map((row) => SignTable.fromCsv(row)).toList(),
-      pole: SignPole.fromCsv(table.first),
-      position: Position(
-        latitude: double.parse(latLonStrs[0].trim()),
-        longitude: double.parse(latLonStrs[1].trim()),
-      ),
-    );
+    switch (poleStatusRaw) {
+      case 'Solo segno rosso':
+        return OnlyMarkSign.fromCsv(table);
+      default:
+        return SignWithTables.fromCsv(table);
+    }
   }
 
   @override
-  List<Object?> get props => [tables, pole, position];
+  List<Object?> get props => [position];
 }
