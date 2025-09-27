@@ -9,6 +9,15 @@ class Position extends Equatable {
 
   const Position({required this.latitude, required this.longitude});
 
+  factory Position.fromCsv(String raw) {
+    var tmp = raw.trim();
+    final latLonStrs = tmp.substring(1, tmp.length - 1).split(',');
+    return Position(
+      latitude: double.parse(latLonStrs[0].trim()),
+      longitude: double.parse(latLonStrs[1].trim()),
+    );
+  }
+
   double distanceTo(Position other) {
     const earthRadius = 6371e3; // meters
     final lat1 = latitude * (pi / 180);

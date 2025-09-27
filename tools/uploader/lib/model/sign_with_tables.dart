@@ -13,21 +13,11 @@ class SignWithTables extends Sign {
     required super.position,
   });
 
-  factory SignWithTables.fromCsv(List<List<dynamic>> table) {
-    final positionRaw = table.first[0].trim();
-    final latLonStrs = positionRaw
-        .trim()
-        .substring(1, positionRaw.length - 1)
-        .split(',');
-    return SignWithTables(
-      tables: table.map((row) => SignTable.fromCsv(row)).toList(),
-      pole: SignPole.fromCsv(table.first),
-      position: Position(
-        latitude: double.parse(latLonStrs[0].trim()),
-        longitude: double.parse(latLonStrs[1].trim()),
-      ),
-    );
-  }
+  factory SignWithTables.fromCsv(List<List<dynamic>> table) => SignWithTables(
+    tables: table.map((row) => SignTable.fromCsv(row)).toList(),
+    pole: SignPole.fromCsv(table.first),
+    position: Position.fromCsv(table.first[0]),
+  );
 
   @override
   List<Object?> get props => [tables, pole, ...super.props];
