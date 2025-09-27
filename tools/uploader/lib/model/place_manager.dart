@@ -24,4 +24,6 @@ class PlaceManager extends ChangeNotifier {
     }
     notifyListeners();
   }
+
+  bool containsPlace(String name) => _places.any((place) => place.name == name);
 }

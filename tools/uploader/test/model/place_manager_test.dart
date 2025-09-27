@@ -42,5 +42,24 @@ void main() {
         isTrue,
       );
     });
+
+    test('contains place', () async {
+      final file = File('test/data/places.csv');
+      final manager = PlaceManager();
+      await manager.loadCsv(file);
+      expect(manager.containsPlace('Volpaia'), isTrue);
+      expect(manager.containsPlace('Stavél'), isTrue);
+      expect(manager.containsPlace('Verniana'), isTrue);
+      expect(manager.containsPlace('Passo Tonale'), isTrue);
+      expect(manager.containsPlace('Vermiglio'), isTrue);
+      expect(manager.containsPlace('Vernian'), isFalse);
+      expect(manager.containsPlace('Stavel'), isFalse);
+      expect(manager.containsPlace('Passo del Tonale'), isFalse);
+      expect(manager.containsPlace('passo Tonale'), isFalse);
+      expect(manager.containsPlace('Passo tonale'), isFalse);
+      expect(manager.containsPlace('vermiglio'), isFalse);
+      expect(manager.containsPlace('Vermiglio '), isFalse);
+      expect(manager.containsPlace(' Vermiglio'), isFalse);
+    });
   });
 }
