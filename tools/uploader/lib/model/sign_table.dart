@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
-import 'package:uploader/model/direction_table.dart';
-import 'package:uploader/model/place_table.dart';
+
+import 'direction_table.dart';
+import 'place_manager.dart';
+import 'place_table.dart';
+import 'sign_table_string.dart';
 
 enum SignTableStatus {
   ok,
@@ -40,9 +43,9 @@ enum SignTableStatus {
 
 abstract class SignTable extends Equatable {
   final SignTableStatus status;
-  final String? firstString;
-  final String? secondString;
-  final String? thirdString;
+  final SignTableString? firstString;
+  final SignTableString? secondString;
+  final SignTableString? thirdString;
 
   const SignTable({
     required this.status,
@@ -66,8 +69,12 @@ abstract class SignTable extends Equatable {
     }
   }
 
-  bool get isNotOk =>
-      status != SignTableStatus.remove && (firstString?.isEmpty ?? true);
+  bool isOk({required PlaceManager placeManager}) =>
+      (status == SignTableStatus.remove || !(firstString?.isEmpty ?? true)) &&
+      (firstString?.isOk(placeManager: placeManager) ?? true) &&
+      (secondString?.isOk(placeManager: placeManager) ?? true) &&
+      (thirdString?.isOk(placeManager: placeManager) ?? true);
 
-  bool get isOk => !isNotOk;
+  bool isNotOk({required PlaceManager placeManager}) =>
+      !isOk(placeManager: placeManager);
 }

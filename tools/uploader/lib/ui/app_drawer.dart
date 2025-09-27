@@ -21,6 +21,12 @@ class AppDrawer extends StatelessWidget {
           ),
           NavigationRailDestination(
             padding: const EdgeInsets.symmetric(vertical: 14),
+            label: Text('Località'),
+            icon: Icon(Icons.location_on_outlined),
+            selectedIcon: Icon(Icons.location_on),
+          ),
+          NavigationRailDestination(
+            padding: const EdgeInsets.symmetric(vertical: 14),
             label: Text('Cartelli'),
             icon: Icon(Icons.signpost_outlined),
             selectedIcon: Icon(Icons.signpost),

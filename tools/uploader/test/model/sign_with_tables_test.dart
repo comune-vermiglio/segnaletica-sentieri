@@ -4,6 +4,7 @@ import 'package:uploader/model/position.dart';
 import 'package:uploader/model/sign.dart';
 import 'package:uploader/model/sign_pole.dart';
 import 'package:uploader/model/sign_table.dart';
+import 'package:uploader/model/sign_table_string.dart';
 import 'package:uploader/model/sign_with_tables.dart';
 
 void main() {
@@ -40,16 +41,16 @@ void main() {
               DirectionTable(
                 direction: SignTableDirection.left,
                 status: SignTableStatus.change,
-                firstString: 'info1',
-                secondString: 'info2',
-                thirdString: 'info3',
+                firstString: SignTableString('info1'),
+                secondString: SignTableString('info2'),
+                thirdString: SignTableString('info3'),
               ),
               DirectionTable(
                 direction: SignTableDirection.right,
                 status: SignTableStatus.ok,
-                firstString: 'info11',
-                secondString: 'info12',
-                thirdString: 'info13',
+                firstString: SignTableString('info11'),
+                secondString: SignTableString('info12'),
+                thirdString: SignTableString('info13'),
               ),
             ],
             pole: SignPole(status: SignPoleStatus.notNeeded),

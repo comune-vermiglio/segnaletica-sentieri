@@ -9,6 +9,7 @@ import 'package:uploader/model/position.dart';
 import 'package:uploader/model/sign_manager.dart';
 import 'package:uploader/model/sign_pole.dart';
 import 'package:uploader/model/sign_table.dart';
+import 'package:uploader/model/sign_table_string.dart';
 import 'package:uploader/model/sign_with_tables.dart';
 
 void main() {
@@ -25,8 +26,8 @@ void main() {
               DirectionTable(
                 status: SignTableStatus.change,
                 direction: SignTableDirection.left,
-                firstString: 'Laghetti di San Leonardo',
-                secondString: 'Volpaia',
+                firstString: SignTableString('Laghetti di San Leonardo'),
+                secondString: SignTableString('Volpaia'),
               ),
             ],
             pole: SignPole(status: SignPoleStatus.notNeeded),
@@ -37,14 +38,17 @@ void main() {
               DirectionTable(
                 status: SignTableStatus.change,
                 direction: SignTableDirection.right,
-                firstString: 'Volpaia',
-                secondString: 'Stavel',
+                firstString: SignTableString('Volpaia'),
+                secondString: SignTableString('Stavel'),
               ),
               DirectionTable(
                 status: SignTableStatus.remove,
                 direction: SignTableDirection.left,
               ),
-              PlaceTable(status: SignTableStatus.add, firstString: 'Volpaia'),
+              PlaceTable(
+                status: SignTableStatus.add,
+                firstString: SignTableString('Volpaia'),
+              ),
             ],
             pole: SignPole(status: SignPoleStatus.ok),
             position: Position(latitude: 46.2860383, longitude: 10.6739416),

@@ -12,6 +12,7 @@ import 'package:uploader/model/sign_with_tables.dart';
 import 'package:uploader/ui/app_map.dart';
 import 'package:uploader/ui/utils.dart';
 
+import '../model/place_manager.dart';
 import '../model/sign.dart';
 import '../model/sign_manager.dart';
 import '../model/sign_table.dart';
@@ -215,10 +216,17 @@ class SignDataTable extends StatelessWidget {
                     DataCell(
                       Builder(
                         builder: (context) {
+                          final placeManager = Provider.of<PlaceManager>(
+                            context,
+                            listen: false,
+                          );
                           bool ok;
                           if (sign is SignWithTables) {
                             ok = sign.tables
-                                .map((table) => table.isOk)
+                                .map(
+                                  (table) =>
+                                      table.isOk(placeManager: placeManager),
+                                )
                                 .reduce((el, val) => val = val & el);
                           } else {
                             ok = true;
@@ -409,12 +417,22 @@ class DirectionTableWidget extends StatelessWidget {
                           if (table.secondString != null) table.secondString,
                           if (table.thirdString != null) table.thirdString,
                         ].map((str) {
+                          final placeManager = Provider.of<PlaceManager>(
+                            context,
+                            listen: false,
+                          );
                           return Text(
-                            str!,
-                            style: const TextStyle(
+                            str!.text,
+                            style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 26,
-                              color: Colors.black,
+                              color: str.isOk(placeManager: placeManager)
+                                  ? Colors.black
+                                  : Colors.red,
+                              decoration: str.isOk(placeManager: placeManager)
+                                  ? null
+                                  : TextDecoration.lineThrough,
+                              decorationColor: Colors.red,
                             ),
                           );
                         }).toList(),
@@ -496,7 +514,7 @@ class PlaceTableWidget extends StatelessWidget {
                     if (table.thirdString != null) table.thirdString,
                   ].map((str) {
                     return Text(
-                      str!,
+                      str!.text,
                       style: const TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 26,

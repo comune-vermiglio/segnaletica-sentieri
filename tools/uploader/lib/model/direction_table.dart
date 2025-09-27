@@ -1,4 +1,5 @@
-import 'package:uploader/model/sign_table.dart';
+import 'sign_table.dart';
+import 'sign_table_string.dart';
 
 enum SignTableDirection {
   left,
@@ -36,13 +37,13 @@ class DirectionTable extends SignTable {
       status: SignTableStatus.fromString(row[2]),
       direction: SignTableDirection.fromString(row[4]),
       firstString: row.length > 5 && row[5].isNotEmpty
-          ? row[5].trimLeft().trimRight()
+          ? SignTableString(row[5].trim())
           : null,
       secondString: row.length > 6 && row[6].isNotEmpty
-          ? row[6].trimLeft().trimRight()
+          ? SignTableString(row[6].trim())
           : null,
       thirdString: row.length > 7 && row[7].isNotEmpty
-          ? row[7].trimLeft().trimRight()
+          ? SignTableString(row[7].trim())
           : null,
     );
   }

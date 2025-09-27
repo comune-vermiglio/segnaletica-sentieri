@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_drawer.dart';
 import 'images_page.dart';
 import 'map_page.dart';
+import 'places_page.dart';
 import 'signs_page.dart';
 
 class MyApp extends StatelessWidget {
@@ -50,8 +51,9 @@ class _MyHomePageState extends State<MyHomePage> {
             onDestinationSelected: onDestinationSelected,
           ),
           if (selectedIndex == 0) Expanded(child: const ImagesPage()),
-          if (selectedIndex == 1) Expanded(child: const SignsPage()),
-          if (selectedIndex == 2) Expanded(child: const MapPage()),
+          if (selectedIndex == 1) Expanded(child: const PlacesPage()),
+          if (selectedIndex == 2) Expanded(child: const SignsPage()),
+          if (selectedIndex == 3) Expanded(child: const MapPage()),
         ],
       ),
     );
