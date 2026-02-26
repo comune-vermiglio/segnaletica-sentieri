@@ -9,10 +9,12 @@ import 'package:uploader/model/image_manager.dart';
 import 'package:uploader/model/only_mark_sign.dart';
 import 'package:uploader/model/place_table.dart';
 import 'package:uploader/model/sign_with_tables.dart';
+import 'package:uploader/model/time_computing.dart';
 import 'package:uploader/ui/app_map.dart';
 import 'package:uploader/ui/utils.dart';
 
 import '../model/place_manager.dart';
+import '../model/position.dart';
 import '../model/sign.dart';
 import '../model/sign_manager.dart';
 import '../model/sign_table.dart';
@@ -307,7 +309,8 @@ class SignSelectedWidget extends StatelessWidget {
             ),
           const SizedBox(height: 20),
           for (final table in (sign as SignWithTables).tables) ...[
-            if (table is DirectionTable) DirectionTableWidget(table),
+            if (table is DirectionTable)
+              DirectionTableWidget(table, sign.position),
             if (table is PlaceTable) PlaceTableWidget(table),
             const SizedBox(height: 20),
           ],
@@ -338,7 +341,8 @@ class DirectionTableWidget extends StatelessWidget {
   static const arrowWidth = 50.0;
   static const endMarkerWidth = 60.0;
   final DirectionTable table;
-  const DirectionTableWidget(this.table, {super.key});
+  final Position position;
+  const DirectionTableWidget(this.table, this.position, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -397,20 +401,17 @@ class DirectionTableWidget extends StatelessWidget {
               Positioned(
                 left: table.direction == SignTableDirection.right
                     ? arrowWidth + endMarkerWidth
-                    : null,
+                    : arrowWidth,
                 right: table.direction == SignTableDirection.left
                     ? arrowWidth + endMarkerWidth
-                    : null,
+                    : arrowWidth,
                 top: 0,
                 bottom: 0,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment:
-                        table.direction == SignTableDirection.left
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children:
                         [
                           if (table.firstString != null) table.firstString,
@@ -421,20 +422,74 @@ class DirectionTableWidget extends StatelessWidget {
                             context,
                             listen: false,
                           );
-                          return Text(
-                            str!.text,
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 26,
-                              color: str.isOk(placeManager: placeManager)
-                                  ? Colors.black
-                                  : Colors.red,
-                              decoration: str.isOk(placeManager: placeManager)
-                                  ? null
-                                  : TextDecoration.lineThrough,
-                              decorationColor: Colors.red,
-                            ),
-                          );
+                          if (str!.isOk(placeManager: placeManager)) {
+                            final place = placeManager.getPlaceByName(str.text);
+                            assert(place != null);
+                            const timeComputing = TimeComputing();
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  str.text,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 26,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                if (place!.position != null)
+                                  FutureBuilder(
+                                    future: timeComputing.getTravelDuration(
+                                      position,
+                                      place.position!,
+                                    ),
+                                    builder: (_, snapshot) {
+                                      if (snapshot.connectionState ==
+                                              ConnectionState.done &&
+                                          snapshot.hasData) {
+                                        final info = snapshot.data!;
+                                        final fromElevation = info.$1;
+                                        final toElevation = info.$2;
+                                        final minutes = info.$3;
+
+                                        return Tooltip(
+                                          message:
+                                              'Da ${fromElevation}m a ${place.name} (${toElevation}m). Differenza: ${toElevation - fromElevation}m. Distanza lineare: ${place.position?.distanceTo(position).toInt()}m. Tempo stimato: ${minutes.inHours}h ${minutes.inMinutes.remainder(60)}min. Pendenza media: ${(((toElevation - fromElevation).abs() / (place.position!.distanceTo(position))) * 100).toStringAsFixed(1)}%.',
+                                          child: Text(
+                                            '${minutes.inHours}.${minutes.inMinutes.remainder(60).toString().padLeft(2, '0')}',
+                                            style: const TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 26,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                        );
+                                      } else {
+                                        return SizedBox.square(
+                                          dimension: 26,
+                                          child:
+                                              const CircularProgressIndicator(
+                                                color: Colors.black,
+                                                strokeWidth: 2,
+                                              ),
+                                        );
+                                      }
+                                    },
+                                  ),
+                              ],
+                            );
+                          } else {
+                            return Text(
+                              str.text,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 26,
+                                color: Colors.red,
+                                decoration: TextDecoration.lineThrough,
+                                decorationColor: Colors.red,
+                              ),
+                            );
+                          }
                         }).toList(),
                   ),
                 ),
@@ -520,6 +575,7 @@ class PlaceTableWidget extends StatelessWidget {
                         fontSize: 26,
                         color: Colors.black,
                       ),
+                      textAlign: TextAlign.center,
                     );
                   }).toList(),
             ),

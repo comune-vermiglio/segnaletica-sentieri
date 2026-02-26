@@ -16,5 +16,11 @@ void main() {
         equals(Position(latitude: 46.292476, longitude: 10.686197)),
       );
     });
+
+    test('elevation', () async {
+      const position = Position(latitude: 46.292476, longitude: 10.686197);
+      final elevation = await position.elevation;
+      expect(elevation, equals(1206.0));
+    });
   });
 }

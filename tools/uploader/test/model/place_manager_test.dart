@@ -61,5 +61,42 @@ void main() {
       expect(manager.containsPlace('Vermiglio '), isFalse);
       expect(manager.containsPlace(' Vermiglio'), isFalse);
     });
+
+    test('get place by name', () async {
+      final file = File('test/data/places.csv');
+      final manager = PlaceManager();
+      await manager.loadCsv(file);
+      expect(
+        manager.getPlaceByName('Volpaia'),
+        const Place(
+          name: 'Volpaia',
+          position: Position(latitude: 46.2858245, longitude: 10.6727306),
+        ),
+      );
+      expect(
+        manager.getPlaceByName('Stavél'),
+        const Place(
+          name: 'Stavél',
+          position: Position(latitude: 46.2771804, longitude: 10.6605182),
+        ),
+      );
+      expect(
+        manager.getPlaceByName('Verniana'),
+        const Place(
+          name: 'Verniana',
+          position: Position(latitude: 46.2968901, longitude: 10.6669773),
+        ),
+      );
+      expect(
+        manager.getPlaceByName('Passo Tonale'),
+        const Place(name: 'Passo Tonale'),
+      );
+      expect(
+        manager.getPlaceByName('Vermiglio'),
+        const Place(name: 'Vermiglio'),
+      );
+      expect(manager.getPlaceByName('Volpai'), isNull);
+      expect(manager.getPlaceByName(''), isNull);
+    });
   });
 }

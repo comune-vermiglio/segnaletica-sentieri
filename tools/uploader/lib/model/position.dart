@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:equatable/equatable.dart';
+import 'package:http/http.dart' as http;
 import 'package:latlong2/latlong.dart';
 
 class Position extends Equatable {
@@ -18,6 +20,7 @@ class Position extends Equatable {
     );
   }
 
+  // Returns distance in meters.
   double distanceTo(Position other) {
     const earthRadius = 6371e3; // meters
     final lat1 = latitude * (pi / 180);
@@ -38,4 +41,19 @@ class Position extends Equatable {
   String toString() => 'Lat: $latitude, Lng: $longitude';
 
   LatLng get latLng => LatLng(latitude, longitude);
+
+  Future<double?> get elevation async {
+    final response = await http.get(
+      Uri.parse(
+        'https://api.open-meteo.com/v1/elevation?latitude=$latitude&longitude=$longitude',
+      ),
+    );
+    if (response.statusCode == 200) {
+      final body = (jsonDecode(response.body)['elevation']);
+      if (body.isNotEmpty) {
+        return body.first;
+      }
+    }
+    return null;
+  }
 }

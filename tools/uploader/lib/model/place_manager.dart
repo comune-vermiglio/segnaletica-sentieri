@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:collection/collection.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
 
@@ -26,4 +27,7 @@ class PlaceManager extends ChangeNotifier {
   }
 
   bool containsPlace(String name) => _places.any((place) => place.name == name);
+
+  Place? getPlaceByName(String name) =>
+      _places.firstWhereOrNull((place) => place.name == name);
 }
