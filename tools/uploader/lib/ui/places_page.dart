@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:uploader/model/place.dart';
 import 'package:uploader/ui/utils.dart';
 
 import '../model/place_manager.dart';
@@ -114,6 +115,12 @@ class PlaceDataTable extends StatelessWidget {
                   style: TextStyle(fontStyle: FontStyle.italic),
                 ),
               ),
+              DataColumn(
+                label: Text(
+                  'Altitudine',
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                ),
+              ),
             ],
             rows: [
               for (final place in manager.places)
@@ -126,6 +133,11 @@ class PlaceDataTable extends StatelessWidget {
                             ? '---'
                             : '${place.position!.latitude.toString()},${place.position!.longitude.toString()}',
                       ),
+                    ),
+                    DataCell(
+                      place.position == null
+                          ? Text('---')
+                          : _ElevationWidget(place: place),
                     ),
                   ],
                 ),
@@ -145,6 +157,49 @@ class PlaceDataTable extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ElevationWidget extends StatefulWidget {
+  final Place place;
+  const _ElevationWidget({required this.place});
+
+  @override
+  State<_ElevationWidget> createState() => _ElevationWidgetState();
+}
+
+class _ElevationWidgetState extends State<_ElevationWidget> {
+  double? elevation;
+  var loading = false;
+  @override
+  Widget build(BuildContext context) {
+    if (loading) {
+      return SizedBox.square(
+        dimension: 24,
+        child: CircularProgressIndicator(strokeWidth: 2),
+      );
+    }
+    return Row(
+      children: [
+        if (elevation != null) ...[
+          Text('${elevation!.toInt()} m'),
+          const SizedBox(width: 8),
+        ],
+        IconButton(
+          icon: Icon(Icons.sync),
+          onPressed: () async {
+            setState(() {
+              loading = true;
+            });
+            final tmp = await widget.place.position!.elevation;
+            setState(() {
+              elevation = tmp;
+              loading = false;
+            });
+          },
+        ),
+      ],
     );
   }
 }
