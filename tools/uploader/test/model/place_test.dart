@@ -16,6 +16,23 @@ void main() {
       );
     });
 
+    test('from csv with position and elevation', () {
+      final place = Place.fromCsv([
+        '  Place Name  ',
+        ' (46.292476, 10.686197) ',
+        1234,
+      ]);
+      expect(place.name, 'Place Name');
+      expect(
+        place.position,
+        const Position(
+          latitude: 46.292476,
+          longitude: 10.686197,
+          elevation: 1234,
+        ),
+      );
+    });
+
     test('from csv without position', () {
       final place = Place.fromCsv(['  Place Name  ', '']);
       expect(place.name, 'Place Name');
@@ -25,11 +42,19 @@ void main() {
     test('equal', () {
       final place1 = Place(
         name: 'Place Name',
-        position: const Position(latitude: 46.292476, longitude: 10.686197),
+        position: const Position(
+          latitude: 46.292476,
+          longitude: 10.686197,
+          elevation: 1234,
+        ),
       );
       final place2 = Place(
         name: 'Place Name',
-        position: const Position(latitude: 46.292476, longitude: 10.686197),
+        position: const Position(
+          latitude: 46.292476,
+          longitude: 10.686197,
+          elevation: 1234,
+        ),
       );
       expect(place1, equals(place2));
     });

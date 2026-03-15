@@ -30,4 +30,13 @@ class PlaceManager extends ChangeNotifier {
 
   Place? getPlaceByName(String name) =>
       _places.firstWhereOrNull((place) => place.name == name);
+
+  Future<void> saveCsv(File csvFile) async {
+    final content = await csvFile.readAsString();
+    final rows = const CsvToListConverter().convert(content);
+    for (final values in rows.skip(1)) {
+      _places.add(Place.fromCsv(values));
+    }
+    notifyListeners();
+  }
 }

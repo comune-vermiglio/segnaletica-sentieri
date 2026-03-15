@@ -8,15 +8,21 @@ import 'package:latlong2/latlong.dart';
 class Position extends Equatable {
   final double latitude;
   final double longitude;
+  final int? elevation;
 
-  const Position({required this.latitude, required this.longitude});
+  const Position({
+    required this.latitude,
+    required this.longitude,
+    this.elevation,
+  });
 
-  factory Position.fromCsv(String raw) {
-    var tmp = raw.trim();
+  factory Position.fromCsv(String positionStr, [int? elevationStr]) {
+    var tmp = positionStr.trim();
     final latLonStrs = tmp.substring(1, tmp.length - 1).split(',');
     return Position(
       latitude: double.parse(latLonStrs[0].trim()),
       longitude: double.parse(latLonStrs[1].trim()),
+      elevation: elevationStr,
     );
   }
 
@@ -35,14 +41,15 @@ class Position extends Equatable {
   }
 
   @override
-  List<Object?> get props => [latitude, longitude];
+  List<Object?> get props => [latitude, longitude, elevation];
 
   @override
-  String toString() => 'Lat: $latitude, Lng: $longitude';
+  String toString() =>
+      'Lat: $latitude, Lng: $longitude ${elevation != null ? ', Elev: $elevation m' : ''}';
 
   LatLng get latLng => LatLng(latitude, longitude);
 
-  Future<double?> get elevation async {
+  Future<double?> get elevationFromInternet async {
     final response = await http.get(
       Uri.parse(
         'https://api.open-meteo.com/v1/elevation?latitude=$latitude&longitude=$longitude',

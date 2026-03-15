@@ -13,7 +13,9 @@ class Place extends Equatable {
     }
     return Place(
       name: row[0].trim(),
-      position: row[1].isNotEmpty ? Position.fromCsv(row[1]) : null,
+      position: row[1].isNotEmpty
+          ? Position.fromCsv(row[1], row.length > 2 ? row[2] : null)
+          : null,
     );
   }
 

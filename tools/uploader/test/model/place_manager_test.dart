@@ -20,6 +20,7 @@ void main() {
             position: const Position(
               latitude: 46.2858245,
               longitude: 10.6727306,
+              elevation: 1234,
             ),
           ),
           Place(
@@ -70,7 +71,11 @@ void main() {
         manager.getPlaceByName('Volpaia'),
         const Place(
           name: 'Volpaia',
-          position: Position(latitude: 46.2858245, longitude: 10.6727306),
+          position: Position(
+            latitude: 46.2858245,
+            longitude: 10.6727306,
+            elevation: 1234,
+          ),
         ),
       );
       expect(

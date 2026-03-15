@@ -7,8 +7,8 @@ class TimeComputing {
     Position from,
     Position to,
   ) async {
-    final fromElevation = await from.elevation;
-    final toElevation = await to.elevation;
+    final fromElevation = await from.elevationFromInternet;
+    final toElevation = await to.elevationFromInternet;
     if (fromElevation != null && toElevation != null) {
       final diffElevation = (toElevation - fromElevation).abs();
       final distance = from.distanceTo(to);

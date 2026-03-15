@@ -12,14 +12,16 @@ void main() {
 
     test('from csv', () {
       expect(
-        Position.fromCsv(' ( 46.292476 , 10.686197  )'),
-        equals(Position(latitude: 46.292476, longitude: 10.686197)),
+        Position.fromCsv(' ( 46.292476 , 10.686197  )', 1206),
+        equals(
+          Position(latitude: 46.292476, longitude: 10.686197, elevation: 1206),
+        ),
       );
     });
 
-    test('elevation', () async {
+    test('elevation from internet', () async {
       const position = Position(latitude: 46.292476, longitude: 10.686197);
-      final elevation = await position.elevation;
+      final elevation = await position.elevationFromInternet;
       expect(elevation, equals(1206.0));
     });
   });

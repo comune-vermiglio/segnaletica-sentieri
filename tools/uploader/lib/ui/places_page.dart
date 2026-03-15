@@ -192,7 +192,7 @@ class _ElevationWidgetState extends State<_ElevationWidget> {
             setState(() {
               loading = true;
             });
-            final tmp = await widget.place.position!.elevation;
+            final tmp = await widget.place.position!.elevationFromInternet;
             setState(() {
               elevation = tmp;
               loading = false;
