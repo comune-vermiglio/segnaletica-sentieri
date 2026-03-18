@@ -184,13 +184,30 @@ class PlaceDataTable extends StatelessWidget {
                             : '${place.position!.latitude.toString()},${place.position!.longitude.toString()}',
                       ),
                     ),
-                    DataCell(
-                      Text(
-                        place.position == null
-                            ? '---'
-                            : '${place.position!.elevation ?? '---'}',
+                    if (place.position != null &&
+                        place.position!.elevation != null)
+                      DataCell(
+                        FutureBuilder<int?>(
+                          future: place.position!.elevationFromInternet,
+                          builder: (context, snapshot) {
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Tooltip(
+                                message: 'Recupero altitudine da internet...',
+                                child: Text('${place.position!.elevation}'),
+                              );
+                            } else {}
+                            return Tooltip(
+                              message:
+                                  'Altitudine da internet: ${snapshot.data} m',
+                              child: Text('${place.position!.elevation}'),
+                            );
+                          },
+                        ),
                       ),
-                    ),
+                    if (place.position == null ||
+                        place.position!.elevation == null)
+                      DataCell(Text('---')),
                   ],
                 ),
             ],
