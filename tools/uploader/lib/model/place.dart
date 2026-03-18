@@ -21,4 +21,7 @@ class Place extends Equatable {
 
   @override
   List<Object?> get props => [name, position];
+
+  Place copyWith({Position? position}) =>
+      Place(name: name, position: position ?? this.position);
 }

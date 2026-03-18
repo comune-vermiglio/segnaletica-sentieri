@@ -3,7 +3,7 @@ import 'position.dart';
 class TimeComputing {
   const TimeComputing();
 
-  Future<(double, double, Duration)?> getTravelDuration(
+  Future<(int, int, Duration)?> getTravelDuration(
     Position from,
     Position to,
   ) async {

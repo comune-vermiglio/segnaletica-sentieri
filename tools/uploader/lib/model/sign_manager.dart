@@ -18,7 +18,7 @@ class SignManager extends ChangeNotifier {
   Future<void> loadCsv(File csvFile) async {
     _signs.clear();
     final content = await csvFile.readAsString();
-    final rows = const CsvToListConverter().convert(content);
+    final rows = CsvCodec().decode(content);
     String currentPosition = '';
     List<List<dynamic>> currentRows = [];
     for (final values in rows.skip(1)) {

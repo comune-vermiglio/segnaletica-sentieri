@@ -12,7 +12,7 @@ void main() {
 
     test('from csv', () {
       expect(
-        Position.fromCsv(' ( 46.292476 , 10.686197  )', 1206),
+        Position.fromCsv(' ( 46.292476 , 10.686197  )', '1206'),
         equals(
           Position(latitude: 46.292476, longitude: 10.686197, elevation: 1206),
         ),
@@ -22,7 +22,18 @@ void main() {
     test('elevation from internet', () async {
       const position = Position(latitude: 46.292476, longitude: 10.686197);
       final elevation = await position.elevationFromInternet;
-      expect(elevation, equals(1206.0));
+      expect(elevation, equals(1206));
+    });
+
+    test('copy with', () {
+      const lat = 46.292476;
+      const lon = 10.686197;
+      const position = Position(latitude: lat, longitude: lon);
+      final newPosition = position.copyWith(elevation: 1206);
+      expect(
+        newPosition,
+        equals(Position(latitude: lat, longitude: lon, elevation: 1206)),
+      );
     });
   });
 }

@@ -16,13 +16,13 @@ class Position extends Equatable {
     this.elevation,
   });
 
-  factory Position.fromCsv(String positionStr, [int? elevationStr]) {
+  factory Position.fromCsv(String positionStr, [String? elevationStr]) {
     var tmp = positionStr.trim();
     final latLonStrs = tmp.substring(1, tmp.length - 1).split(',');
     return Position(
       latitude: double.parse(latLonStrs[0].trim()),
       longitude: double.parse(latLonStrs[1].trim()),
-      elevation: elevationStr,
+      elevation: elevationStr != null ? int.tryParse(elevationStr) : null,
     );
   }
 
@@ -49,7 +49,7 @@ class Position extends Equatable {
 
   LatLng get latLng => LatLng(latitude, longitude);
 
-  Future<double?> get elevationFromInternet async {
+  Future<int?> get elevationFromInternet async {
     final response = await http.get(
       Uri.parse(
         'https://api.open-meteo.com/v1/elevation?latitude=$latitude&longitude=$longitude',
@@ -58,9 +58,15 @@ class Position extends Equatable {
     if (response.statusCode == 200) {
       final body = (jsonDecode(response.body)['elevation']);
       if (body.isNotEmpty) {
-        return body.first;
+        return (body.first as double).truncate();
       }
     }
     return null;
   }
+
+  Position copyWith({int? elevation}) => Position(
+    latitude: latitude,
+    longitude: longitude,
+    elevation: elevation ?? this.elevation,
+  );
 }

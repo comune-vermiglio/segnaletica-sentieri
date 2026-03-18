@@ -20,7 +20,7 @@ void main() {
       final place = Place.fromCsv([
         '  Place Name  ',
         ' (46.292476, 10.686197) ',
-        1234,
+        '1234',
       ]);
       expect(place.name, 'Place Name');
       expect(
@@ -57,6 +57,37 @@ void main() {
         ),
       );
       expect(place1, equals(place2));
+    });
+
+    test('copy with', () {
+      const name = 'Place Name';
+      const lat = 46.292476;
+      const lon = 10.686197;
+      const elevation = 1234;
+      final place = Place(
+        name: name,
+        position: const Position(latitude: lat, longitude: lon),
+      );
+      final newPlace = place.copyWith(
+        position: const Position(
+          latitude: lat,
+          longitude: lon,
+          elevation: elevation,
+        ),
+      );
+      expect(
+        newPlace,
+        equals(
+          Place(
+            name: name,
+            position: const Position(
+              latitude: lat,
+              longitude: lon,
+              elevation: elevation,
+            ),
+          ),
+        ),
+      );
     });
   });
 }

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:uploader/model/place.dart';
 import 'package:uploader/ui/utils.dart';
 
 import '../model/place_manager.dart';
@@ -90,6 +89,57 @@ class _LoadButton extends StatelessWidget {
   }
 }
 
+class _SaveButton extends StatefulWidget {
+  final PlaceManager manager;
+  const _SaveButton({required this.manager});
+
+  @override
+  State<_SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<_SaveButton> {
+  var _loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: _loading
+          ? null
+          : () async {
+              final snack = ScaffoldMessenger.of(context);
+              final selectedCsvFile = await FilePicker.platform.saveFile(
+                allowedExtensions: ['csv'],
+                type: FileType.custom,
+              );
+              if (selectedCsvFile != null && selectedCsvFile.isNotEmpty) {
+                setState(() => _loading = true);
+                try {
+                  await widget.manager.saveCsv(
+                    File(selectedCsvFile),
+                    elevationFromInternet: true,
+                  );
+                } catch (e) {
+                  final snackBar = SnackBar(
+                    content: Text('Errore nel file CSV. $e'),
+                    duration: const Duration(minutes: 1),
+                    showCloseIcon: true,
+                  );
+                  snack.showSnackBar(snackBar);
+                } finally {
+                  setState(() => _loading = false);
+                }
+              }
+            },
+      child: _loading
+          ? const SizedBox.square(
+              dimension: 20,
+              child: CircularProgressIndicator(strokeWidth: 1),
+            )
+          : const Text('Salva file CSV'),
+    );
+  }
+}
+
 class PlaceDataTable extends StatelessWidget {
   final PlaceManager manager;
 
@@ -135,71 +185,38 @@ class PlaceDataTable extends StatelessWidget {
                       ),
                     ),
                     DataCell(
-                      place.position == null
-                          ? Text('---')
-                          : _ElevationWidget(place: place),
+                      Text(
+                        place.position == null
+                            ? '---'
+                            : '${place.position!.elevation ?? '---'}',
+                      ),
                     ),
                   ],
                 ),
             ],
           ),
           const SizedBox(height: 30),
-          FilledButton(
-            onPressed: () => manager.clean(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Cancella'),
-                const SizedBox(width: 8),
-                Icon(Icons.delete),
-              ],
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton(
+                  onPressed: () => manager.clean(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Cancella'),
+                      const SizedBox(width: 8),
+                      Icon(Icons.delete),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(child: _SaveButton(manager: manager)),
+            ],
           ),
         ],
       ),
-    );
-  }
-}
-
-class _ElevationWidget extends StatefulWidget {
-  final Place place;
-  const _ElevationWidget({required this.place});
-
-  @override
-  State<_ElevationWidget> createState() => _ElevationWidgetState();
-}
-
-class _ElevationWidgetState extends State<_ElevationWidget> {
-  double? elevation;
-  var loading = false;
-  @override
-  Widget build(BuildContext context) {
-    if (loading) {
-      return SizedBox.square(
-        dimension: 24,
-        child: CircularProgressIndicator(strokeWidth: 2),
-      );
-    }
-    return Row(
-      children: [
-        if (elevation != null) ...[
-          Text('${elevation!.toInt()} m'),
-          const SizedBox(width: 8),
-        ],
-        IconButton(
-          icon: Icon(Icons.sync),
-          onPressed: () async {
-            setState(() {
-              loading = true;
-            });
-            final tmp = await widget.place.position!.elevationFromInternet;
-            setState(() {
-              elevation = tmp;
-              loading = false;
-            });
-          },
-        ),
-      ],
     );
   }
 }
