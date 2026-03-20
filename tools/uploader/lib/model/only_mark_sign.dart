@@ -22,7 +22,7 @@ class OnlyMarkSign extends Sign {
 
   @override
   Future<List<List<String>>> toCsv({
-    required bool timesFromInternet,
+    required bool overwriteTimes,
     required PlaceManager placeManager,
   }) async {
     return [

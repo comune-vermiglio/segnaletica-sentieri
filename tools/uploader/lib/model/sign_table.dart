@@ -80,7 +80,7 @@ abstract class SignTable extends Equatable {
       !isOk(placeManager: placeManager);
 
   Future<List<String>> toCsv({
-    required bool timesFromInternet,
+    required bool overwriteTimes,
     required Position signPosition,
     required PlaceManager placeManager,
   });

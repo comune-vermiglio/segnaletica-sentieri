@@ -691,7 +691,7 @@ class _SaveButtonState extends State<_SaveButton> {
                 setState(() => _loading = true);
                 await widget.manager.saveCsv(
                   File(selectedCsvFile),
-                  timesFromInternet: true,
+                  overwriteTimes: true,
                 );
                 setState(() => _loading = false);
               }

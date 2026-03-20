@@ -50,7 +50,7 @@ class SignManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveCsv(File csvFile, {bool timesFromInternet = false}) async {
+  Future<void> saveCsv(File csvFile, {bool overwriteTimes = false}) async {
     final codec = CsvCodec();
     List<List<dynamic>> rows = [
       [
@@ -70,7 +70,7 @@ class SignManager extends ChangeNotifier {
     for (final sign in _signs) {
       rows.addAll(
         await sign.toCsv(
-          timesFromInternet: timesFromInternet,
+          overwriteTimes: overwriteTimes,
           placeManager: placeManager,
         ),
       );

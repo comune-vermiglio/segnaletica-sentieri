@@ -26,7 +26,7 @@ class SignWithTables extends Sign {
 
   @override
   Future<List<List<String>>> toCsv({
-    required bool timesFromInternet,
+    required bool overwriteTimes,
     required PlaceManager placeManager,
   }) async {
     return [
@@ -35,7 +35,7 @@ class SignWithTables extends Sign {
           '(${position.latitude}, ${position.longitude})',
           pole.status.toString(),
           ...await table.toCsv(
-            timesFromInternet: timesFromInternet,
+            overwriteTimes: overwriteTimes,
             signPosition: position,
             placeManager: placeManager,
           ),

@@ -148,7 +148,7 @@ void main() {
         position: const Position(latitude: 46.292476, longitude: 10.686197),
       );
       final tmp = await sign.toCsv(
-        timesFromInternet: false,
+        overwriteTimes: false,
         placeManager: PlaceManagerMock()..getPlaceByNameIO = [('info1', null)],
       );
       expect(
@@ -220,7 +220,7 @@ void main() {
         position: const Position(latitude: 46.292476, longitude: 10.686197),
       );
       final tmp = await sign.toCsv(
-        timesFromInternet: true,
+        overwriteTimes: true,
         placeManager: PlaceManagerMock()
           ..getPlaceByNameIO = [
             ('info1', null),
@@ -228,7 +228,11 @@ void main() {
               'info2',
               Place(
                 name: 'info2',
-                position: const Position(latitude: 46.293, longitude: 10.687),
+                position: const Position(
+                  latitude: 46.293,
+                  longitude: 10.687,
+                  elevation: 1000,
+                ),
               ),
             ),
             ('info3', null),
@@ -245,7 +249,11 @@ void main() {
               'info21',
               Place(
                 name: 'info21',
-                position: const Position(latitude: 46.25, longitude: 10.89),
+                position: const Position(
+                  latitude: 46.25,
+                  longitude: 10.89,
+                  elevation: 1234,
+                ),
               ),
             ),
           ],
@@ -262,7 +270,7 @@ void main() {
             'info1',
             '1.00',
             'info2',
-            '0.05',
+            '0.35',
             'info3',
             '',
           ],
@@ -277,7 +285,7 @@ void main() {
             'info12',
             '2.00',
             'info13',
-            '5.05',
+            '',
           ],
           [
             '(46.292476, 10.686197)',

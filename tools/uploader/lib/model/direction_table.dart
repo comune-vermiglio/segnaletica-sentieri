@@ -62,27 +62,28 @@ class DirectionTable extends SignTable {
 
   @override
   Future<List<String>> toCsv({
-    required bool timesFromInternet,
+    required bool overwriteTimes,
     required Position signPosition,
     required PlaceManager placeManager,
   }) async {
     const timeComputing = TimeComputing();
     final tmpTimes = [firstString?.time, secondString?.time, thirdString?.time];
     final tmpText = [firstString?.text, secondString?.text, thirdString?.text];
-    if (timesFromInternet) {
+    if (overwriteTimes) {
       for (var i = 0; i < tmpTimes.length; i++) {
         if (tmpText[i] != null) {
           final place = placeManager.getPlaceByName(tmpText[i]!);
           if (place != null && place.position != null) {
-            final placePosition = place.position!.copyWith(
-              elevation: await place.position!.elevationFromInternet,
-            );
-            final tmpSignPosition = signPosition.copyWith(
-              elevation: await signPosition.elevationFromInternet,
-            );
-            print(
-              'Computing time from $signPosition to ${place.position} for ${tmpText[i]}',
-            );
+            final placePosition = place.position!;
+            var tmpSignPosition = signPosition;
+            if (tmpSignPosition.elevation == null) {
+              tmpSignPosition = tmpSignPosition.copyWith(
+                elevation: await signPosition.elevationFromInternet,
+              );
+            }
+            // print(
+            //   'Computing time from $signPosition to ${place.position} for ${tmpText[i]}',
+            // );
             final tmp = timeComputing.getTravelDuration(
               tmpSignPosition,
               placePosition,
