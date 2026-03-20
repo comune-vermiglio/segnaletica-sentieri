@@ -12,11 +12,13 @@ import 'package:uploader/model/sign_table.dart';
 import 'package:uploader/model/sign_table_string.dart';
 import 'package:uploader/model/sign_with_tables.dart';
 
+import 'place_manager_mock.dart';
+
 void main() {
   group('SignManager', () {
     test('load CSV', () async {
       final file = File('test/data/signs.csv');
-      final manager = SignManager();
+      final manager = SignManager(placeManager: PlaceManagerMock());
       expect(manager.signs, isEmpty);
       await manager.loadCsv(file);
       expect(

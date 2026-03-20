@@ -255,16 +255,24 @@ class SignDataTable extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 30),
-          FilledButton(
-            onPressed: () => manager.clean(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Cancella'),
-                const SizedBox(width: 8),
-                Icon(Icons.delete),
-              ],
-            ),
+          Row(
+            children: [
+              Expanded(
+                child: FilledButton(
+                  onPressed: () => manager.clean(),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Cancella'),
+                      const SizedBox(width: 8),
+                      Icon(Icons.delete),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(width: 20),
+              Expanded(child: _SaveButton(manager: manager)),
+            ],
           ),
         ],
       ),
@@ -439,31 +447,48 @@ class DirectionTableWidget extends StatelessWidget {
                                 ),
                                 if (place!.position != null)
                                   FutureBuilder(
-                                    future: timeComputing.getTravelDuration(
-                                      position,
-                                      place.position!,
-                                    ),
+                                    future: Future.wait([
+                                      position.elevationFromInternet,
+                                      place.position!.elevationFromInternet,
+                                    ]),
                                     builder: (_, snapshot) {
                                       if (snapshot.connectionState ==
                                               ConnectionState.done &&
                                           snapshot.hasData) {
                                         final info = snapshot.data!;
-                                        final fromElevation = info.$1;
-                                        final toElevation = info.$2;
-                                        final minutes = info.$3;
+                                        final fromElevation = info[0];
+                                        final toElevation = info[1];
+                                        final travelInfo = timeComputing
+                                            .getTravelDuration(
+                                              position.copyWith(
+                                                elevation: fromElevation,
+                                              ),
+                                              place.position!.copyWith(
+                                                elevation: toElevation,
+                                              ),
+                                            );
 
-                                        return Tooltip(
-                                          message:
-                                              'Da ${fromElevation}m a ${place.name} (${toElevation}m). Differenza: ${toElevation - fromElevation}m. Distanza lineare: ${place.position?.distanceTo(position).toInt()}m. Tempo stimato: ${minutes.inHours}h ${minutes.inMinutes.remainder(60)}min. Pendenza media: ${(((toElevation - fromElevation).abs() / (place.position!.distanceTo(position))) * 100).toStringAsFixed(1)}%.',
-                                          child: Text(
-                                            '${minutes.inHours}.${minutes.inMinutes.remainder(60).toString().padLeft(2, '0')}',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 26,
-                                              color: Colors.black,
+                                        final fromEle = travelInfo?.$1;
+                                        final toEle = travelInfo?.$2;
+                                        final minutes = travelInfo?.$3;
+                                        if (fromEle == null ||
+                                            toEle == null ||
+                                            minutes == null) {
+                                          return const Icon(Icons.error);
+                                        } else {
+                                          return Tooltip(
+                                            message:
+                                                'Da ${fromEle}m a ${place.name} (${toEle}m). Differenza: ${toEle - fromEle}m. Distanza lineare: ${place.position?.distanceTo(position).toInt()}m. Tempo stimato: ${minutes.inHours}h ${minutes.inMinutes.remainder(60)}min. Pendenza media: ${(((toEle - fromEle).abs() / (place.position!.distanceTo(position))) * 100).toStringAsFixed(1)}%',
+                                            child: Text(
+                                              '${minutes.inHours}.${minutes.inMinutes.remainder(60).toString().padLeft(2, '0')}',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 26,
+                                                color: Colors.black,
+                                              ),
                                             ),
-                                          ),
-                                        );
+                                          );
+                                        }
                                       } else {
                                         return SizedBox.square(
                                           dimension: 26,
@@ -637,6 +662,46 @@ class SignImage extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+class _SaveButton extends StatefulWidget {
+  final SignManager manager;
+  const _SaveButton({required this.manager});
+
+  @override
+  State<_SaveButton> createState() => _SaveButtonState();
+}
+
+class _SaveButtonState extends State<_SaveButton> {
+  var _loading = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton(
+      onPressed: _loading
+          ? null
+          : () async {
+              final selectedCsvFile = await FilePicker.platform.saveFile(
+                allowedExtensions: ['csv'],
+                type: FileType.custom,
+              );
+              if (selectedCsvFile != null && selectedCsvFile.isNotEmpty) {
+                setState(() => _loading = true);
+                await widget.manager.saveCsv(
+                  File(selectedCsvFile),
+                  timesFromInternet: true,
+                );
+                setState(() => _loading = false);
+              }
+            },
+      child: _loading
+          ? const SizedBox.square(
+              dimension: 20,
+              child: CircularProgressIndicator(strokeWidth: 1),
+            )
+          : const Text('Salva file CSV'),
     );
   }
 }

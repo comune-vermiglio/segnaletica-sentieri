@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:uploader/model/position.dart';
 
 import 'direction_table.dart';
 import 'place_manager.dart';
@@ -77,4 +78,10 @@ abstract class SignTable extends Equatable {
 
   bool isNotOk({required PlaceManager placeManager}) =>
       !isOk(placeManager: placeManager);
+
+  Future<List<String>> toCsv({
+    required bool timesFromInternet,
+    required Position signPosition,
+    required PlaceManager placeManager,
+  });
 }

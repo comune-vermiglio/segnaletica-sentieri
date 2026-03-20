@@ -2,11 +2,15 @@ import 'dart:io';
 
 import 'package:csv/csv.dart';
 import 'package:flutter/foundation.dart';
+import 'package:uploader/model/place_manager.dart';
 
 import 'sign.dart';
 
 class SignManager extends ChangeNotifier {
+  final PlaceManager placeManager;
   final List<Sign> _signs = [];
+
+  SignManager({required this.placeManager});
 
   void clean() {
     _signs.clear();
@@ -44,5 +48,34 @@ class SignManager extends ChangeNotifier {
       _signs.add(Sign.fromCsv(currentRows));
     }
     notifyListeners();
+  }
+
+  Future<void> saveCsv(File csvFile, {bool timesFromInternet = false}) async {
+    final codec = CsvCodec();
+    List<List<dynamic>> rows = [
+      [
+        "POSIZIONE'",
+        'PALO',
+        'TABELLA',
+        'TIPO TABELLA',
+        'DIREZIONE FRECCIA',
+        'STRINGA 1',
+        'TEMPO 1',
+        'STRINGA 2',
+        'TEMPO 2',
+        'STRINGA 3',
+        'TEMPO 3',
+      ],
+    ];
+    for (final sign in _signs) {
+      rows.addAll(
+        await sign.toCsv(
+          timesFromInternet: timesFromInternet,
+          placeManager: placeManager,
+        ),
+      );
+    }
+    final csvString = codec.encode(rows);
+    await csvFile.writeAsString(csvString);
   }
 }

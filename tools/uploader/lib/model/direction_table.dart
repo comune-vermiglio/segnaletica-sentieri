@@ -1,3 +1,7 @@
+import 'package:uploader/model/place_manager.dart';
+import 'package:uploader/model/position.dart';
+import 'package:uploader/model/time_computing.dart';
+
 import 'sign_table.dart';
 import 'sign_table_string.dart';
 
@@ -14,6 +18,14 @@ enum SignTableDirection {
       default:
         throw ArgumentError('Direzione sconosciuta: $value');
     }
+  }
+
+  @override
+  String toString() {
+    return switch (this) {
+      SignTableDirection.left => 'Sinistra',
+      SignTableDirection.right => 'Destra',
+    };
   }
 }
 
@@ -47,4 +59,55 @@ class DirectionTable extends SignTable {
           : null,
     );
   }
+
+  @override
+  Future<List<String>> toCsv({
+    required bool timesFromInternet,
+    required Position signPosition,
+    required PlaceManager placeManager,
+  }) async {
+    const timeComputing = TimeComputing();
+    final tmpTimes = [firstString?.time, secondString?.time, thirdString?.time];
+    final tmpText = [firstString?.text, secondString?.text, thirdString?.text];
+    if (timesFromInternet) {
+      for (var i = 0; i < tmpTimes.length; i++) {
+        if (tmpText[i] != null) {
+          final place = placeManager.getPlaceByName(tmpText[i]!);
+          if (place != null && place.position != null) {
+            final placePosition = place.position!.copyWith(
+              elevation: await place.position!.elevationFromInternet,
+            );
+            final tmpSignPosition = signPosition.copyWith(
+              elevation: await signPosition.elevationFromInternet,
+            );
+            print(
+              'Computing time from $signPosition to ${place.position} for ${tmpText[i]}',
+            );
+            final tmp = timeComputing.getTravelDuration(
+              tmpSignPosition,
+              placePosition,
+            );
+            await Future.delayed(const Duration(seconds: 2));
+            if (tmp != null) {
+              tmpTimes[i] = tmp.$3;
+            }
+          }
+        }
+      }
+    }
+    return [
+      status.toString(),
+      'Direzione',
+      direction.toString(),
+      tmpText[0] ?? '',
+      if (tmpTimes[0] != null) _formatTime(tmpTimes[0]!) else '',
+      tmpText[1] ?? '',
+      if (tmpTimes[1] != null) _formatTime(tmpTimes[1]!) else '',
+      tmpText[2] ?? '',
+      if (tmpTimes[2] != null) _formatTime(tmpTimes[2]!) else '',
+    ];
+  }
+
+  String _formatTime(Duration time) =>
+      '${time.inHours}.${time.inMinutes.remainder(60).toString().padLeft(2, '0')}';
 }

@@ -9,8 +9,8 @@ import 'ui/app.dart';
 
 void main() async {
   final imageManager = ImageManager();
-  final signManager = SignManager();
   final placeManager = PlaceManager();
+  final signManager = SignManager(placeManager: placeManager);
   await dotenv.load(fileName: ".env");
   runApp(
     MultiProvider(

@@ -3,12 +3,9 @@ import 'position.dart';
 class TimeComputing {
   const TimeComputing();
 
-  Future<(int, int, Duration)?> getTravelDuration(
-    Position from,
-    Position to,
-  ) async {
-    final fromElevation = await from.elevationFromInternet;
-    final toElevation = await to.elevationFromInternet;
+  (int, int, Duration)? getTravelDuration(Position from, Position to) {
+    final fromElevation = from.elevation;
+    final toElevation = to.elevation;
     if (fromElevation != null && toElevation != null) {
       final diffElevation = (toElevation - fromElevation).abs();
       final distance = from.distanceTo(to);

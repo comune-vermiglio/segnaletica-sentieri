@@ -1,3 +1,5 @@
+import 'package:uploader/model/place_manager.dart';
+
 import 'position.dart';
 import 'sign.dart';
 import 'sign_pole.dart';
@@ -21,4 +23,23 @@ class SignWithTables extends Sign {
 
   @override
   List<Object?> get props => [tables, pole, ...super.props];
+
+  @override
+  Future<List<List<String>>> toCsv({
+    required bool timesFromInternet,
+    required PlaceManager placeManager,
+  }) async {
+    return [
+      for (final table in tables)
+        [
+          '(${position.latitude}, ${position.longitude})',
+          pole.status.toString(),
+          ...await table.toCsv(
+            timesFromInternet: timesFromInternet,
+            signPosition: position,
+            placeManager: placeManager,
+          ),
+        ],
+    ];
+  }
 }

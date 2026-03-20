@@ -4,11 +4,12 @@ import 'place_manager.dart';
 
 class SignTableString extends Equatable {
   final String text;
+  final Duration? time;
 
-  const SignTableString(this.text);
+  const SignTableString(this.text, {this.time});
 
   @override
-  List<Object?> get props => [text];
+  List<Object?> get props => [text, time];
 
   bool get isEmpty => text.trim().isEmpty;
 

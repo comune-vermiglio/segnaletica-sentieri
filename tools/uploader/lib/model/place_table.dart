@@ -1,3 +1,6 @@
+import 'package:uploader/model/place_manager.dart';
+import 'package:uploader/model/position.dart';
+
 import 'sign_table.dart';
 import 'sign_table_string.dart';
 
@@ -26,5 +29,21 @@ class PlaceTable extends SignTable {
           ? SignTableString(row[7].trim())
           : null,
     );
+  }
+
+  @override
+  Future<List<String>> toCsv({
+    required bool timesFromInternet,
+    required Position signPosition,
+    required PlaceManager placeManager,
+  }) async {
+    return [
+      status.toString(),
+      'Località',
+      'Sinistra',
+      firstString?.text ?? '',
+      secondString?.text ?? '',
+      thirdString?.text ?? '',
+    ];
   }
 }

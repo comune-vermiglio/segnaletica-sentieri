@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:uploader/model/only_mark_sign.dart';
+import 'package:uploader/model/place_manager.dart';
 import 'package:uploader/model/sign_with_tables.dart';
 
 import 'position.dart';
@@ -35,6 +36,11 @@ abstract class Sign extends Equatable {
         return SignWithTables.fromCsv(table);
     }
   }
+
+  Future<List<List<String>>> toCsv({
+    required bool timesFromInternet,
+    required PlaceManager placeManager,
+  });
 
   @override
   List<Object?> get props => [position];

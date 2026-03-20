@@ -106,28 +106,17 @@ class _SaveButtonState extends State<_SaveButton> {
       onPressed: _loading
           ? null
           : () async {
-              final snack = ScaffoldMessenger.of(context);
               final selectedCsvFile = await FilePicker.platform.saveFile(
                 allowedExtensions: ['csv'],
                 type: FileType.custom,
               );
               if (selectedCsvFile != null && selectedCsvFile.isNotEmpty) {
                 setState(() => _loading = true);
-                try {
-                  await widget.manager.saveCsv(
-                    File(selectedCsvFile),
-                    elevationFromInternet: true,
-                  );
-                } catch (e) {
-                  final snackBar = SnackBar(
-                    content: Text('Errore nel file CSV. $e'),
-                    duration: const Duration(minutes: 1),
-                    showCloseIcon: true,
-                  );
-                  snack.showSnackBar(snackBar);
-                } finally {
-                  setState(() => _loading = false);
-                }
+                await widget.manager.saveCsv(
+                  File(selectedCsvFile),
+                  elevationFromInternet: true,
+                );
+                setState(() => _loading = false);
               }
             },
       child: _loading
