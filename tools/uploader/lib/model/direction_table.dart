@@ -44,19 +44,28 @@ class DirectionTable extends SignTable {
   List<Object?> get props => [...super.props, direction];
 
   factory DirectionTable.fromCsv(List<dynamic> row) {
-    assert(row[3] == 'Direzione');
+    assert(row.length > 10 && row[3] == 'Direzione');
     return DirectionTable(
       status: SignTableStatus.fromString(row[2]),
       direction: SignTableDirection.fromString(row[4]),
-      firstString: row.length > 5 && row[5].isNotEmpty
-          ? SignTableString(row[5].trim())
-          : null,
-      secondString: row.length > 6 && row[6].isNotEmpty
-          ? SignTableString(row[6].trim())
-          : null,
-      thirdString: row.length > 7 && row[7].isNotEmpty
-          ? SignTableString(row[7].trim())
-          : null,
+      firstString: row[5].trim().isEmpty
+          ? null
+          : SignTableString(
+              row[5].trim(),
+              time: DirectionTable._parseTime(row[6].trim()),
+            ),
+      secondString: row[7].trim().isEmpty
+          ? null
+          : SignTableString(
+              row[7].trim(),
+              time: DirectionTable._parseTime(row[8].trim()),
+            ),
+      thirdString: row[9].trim().isEmpty
+          ? null
+          : SignTableString(
+              row[9].trim(),
+              time: DirectionTable._parseTime(row[10].trim()),
+            ),
     );
   }
 
@@ -81,9 +90,9 @@ class DirectionTable extends SignTable {
                 elevation: await signPosition.elevationFromInternet,
               );
             }
-            // print(
-            //   'Computing time from $signPosition to ${place.position} for ${tmpText[i]}',
-            // );
+            print(
+              'Computing time from $signPosition to ${place.position} for ${tmpText[i]}',
+            );
             final tmp = timeComputing.getTravelDuration(
               tmpSignPosition,
               placePosition,
@@ -111,4 +120,17 @@ class DirectionTable extends SignTable {
 
   String _formatTime(Duration time) =>
       '${time.inHours}.${time.inMinutes.remainder(60).toString().padLeft(2, '0')}';
+
+  static Duration? _parseTime(String time) {
+    if (time.isEmpty) {
+      return null;
+    }
+    final parts = time.split('.');
+    if (parts.length != 2) {
+      throw ArgumentError('Formato del tempo non valido: $time');
+    }
+    final hours = int.parse(parts[0]);
+    final minutes = int.parse(parts[1]);
+    return Duration(hours: hours, minutes: minutes);
+  }
 }

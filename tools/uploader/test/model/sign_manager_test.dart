@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:collection/collection.dart';
 import 'package:test/test.dart';
 import 'package:uploader/model/direction_table.dart';
 import 'package:uploader/model/only_mark_sign.dart';
@@ -22,17 +21,42 @@ void main() {
       expect(manager.signs, isEmpty);
       await manager.loadCsv(file);
       expect(
-        const DeepCollectionEquality().equals(manager.signs, [
+        // const DeepCollectionEquality().equals(
+        manager.signs,
+        [
           SignWithTables(
             tables: [
               DirectionTable(
                 status: SignTableStatus.change,
                 direction: SignTableDirection.left,
-                firstString: SignTableString('Laghetti di San Leonardo'),
-                secondString: SignTableString('Volpaia'),
+                firstString: SignTableString('Sentiero di Valle n 15'),
+                secondString: SignTableString(
+                  'Volpaia',
+                  time: Duration(minutes: 15),
+                ),
+                thirdString: SignTableString(
+                  'Croz de la Luna',
+                  time: Duration(hours: 3, minutes: 45),
+                ),
+              ),
+              DirectionTable(
+                status: SignTableStatus.change,
+                direction: SignTableDirection.left,
+                firstString: SignTableString(
+                  'Cascata di Palù',
+                  time: Duration(minutes: 15),
+                ),
+                secondString: SignTableString(
+                  'Masi di Palù',
+                  time: Duration(hours: 1, minutes: 20),
+                ),
+                thirdString: SignTableString(
+                  "Pradac'",
+                  time: Duration(hours: 3, minutes: 5),
+                ),
               ),
             ],
-            pole: SignPole(status: SignPoleStatus.notNeeded),
+            pole: SignPole(status: SignPoleStatus.add),
             position: Position(latitude: 46.2906727, longitude: 10.6815487),
           ),
           SignWithTables(
@@ -40,26 +64,32 @@ void main() {
               DirectionTable(
                 status: SignTableStatus.change,
                 direction: SignTableDirection.right,
-                firstString: SignTableString('Volpaia'),
-                secondString: SignTableString('Stavel'),
-              ),
-              DirectionTable(
-                status: SignTableStatus.remove,
-                direction: SignTableDirection.left,
-              ),
-              PlaceTable(
-                status: SignTableStatus.add,
-                firstString: SignTableString('Volpaia'),
+                firstString: SignTableString('Sentiero di Valle n 15'),
+                secondString: SignTableString(
+                  'Volpaia',
+                  time: Duration(minutes: 35),
+                ),
               ),
             ],
             pole: SignPole(status: SignPoleStatus.ok),
-            position: Position(latitude: 46.2860383, longitude: 10.6739416),
+            position: Position(latitude: 46.2896754, longitude: 10.6822763),
           ),
           OnlyMarkSign(
             position: Position(latitude: 46.3008268, longitude: 10.6500200),
           ),
-        ]),
-        isTrue,
+          SignWithTables(
+            tables: [
+              PlaceTable(
+                status: SignTableStatus.ok,
+                firstString: SignTableString('Raseghe'),
+              ),
+            ],
+            pole: SignPole(status: SignPoleStatus.ok),
+            position: Position(latitude: 46.2519235, longitude: 10.6109563),
+          ),
+        ],
+        // ),
+        // isTrue,
       );
     });
   });

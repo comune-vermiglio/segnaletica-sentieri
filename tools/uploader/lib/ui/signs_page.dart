@@ -445,62 +445,16 @@ class DirectionTableWidget extends StatelessWidget {
                                     color: Colors.black,
                                   ),
                                 ),
-                                if (place!.position != null)
-                                  FutureBuilder(
-                                    future: Future.wait([
-                                      position.elevationFromInternet,
-                                      place.position!.elevationFromInternet,
-                                    ]),
-                                    builder: (_, snapshot) {
-                                      if (snapshot.connectionState ==
-                                              ConnectionState.done &&
-                                          snapshot.hasData) {
-                                        final info = snapshot.data!;
-                                        final fromElevation = info[0];
-                                        final toElevation = info[1];
-                                        final travelInfo = timeComputing
-                                            .getTravelDuration(
-                                              position.copyWith(
-                                                elevation: fromElevation,
-                                              ),
-                                              place.position!.copyWith(
-                                                elevation: toElevation,
-                                              ),
-                                            );
-
-                                        final fromEle = travelInfo?.$1;
-                                        final toEle = travelInfo?.$2;
-                                        final minutes = travelInfo?.$3;
-                                        if (fromEle == null ||
-                                            toEle == null ||
-                                            minutes == null) {
-                                          return const Icon(Icons.error);
-                                        } else {
-                                          return Tooltip(
-                                            message:
-                                                'Da ${fromEle}m a ${place.name} (${toEle}m). Differenza: ${toEle - fromEle}m. Distanza lineare: ${place.position?.distanceTo(position).toInt()}m. Tempo stimato: ${minutes.inHours}h ${minutes.inMinutes.remainder(60)}min. Pendenza media: ${(((toEle - fromEle).abs() / (place.position!.distanceTo(position))) * 100).toStringAsFixed(1)}%',
-                                            child: Text(
-                                              '${minutes.inHours}.${minutes.inMinutes.remainder(60).toString().padLeft(2, '0')}',
-                                              style: const TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 26,
-                                                color: Colors.black,
-                                              ),
-                                            ),
-                                          );
-                                        }
-                                      } else {
-                                        return SizedBox.square(
-                                          dimension: 26,
-                                          child:
-                                              const CircularProgressIndicator(
-                                                color: Colors.black,
-                                                strokeWidth: 2,
-                                              ),
-                                        );
-                                      }
-                                    },
+                                Text(
+                                  str.time == null
+                                      ? ''
+                                      : '${str.time?.inHours}.${str.time?.inMinutes.remainder(60).toString().padLeft(2, '0')}',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 26,
+                                    color: Colors.black,
                                   ),
+                                ),
                               ],
                             );
                           } else {
