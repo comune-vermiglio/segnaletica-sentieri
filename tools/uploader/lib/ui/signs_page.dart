@@ -445,15 +445,55 @@ class DirectionTableWidget extends StatelessWidget {
                                     color: Colors.black,
                                   ),
                                 ),
-                                Text(
-                                  str.time == null
-                                      ? ''
-                                      : '${str.time?.inHours}.${str.time?.inMinutes.remainder(60).toString().padLeft(2, '0')}',
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 26,
-                                    color: Colors.black,
-                                  ),
+                                FutureBuilder(
+                                  future: position.elevationFromInternet,
+                                  builder: (context, snapshot) {
+                                    String message;
+                                    if (snapshot.connectionState ==
+                                            ConnectionState.done &&
+                                        snapshot.hasData) {
+                                      if (place?.position != null) {
+                                        final travelInfo = timeComputing
+                                            .getTravelDuration(
+                                              position.copyWith(
+                                                elevation: snapshot.data!,
+                                              ),
+                                              place!.position!,
+                                            );
+                                        final fromEle = travelInfo?.$1;
+                                        final toEle = travelInfo?.$2;
+                                        final minutes = travelInfo?.$3;
+                                        if (fromEle == null ||
+                                            toEle == null ||
+                                            minutes == null) {
+                                          message =
+                                              'Errore nel computo del tempo di percorrenza';
+                                        } else {
+                                          message =
+                                              'Da ${fromEle}m a ${place.name} (${toEle}m). Differenza: ${toEle - fromEle}m. Distanza lineare: ${place.position?.distanceTo(position).toInt()}m. Tempo stimato: ${minutes.inHours}h ${minutes.inMinutes.remainder(60)}min. Pendenza media: ${(((toEle - fromEle).abs() / (place.position!.distanceTo(position))) * 100).toStringAsFixed(1)}%';
+                                        }
+                                      } else {
+                                        message =
+                                            'Destinazione non disponibile';
+                                      }
+                                    } else {
+                                      message =
+                                          'Recupero altitudine cartello da internet...';
+                                    }
+                                    return Tooltip(
+                                      message: message,
+                                      child: Text(
+                                        str.time == null
+                                            ? ''
+                                            : '${str.time?.inHours}.${str.time?.inMinutes.remainder(60).toString().padLeft(2, '0')}',
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 26,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    );
+                                  },
                                 ),
                               ],
                             );
