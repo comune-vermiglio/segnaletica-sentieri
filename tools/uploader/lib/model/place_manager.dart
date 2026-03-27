@@ -19,7 +19,7 @@ class PlaceManager extends ChangeNotifier {
   Future<void> loadCsv(File csvFile) async {
     _places.clear();
     final content = await csvFile.readAsString();
-    final rows = CsvCodec().decode(content);
+    final rows = Csv().decode(content);
     for (final values in rows.skip(1)) {
       _places.add(Place.fromCsv(values));
     }
@@ -35,7 +35,7 @@ class PlaceManager extends ChangeNotifier {
     File csvFile, {
     bool elevationFromInternet = false,
   }) async {
-    final codec = CsvCodec();
+    final codec = Csv();
     List<List<dynamic>> rows = [
       ["LOCALITA'", 'POSIZIONE', 'ALTITUDINE'],
     ];
