@@ -133,4 +133,11 @@ class DirectionTable extends SignTable {
     final minutes = int.parse(parts[1]);
     return Duration(hours: hours, minutes: minutes);
   }
+
+  @override
+  bool isOk({required PlaceManager placeManager}) =>
+      super.isOk(placeManager: placeManager) &&
+      (firstString?.isOk(placeManager: placeManager) ?? true) &&
+      (secondString?.isOk(placeManager: placeManager) ?? true) &&
+      (thirdString?.isOk(placeManager: placeManager) ?? true);
 }

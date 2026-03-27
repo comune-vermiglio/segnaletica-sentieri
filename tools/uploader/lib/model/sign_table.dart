@@ -71,10 +71,7 @@ abstract class SignTable extends Equatable {
   }
 
   bool isOk({required PlaceManager placeManager}) =>
-      (status == SignTableStatus.remove || !(firstString?.isEmpty ?? true)) &&
-      (firstString?.isOk(placeManager: placeManager) ?? true) &&
-      (secondString?.isOk(placeManager: placeManager) ?? true) &&
-      (thirdString?.isOk(placeManager: placeManager) ?? true);
+      (status == SignTableStatus.remove || !(firstString?.isEmpty ?? true));
 
   bool isNotOk({required PlaceManager placeManager}) =>
       !isOk(placeManager: placeManager);

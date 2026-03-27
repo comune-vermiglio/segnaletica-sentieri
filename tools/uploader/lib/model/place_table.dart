@@ -46,4 +46,9 @@ class PlaceTable extends SignTable {
       thirdString?.text ?? '',
     ];
   }
+
+  @override
+  bool isOk({required PlaceManager placeManager}) =>
+      super.isOk(placeManager: placeManager) &&
+      (firstString?.isOk(placeManager: placeManager) ?? true);
 }

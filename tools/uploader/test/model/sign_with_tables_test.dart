@@ -22,8 +22,11 @@ void main() {
           'Direzione',
           'Sinistra',
           'info1',
+          '0.15',
           'info2',
+          '',
           'info3',
+          '1.10',
         ],
         [
           ' (46.292476, 10.686197)',
@@ -32,8 +35,11 @@ void main() {
           'Direzione',
           'Destra',
           'info11',
+          '0.45',
           'info12',
+          '',
           'info13',
+          '',
         ],
       ];
       final sign = Sign.fromCsv(csvData);
@@ -45,14 +51,23 @@ void main() {
               DirectionTable(
                 direction: SignTableDirection.left,
                 status: SignTableStatus.change,
-                firstString: SignTableString('info1'),
+                firstString: SignTableString(
+                  'info1',
+                  time: const Duration(minutes: 15),
+                ),
                 secondString: SignTableString('info2'),
-                thirdString: SignTableString('info3'),
+                thirdString: SignTableString(
+                  'info3',
+                  time: const Duration(hours: 1, minutes: 10),
+                ),
               ),
               DirectionTable(
                 direction: SignTableDirection.right,
                 status: SignTableStatus.ok,
-                firstString: SignTableString('info11'),
+                firstString: SignTableString(
+                  'info11',
+                  time: const Duration(minutes: 45),
+                ),
                 secondString: SignTableString('info12'),
                 thirdString: SignTableString('info13'),
               ),

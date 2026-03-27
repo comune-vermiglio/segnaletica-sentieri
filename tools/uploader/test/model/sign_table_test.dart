@@ -27,8 +27,11 @@ void main() {
         'Direzione',
         'Sinistra',
         ' Laghetti di San Leonardo ',
+        '',
         secondString,
+        '',
         thirdString,
+        '',
       ];
       var signTable = SignTable.fromCsv(csv);
       expect(
@@ -50,7 +53,10 @@ void main() {
         'Direzione',
         'Destra',
         firstString,
+        '',
         secondString,
+        '',
+        '',
         '',
       ];
       signTable = SignTable.fromCsv(csv);
@@ -74,6 +80,9 @@ void main() {
         firstString,
         '',
         '',
+        '',
+        '',
+        '',
       ];
       signTable = SignTable.fromCsv(csv);
       expect(
@@ -95,6 +104,9 @@ void main() {
         firstString,
         '',
         '',
+        '',
+        '',
+        '',
       ];
       signTable = SignTable.fromCsv(csv);
       expect(
@@ -112,6 +124,9 @@ void main() {
         'Eliminare',
         'Direzione',
         'Sinistra',
+        '',
+        '',
+        '',
         '',
         '',
         '',
@@ -135,6 +150,9 @@ void main() {
         '',
         '',
         '',
+        '',
+        '',
+        '',
       ];
       expect(() => SignTable.fromCsv(csv), throwsArgumentError);
     });
@@ -146,7 +164,7 @@ void main() {
       final placeManager = PlaceManagerMock(
         availablePlaces: {place1, place2, place3},
       );
-      var table = DirectionTable(
+      SignTable table = DirectionTable(
         status: SignTableStatus.ok,
         direction: SignTableDirection.left,
       );
@@ -195,6 +213,13 @@ void main() {
       );
       expect(table.isOk(placeManager: placeManager), isFalse);
       expect(table.isNotOk(placeManager: placeManager), isTrue);
+      table = PlaceTable(
+        status: SignTableStatus.ok,
+        firstString: SignTableString(place1),
+        secondString: SignTableString('wrong place 2'),
+      );
+      expect(table.isOk(placeManager: placeManager), isTrue);
+      expect(table.isNotOk(placeManager: placeManager), isFalse);
       table = DirectionTable(
         status: SignTableStatus.ok,
         direction: SignTableDirection.left,
