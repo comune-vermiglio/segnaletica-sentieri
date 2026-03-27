@@ -270,8 +270,8 @@ class SignDataTable extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 20),
-              Expanded(child: _SaveButton(manager: manager)),
+              // const SizedBox(width: 20),
+              // Expanded(child: _SaveButton(manager: manager)),
             ],
           ),
         ],
@@ -484,7 +484,7 @@ class DirectionTableWidget extends StatelessWidget {
                                       message: message,
                                       child: Text(
                                         str.time == null
-                                            ? ''
+                                            ? '---'
                                             : '${str.time?.inHours}.${str.time?.inMinutes.remainder(60).toString().padLeft(2, '0')}',
                                         style: const TextStyle(
                                           fontWeight: FontWeight.bold,
