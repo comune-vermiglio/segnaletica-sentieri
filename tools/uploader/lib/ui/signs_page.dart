@@ -4,20 +4,16 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:provider/provider.dart';
-import 'package:uploader/model/direction_table.dart';
 import 'package:uploader/model/image_manager.dart';
 import 'package:uploader/model/only_mark_sign.dart';
-import 'package:uploader/model/place_table.dart';
 import 'package:uploader/model/sign_with_tables.dart';
-import 'package:uploader/model/time_computing.dart';
 import 'package:uploader/ui/app_map.dart';
+import 'package:uploader/ui/sign_with_tables_widget.dart';
 import 'package:uploader/ui/utils.dart';
 
 import '../model/place_manager.dart';
-import '../model/position.dart';
 import '../model/sign.dart';
 import '../model/sign_manager.dart';
-import '../model/sign_table.dart';
 
 class SignsPage extends StatefulWidget {
   const SignsPage({super.key});
@@ -295,7 +291,12 @@ class SignSelectedWidget extends StatelessWidget {
           height: 240,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(12),
-            child: AppMap(signHighlight: sign, key: UniqueKey()),
+            child: AppMap(
+              signHighlight: sign,
+              key: UniqueKey(),
+              showControls: false,
+              showTooltip: false,
+            ),
           ),
         ),
         if (sign is OnlyMarkSign)
@@ -315,13 +316,7 @@ class SignSelectedWidget extends StatelessWidget {
                 Text(table.status.toString()),
               ],
             ),
-          const SizedBox(height: 20),
-          for (final table in (sign as SignWithTables).tables) ...[
-            if (table is DirectionTable)
-              DirectionTableWidget(table, sign.position),
-            if (table is PlaceTable) PlaceTableWidget(table),
-            const SizedBox(height: 20),
-          ],
+          SignWithTablesWidget(sign: sign as SignWithTables),
         ],
         SignImage(sign),
       ],
@@ -340,270 +335,6 @@ class SignTitle extends StatelessWidget {
       padding: EdgeInsets.only(bottom: 8.0, top: first ? 0 : 20),
       child: Text(text, style: Theme.of(context).textTheme.titleLarge),
     );
-  }
-}
-
-const _tableHeight = 140.0;
-
-class DirectionTableWidget extends StatelessWidget {
-  static const arrowWidth = 50.0;
-  static const endMarkerWidth = 60.0;
-  final DirectionTable table;
-  final Position position;
-  const DirectionTableWidget(this.table, this.position, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    if (table.status != SignTableStatus.remove) {
-      return Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxWidth: 600,
-            maxHeight: _tableHeight,
-            minHeight: _tableHeight,
-          ),
-          child: Stack(
-            fit: StackFit.expand,
-            children: [
-              Positioned(
-                left: arrowWidth,
-                right: arrowWidth,
-                top: 0,
-                bottom: 0,
-                child: Container(color: Colors.white),
-              ),
-              Positioned(
-                left: table.direction == SignTableDirection.left ? 0 : null,
-                right: table.direction == SignTableDirection.right ? 0 : null,
-                width: arrowWidth,
-                top: 0,
-                bottom: 0,
-                child: CustomPaint(
-                  painter: TrianglePainter(direction: table.direction),
-                ),
-              ),
-              Positioned(
-                left: table.direction == SignTableDirection.right
-                    ? arrowWidth
-                    : null,
-                right: table.direction == SignTableDirection.left
-                    ? arrowWidth
-                    : null,
-                width: endMarkerWidth,
-                height: 40,
-                top: 0,
-                child: Container(color: Colors.red),
-              ),
-              Positioned(
-                left: table.direction == SignTableDirection.right
-                    ? arrowWidth
-                    : null,
-                right: table.direction == SignTableDirection.left
-                    ? arrowWidth
-                    : null,
-                width: endMarkerWidth,
-                height: 40,
-                bottom: 0,
-                child: Container(color: Colors.red),
-              ),
-              Positioned(
-                left: table.direction == SignTableDirection.right
-                    ? arrowWidth + endMarkerWidth
-                    : arrowWidth,
-                right: table.direction == SignTableDirection.left
-                    ? arrowWidth + endMarkerWidth
-                    : arrowWidth,
-                top: 0,
-                bottom: 0,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children:
-                        [
-                          if (table.firstString != null) table.firstString,
-                          if (table.secondString != null) table.secondString,
-                          if (table.thirdString != null) table.thirdString,
-                        ].map((str) {
-                          final placeManager = Provider.of<PlaceManager>(
-                            context,
-                            listen: false,
-                          );
-                          if (str!.isOk(placeManager: placeManager)) {
-                            final place = placeManager.getPlaceByName(str.text);
-                            assert(place != null);
-                            const timeComputing = TimeComputing();
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  str.text,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 26,
-                                    color: Colors.black,
-                                  ),
-                                ),
-                                FutureBuilder(
-                                  future: position.elevationFromInternet,
-                                  builder: (context, snapshot) {
-                                    String message;
-                                    if (snapshot.connectionState ==
-                                            ConnectionState.done &&
-                                        snapshot.hasData) {
-                                      if (place?.position != null) {
-                                        final travelInfo = timeComputing
-                                            .getTravelDuration(
-                                              position.copyWith(
-                                                elevation: snapshot.data!,
-                                              ),
-                                              place!.position!,
-                                            );
-                                        final fromEle = travelInfo?.$1;
-                                        final toEle = travelInfo?.$2;
-                                        final minutes = travelInfo?.$3;
-                                        if (fromEle == null ||
-                                            toEle == null ||
-                                            minutes == null) {
-                                          message =
-                                              'Errore nel computo del tempo di percorrenza';
-                                        } else {
-                                          message =
-                                              'Da ${fromEle}m a ${place.name} (${toEle}m). Differenza: ${toEle - fromEle}m. Distanza lineare: ${place.position?.distanceTo(position).toInt()}m. Tempo stimato: ${minutes.inHours}h ${minutes.inMinutes.remainder(60)}min. Pendenza media: ${(((toEle - fromEle).abs() / (place.position!.distanceTo(position))) * 100).toStringAsFixed(1)}%';
-                                        }
-                                      } else {
-                                        message =
-                                            'Destinazione non disponibile';
-                                      }
-                                    } else {
-                                      message =
-                                          'Recupero altitudine cartello da internet...';
-                                    }
-                                    return Tooltip(
-                                      message: message,
-                                      child: Text(
-                                        str.time == null
-                                            ? '---'
-                                            : '${str.time?.inHours}.${str.time?.inMinutes.remainder(60).toString().padLeft(2, '0')}',
-                                        style: const TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 26,
-                                          color: Colors.black,
-                                        ),
-                                      ),
-                                    );
-                                  },
-                                ),
-                              ],
-                            );
-                          } else {
-                            return Text(
-                              str.text,
-                              style: const TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 26,
-                                color: Colors.red,
-                                decoration: TextDecoration.lineThrough,
-                                decorationColor: Colors.red,
-                              ),
-                            );
-                          }
-                        }).toList(),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
-  }
-}
-
-class TrianglePainter extends CustomPainter {
-  final SignTableDirection direction;
-
-  TrianglePainter({required this.direction});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint paint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-
-    canvas.drawPath(getPath(size.width, size.height), paint);
-  }
-
-  Path getPath(double x, double y) {
-    switch (direction) {
-      case SignTableDirection.left:
-        return Path()
-          ..moveTo(x, 0)
-          ..lineTo(0, y / 2)
-          ..lineTo(x, y)
-          ..lineTo(x, 0);
-      case SignTableDirection.right:
-        return Path()
-          ..moveTo(0, 0)
-          ..lineTo(x, y / 2)
-          ..lineTo(0, y)
-          ..lineTo(0, 0);
-    }
-  }
-
-  @override
-  bool shouldRepaint(TrianglePainter oldDelegate) {
-    return oldDelegate.direction != direction;
-  }
-}
-
-class PlaceTableWidget extends StatelessWidget {
-  final PlaceTable table;
-  const PlaceTableWidget(this.table, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    if (table.status != SignTableStatus.remove) {
-      return Center(
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(4)),
-            color: Colors.white,
-          ),
-          constraints: BoxConstraints(
-            maxWidth: 260,
-            maxHeight: _tableHeight,
-            minHeight: _tableHeight,
-          ),
-          child: Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children:
-                  [
-                    if (table.firstString != null) table.firstString,
-                    if (table.secondString != null) table.secondString,
-                    if (table.thirdString != null) table.thirdString,
-                  ].map((str) {
-                    return Text(
-                      str!.text,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 26,
-                        color: Colors.black,
-                      ),
-                      textAlign: TextAlign.center,
-                    );
-                  }).toList(),
-            ),
-          ),
-        ),
-      );
-    } else {
-      return const SizedBox.shrink();
-    }
   }
 }
 
