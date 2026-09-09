@@ -48,8 +48,8 @@ class _ImagesPageState extends State<ImagesPage> {
                       FilledButton(
                         onPressed: () async {
                           final snack = ScaffoldMessenger.of(context);
-                          final selectedDirectory = await FilePicker.platform
-                              .getDirectoryPath();
+                          final selectedDirectory =
+                              await FilePicker.getDirectoryPath();
                           if (selectedDirectory != null) {
                             loading = true;
                             try {

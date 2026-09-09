@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -31,10 +32,7 @@ class PlaceManager extends ChangeNotifier {
   Place? getPlaceByName(String name) =>
       _places.firstWhereOrNull((place) => place.name == name);
 
-  Future<void> saveCsv(
-    File csvFile, {
-    bool elevationFromInternet = false,
-  }) async {
+  Future<Uint8List> buildCsvBytes({bool elevationFromInternet = false}) async {
     final codec = Csv();
     List<List<dynamic>> rows = [
       ["LOCALITA'", 'POSIZIONE', 'ALTITUDINE'],
@@ -55,6 +53,6 @@ class PlaceManager extends ChangeNotifier {
       rows.add(row);
     }
     final csvString = codec.encode(rows);
-    await csvFile.writeAsString(csvString);
+    return Uint8List.fromList(utf8.encode(csvString));
   }
 }

@@ -98,16 +98,14 @@ class _LoadButton extends StatelessWidget {
     return FilledButton(
       onPressed: () async {
         final snack = ScaffoldMessenger.of(context);
-        final selectedCsvFile = await FilePicker.platform.pickFiles(
+        final selectedCsvFile = await FilePicker.pickFiles(
           allowedExtensions: ['csv'],
           type: FileType.custom,
         );
-        if (selectedCsvFile != null &&
-            selectedCsvFile.files.isNotEmpty &&
-            selectedCsvFile.files.single.path != null) {
+        if (selectedCsvFile.isNotEmpty && selectedCsvFile.single.path != null) {
           loadingCallback(true);
           try {
-            await manager.loadCsv(File(selectedCsvFile.files.single.path!));
+            await manager.loadCsv(File(selectedCsvFile.single.path!));
           } catch (e) {
             final snackBar = SnackBar(
               content: Text('Errore nel file CSV. $e'),
@@ -295,7 +293,7 @@ class SignSelectedWidget extends StatelessWidget {
               signHighlight: sign,
               key: UniqueKey(),
               showControls: false,
-              showTooltip: false,
+              showTooltip: true,
             ),
           ),
         ),
@@ -408,18 +406,17 @@ class _SaveButtonState extends State<_SaveButton> {
       onPressed: _loading
           ? null
           : () async {
-              final selectedCsvFile = await FilePicker.platform.saveFile(
+              setState(() => _loading = true);
+              final bytes = await widget.manager.buildCsvBytes(
+                overwriteTimes: true,
+              );
+              await FilePicker.saveFile(
+                fileName: 'segnaletica.csv',
+                bytes: bytes,
                 allowedExtensions: ['csv'],
                 type: FileType.custom,
               );
-              if (selectedCsvFile != null && selectedCsvFile.isNotEmpty) {
-                setState(() => _loading = true);
-                await widget.manager.saveCsv(
-                  File(selectedCsvFile),
-                  overwriteTimes: true,
-                );
-                setState(() => _loading = false);
-              }
+              setState(() => _loading = false);
             },
       child: _loading
           ? const SizedBox.square(

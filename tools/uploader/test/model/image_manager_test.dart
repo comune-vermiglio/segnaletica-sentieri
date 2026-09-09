@@ -11,13 +11,13 @@ void main() {
   group('ImageManager', () {
     test('get closer images', () async {
       final firstImg = await SignImage.fromFile(
-        File(join('test/data/imgs','IMG_7788.HEIC')),
+        File(join('test/data/imgs', 'IMG_7788.HEIC')),
       );
       final secondImg = await SignImage.fromFile(
-        File(join('test/data/imgs','IMG_7789.HEIC')),
+        File(join('test/data/imgs', 'IMG_7789.HEIC')),
       );
       final thirdImg = await SignImage.fromFile(
-        File(join('test/data/imgs','IMG_7790.HEIC')),
+        File(join('test/data/imgs', 'IMG_7790.HEIC')),
       );
       final manager = ImageManager();
       await manager.loadDirectory(Directory('test/data/imgs'));

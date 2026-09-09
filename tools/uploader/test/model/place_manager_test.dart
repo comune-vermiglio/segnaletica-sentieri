@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -108,38 +109,24 @@ void main() {
       final readFile = File('test/data/places.csv');
       final manager = PlaceManager();
       await manager.loadCsv(readFile);
-      final saveFile = File('test/data/places_temp.csv');
-      if (saveFile.existsSync()) {
-        saveFile.deleteSync();
-      }
-      expect(saveFile.existsSync(), isFalse);
-      await manager.saveCsv(saveFile);
-      expect(saveFile.existsSync(), isTrue);
-      final content = saveFile.readAsStringSync();
+      final bytes = await manager.buildCsvBytes();
+      final content = utf8.decode(bytes);
       expect(
         content,
         "LOCALITA',POSIZIONE,ALTITUDINE\r\nVolpaia,\"(46.2858245,10.6727306)\",1234\r\nStavél,\"(46.2771804,10.6605182)\"\r\nVerniana,\"(46.2968901,10.6669773)\"\r\nVermiglio\r\nPasso Tonale",
       );
-      saveFile.deleteSync();
     });
 
     test('save to csv with internet elevation', () async {
       final readFile = File('test/data/places.csv');
       final manager = PlaceManager();
       await manager.loadCsv(readFile);
-      final saveFile = File('test/data/places_temp.csv');
-      if (saveFile.existsSync()) {
-        saveFile.deleteSync();
-      }
-      expect(saveFile.existsSync(), isFalse);
-      await manager.saveCsv(saveFile, elevationFromInternet: true);
-      expect(saveFile.existsSync(), isTrue);
-      final content = saveFile.readAsStringSync();
+      final bytes = await manager.buildCsvBytes(elevationFromInternet: true);
+      final content = utf8.decode(bytes);
       expect(
         content,
         "LOCALITA',POSIZIONE,ALTITUDINE\r\nVolpaia,\"(46.2858245,10.6727306)\",1199\r\nStavél,\"(46.2771804,10.6605182)\",1243\r\nVerniana,\"(46.2968901,10.6669773)\",1755\r\nVermiglio\r\nPasso Tonale",
       );
-      saveFile.deleteSync();
     });
   });
 }

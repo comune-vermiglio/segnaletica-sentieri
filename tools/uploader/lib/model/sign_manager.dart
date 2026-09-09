@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:csv/csv.dart';
@@ -50,7 +51,7 @@ class SignManager extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> saveCsv(File csvFile, {bool overwriteTimes = false}) async {
+  Future<Uint8List> buildCsvBytes({bool overwriteTimes = false}) async {
     final codec = Csv();
     List<List<dynamic>> rows = [
       [
@@ -76,6 +77,6 @@ class SignManager extends ChangeNotifier {
       );
     }
     final csvString = codec.encode(rows);
-    await csvFile.writeAsString(csvString);
+    return Uint8List.fromList(utf8.encode(csvString));
   }
 }

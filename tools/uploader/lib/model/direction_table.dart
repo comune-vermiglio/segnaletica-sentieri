@@ -90,9 +90,6 @@ class DirectionTable extends SignTable {
                 elevation: await signPosition.elevationFromInternet,
               );
             }
-            print(
-              'Computing time from $signPosition to ${place.position} for ${tmpText[i]}',
-            );
             final tmp = timeComputing.getTravelDuration(
               tmpSignPosition,
               placePosition,
