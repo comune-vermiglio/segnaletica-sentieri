@@ -725,11 +725,6 @@ function renderPole(p, hitId){
   const dl = h("dl", "facts");
   const add = (k, v) => { dl.append(h("dt", null, k), typeof v === "string" ? h("dd", null, v) : (() => { const d = h("dd"); d.appendChild(v); return d; })()); };
   if (p.acc) add("Accesso", ACC[p.acc] || p.acc);
-  const [ds, dp, dse] = p.d;
-  const dd = [];
-  const dstr = [ds, dp].filter(x => x != null);
-  if (dstr.length) dd.push(`strada ${Math.min(...dstr)} m`); if (dse != null) dd.push(`sentiero ${dse} m`);
-  if (dd.length) add("Distanze", dd.join(" · "));
   add("Distanza da te", "…"); dl.lastChild.id = "dme";
   if (fin.length) add("A fine lavori", `${fin.length} ${fin.length === 1 ? "tabella" : "tabelle"} sul palo`);
   const carry = fin.filter(f => f.role === "nuova" || f.role === "sostituisce");
@@ -868,8 +863,10 @@ function go(id){
   history.pushState({app:1}, "", "#" + id); route();
 }
 function closePole(){
-  if (history.state && history.state.app){ history.back(); return; }
-  history.replaceState(null, "", location.pathname + location.search); showHome();
+  // "Mappa" porta sempre alla pagina iniziale (non al palo visto prima)
+  history.pushState({app:1}, "", location.pathname + location.search);
+  showHome();
+  if (map) setTimeout(() => map.invalidateSize(), 0);
 }
 window.addEventListener("popstate", route);
 window.addEventListener("hashchange", route);
