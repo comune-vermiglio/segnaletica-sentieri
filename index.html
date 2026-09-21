@@ -1,0 +1,902 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light dark}html,body{margin:0}[hidden]{display:none!important}</style>
+</head>
+<body>
+<title>Posa segnavia Vermiglio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Barlow+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --bg:#E9EDE7; --surface:#F8FAF6; --panel:#FFFFFF; --map-bg:#DDE4D8;
+  --ink:#1B211E; --ink-2:#4C5651; --ink-3:#737D76;
+  --line:#D2D9CE; --line-2:#BFC8BA;
+  --plate:#FBFAF4; --plate-ink:#20211C; --plate-ink-2:#43443B; --plate-edge:#C9C6B4;
+  --tip:#C0392E; --blaze-w:#FBFAF4;
+  --pole:#9A8468; --pole-edge:#7E6A51;
+  --st-nuovo:#3B72C9; --st-cambiare:#A28A00; --st-ok:#12907E; --st-eliminare:#CE3441; --st-neutro:#6B7378;
+  --r-nuova:#3B72C9; --r-recupera:#B06A00; --r-resta:#12907E; --r-togli:#CE3441;
+  --ring:#FFFFFF; --me:#1F6FEB; --hit:#F2C200; --hit-bg:rgba(242,194,0,.22);
+  --focus:#1B211E;
+  --shadow:0 1px 2px rgba(27,33,30,.07), 0 6px 18px rgba(27,33,30,.07);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121513; --surface:#1A1E1B; --panel:#20241F; --map-bg:#1B211D;
+    --ink:#E9EDE6; --ink-2:#A6B0A8; --ink-3:#7F8981;
+    --line:#2E342F; --line-2:#3B423C;
+    --plate:#EFEDE2; --plate-ink:#20211C; --plate-ink-2:#43443B; --plate-edge:#8E8C7E;
+    --blaze-w:#EFEDE2;
+    --pole:#8C7A62; --pole-edge:#6E5F4B;
+    --st-nuovo:#5A8CD8; --st-cambiare:#B79C10; --st-ok:#1DA694; --st-eliminare:#DE4C57; --st-neutro:#8B948C;
+    --r-nuova:#6A9BE6; --r-recupera:#D9922A; --r-resta:#1DA694; --r-togli:#E2606A;
+    --ring:#101311; --me:#4C8DF6; --hit:#FFD43B; --hit-bg:rgba(255,212,59,.16);
+    --focus:#E9EDE6;
+    --shadow:0 1px 2px rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.3);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121513; --surface:#1A1E1B; --panel:#20241F; --map-bg:#1B211D;
+  --ink:#E9EDE6; --ink-2:#A6B0A8; --ink-3:#7F8981;
+  --line:#2E342F; --line-2:#3B423C;
+  --plate:#EFEDE2; --plate-ink:#20211C; --plate-ink-2:#43443B; --plate-edge:#8E8C7E;
+  --blaze-w:#EFEDE2;
+  --pole:#8C7A62; --pole-edge:#6E5F4B;
+  --st-nuovo:#5A8CD8; --st-cambiare:#B79C10; --st-ok:#1DA694; --st-eliminare:#DE4C57; --st-neutro:#8B948C;
+  --r-nuova:#6A9BE6; --r-recupera:#D9922A; --r-resta:#1DA694; --r-togli:#E2606A;
+  --ring:#101311; --me:#4C8DF6; --hit:#FFD43B; --hit-bg:rgba(255,212,59,.16);
+  --focus:#E9EDE6;
+  --shadow:0 1px 2px rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.3);
+}
+
+/* ---------- Leaflet: regole essenziali (il foglio di stile della libreria non si può caricare da CDN) ---------- */
+.leaflet-pane,.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-tile-container,.leaflet-pane>svg,.leaflet-pane>canvas,.leaflet-zoom-box,.leaflet-image-layer,.leaflet-layer{position:absolute;left:0;top:0}
+.leaflet-container{overflow:hidden;-webkit-tap-highlight-color:transparent;outline-offset:1px}
+.leaflet-tile,.leaflet-marker-icon,.leaflet-marker-shadow{user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+.leaflet-tile::selection{background:transparent}
+.leaflet-safari .leaflet-tile{image-rendering:-webkit-optimize-contrast}
+.leaflet-safari .leaflet-tile-container{width:1600px;height:1600px;-webkit-transform-origin:0 0}
+.leaflet-marker-icon,.leaflet-marker-shadow{display:block}
+.leaflet-container .leaflet-overlay-pane svg{max-width:none!important;max-height:none!important}
+.leaflet-container .leaflet-marker-pane img,.leaflet-container .leaflet-tile-pane img,.leaflet-container img.leaflet-image-layer,.leaflet-container .leaflet-tile{max-width:none!important;max-height:none!important;width:auto;padding:0}
+.leaflet-container img.leaflet-tile{mix-blend-mode:plus-lighter}
+.leaflet-container.leaflet-touch-zoom{touch-action:pan-x pan-y}
+.leaflet-container.leaflet-touch-drag{touch-action:none;touch-action:pinch-zoom}
+.leaflet-container.leaflet-touch-drag.leaflet-touch-zoom{touch-action:none}
+.leaflet-tile{filter:inherit;visibility:hidden}
+.leaflet-tile-loaded{visibility:inherit}
+.leaflet-zoom-box{width:0;height:0;box-sizing:border-box;z-index:800}
+.leaflet-pane{z-index:400}
+.leaflet-tile-pane{z-index:200}
+.leaflet-overlay-pane{z-index:400}
+.leaflet-shadow-pane{z-index:500}
+.leaflet-marker-pane{z-index:600}
+.leaflet-tooltip-pane{z-index:650}
+.leaflet-popup-pane{z-index:700}
+.leaflet-map-pane canvas{z-index:100}
+.leaflet-map-pane svg{z-index:200}
+.leaflet-control{position:relative;z-index:800;pointer-events:auto;float:left;clear:both}
+.leaflet-top,.leaflet-bottom{position:absolute;z-index:1000;pointer-events:none}
+.leaflet-top{top:0}.leaflet-right{right:0}.leaflet-bottom{bottom:0}.leaflet-left{left:0}
+.leaflet-right .leaflet-control{float:right}
+.leaflet-top .leaflet-control{margin-top:10px}
+.leaflet-bottom .leaflet-control{margin-bottom:10px}
+.leaflet-left .leaflet-control{margin-left:10px}
+.leaflet-right .leaflet-control{margin-right:10px}
+.leaflet-zoom-animated{transform-origin:0 0}
+svg.leaflet-zoom-animated{will-change:transform}
+.leaflet-zoom-anim .leaflet-zoom-animated{transition:transform .25s cubic-bezier(0,0,.25,1)}
+.leaflet-zoom-anim .leaflet-tile,.leaflet-pan-anim .leaflet-tile{transition:none}
+.leaflet-zoom-anim .leaflet-zoom-hide{visibility:hidden}
+.leaflet-interactive{cursor:pointer}
+.leaflet-grab{cursor:grab}
+.leaflet-dragging .leaflet-grab,.leaflet-dragging .leaflet-grab .leaflet-interactive,.leaflet-dragging .leaflet-marker-draggable{cursor:grabbing}
+.leaflet-marker-icon,.leaflet-marker-shadow,.leaflet-image-layer,.leaflet-pane>svg path,.leaflet-tile-container{pointer-events:none}
+.leaflet-marker-icon.leaflet-interactive,.leaflet-image-layer.leaflet-interactive,.leaflet-pane>svg path.leaflet-interactive{pointer-events:auto}
+.leaflet-bar{box-shadow:var(--shadow);border:1px solid var(--line-2);border-radius:6px;overflow:hidden;background:var(--panel)}
+.leaflet-bar a{display:block;width:32px;height:32px;line-height:30px;text-align:center;text-decoration:none;color:var(--ink);background:var(--panel);font:600 18px/30px "Archivo",sans-serif}
+.leaflet-bar a+a{border-top:1px solid var(--line)}
+.leaflet-bar a:hover{background:var(--surface)}
+.leaflet-bar a.leaflet-disabled{color:var(--ink-3);cursor:default}
+.leaflet-control-attribution{background:color-mix(in srgb,var(--panel) 82%,transparent);color:var(--ink-3);margin:0!important;padding:1px 6px;font-size:10.5px;line-height:1.4}
+.leaflet-control-attribution a{color:var(--ink-2)}
+.leaflet-attribution-flag{display:none!important}
+
+/* ---------- impianto ---------- */
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:"Archivo","Helvetica Neue",Arial,sans-serif;font-size:14px;line-height:1.45;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;font-variant-numeric:tabular-nums}
+.lbl{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.09em;font-size:12.5px;color:var(--ink-3)}
+button,select,input{font:inherit;color:inherit}
+button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+.app{height:100%;display:flex;flex-direction:column}
+.bar{
+  display:flex;align-items:center;gap:12px 18px;flex-wrap:wrap;
+  padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--line);position:relative;z-index:1500
+}
+.brand{display:flex;align-items:baseline;gap:10px;min-width:0;flex:1 1 auto}
+.brand b{font-size:18px;font-weight:700;letter-spacing:-.01em;white-space:nowrap}
+.brand span{color:var(--ink-3);font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand a{color:inherit;text-decoration:none}
+.searchbox{position:relative;flex:0 1 380px;min-width:220px}
+.searchbox label{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.searchbox .field{display:flex;align-items:center;gap:8px;background:var(--panel);border:1px solid var(--line-2);border-radius:7px;padding:0 10px}
+.searchbox svg{flex:none;color:var(--ink-3)}
+.searchbox input{border:0;background:transparent;outline:none;padding:8px 0;width:100%;font-size:14px}
+.searchbox input::placeholder{color:var(--ink-3)}
+.results{
+  position:absolute;left:0;right:0;top:calc(100% + 6px);background:var(--panel);border:1px solid var(--line-2);
+  border-radius:8px;box-shadow:var(--shadow);max-height:min(60vh,420px);overflow:auto;padding:4px
+}
+.results button{
+  display:grid;grid-template-columns:auto 1fr;gap:2px 10px;width:100%;text-align:left;border:0;background:transparent;
+  padding:7px 8px;border-radius:6px;cursor:pointer
+}
+.results button:hover,.results button.on{background:var(--surface)}
+.results .rid{font-family:"IBM Plex Mono",monospace;font-size:12.5px;font-weight:500;grid-row:span 2;padding-top:1px}
+.results .rt{font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.results .rs{font-size:12px;color:var(--ink-3)}
+.results .none{padding:10px;color:var(--ink-2);font-size:13px}
+
+.main{flex:1;min-height:0;display:grid;grid-template-columns:minmax(0,1fr) 440px}
+.mapwrap{position:relative;min-height:0;background:var(--map-bg)}
+#map{position:absolute;inset:0;background:var(--map-bg)}
+.side{background:var(--surface);border-left:1px solid var(--line);overflow:auto;min-height:0;position:relative}
+
+/* controlli sulla mappa */
+.mapui{position:absolute;z-index:1000;display:flex;gap:6px}
+.mapui.bl{left:10px;bottom:26px;flex-wrap:wrap}
+.mapui.tr{right:10px;top:10px;flex-direction:column;align-items:flex-end}
+.seg{display:flex;background:var(--panel);border:1px solid var(--line-2);border-radius:6px;overflow:hidden;box-shadow:var(--shadow)}
+.seg button{border:0;background:transparent;padding:6px 10px;cursor:pointer;color:var(--ink-2);font-family:"Barlow Condensed",sans-serif;font-weight:600;text-transform:uppercase;letter-spacing:.06em;font-size:13px}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--surface)}
+.iconbtn{display:grid;place-items:center;width:34px;height:34px;border:1px solid var(--line-2);background:var(--panel);border-radius:6px;box-shadow:var(--shadow);cursor:pointer;color:var(--ink)}
+.locbtn{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 11px 0 9px;border:1px solid var(--line-2);background:var(--panel);border-radius:6px;box-shadow:var(--shadow);cursor:pointer;color:var(--ink);font-size:13px;font-variant-numeric:tabular-nums}
+.locbtn[aria-pressed="true"]{background:var(--me);border-color:var(--me);color:#fff}
+.locbtn.wait svg{animation:pulse 1.1s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.medot{stroke:#fff;fill:var(--me);fill-opacity:1}
+.meacc{stroke:var(--me);stroke-width:1;stroke-opacity:.5;fill:var(--me);fill-opacity:.12}
+.notice{
+  position:absolute;z-index:1000;left:50%;top:10px;transform:translateX(-50%);max-width:calc(100% - 110px);
+  background:var(--panel);border:1px solid var(--line-2);border-radius:6px;box-shadow:var(--shadow);
+  padding:6px 10px;font-size:12.5px;color:var(--ink-2)
+}
+
+/* marcatori */
+.pm{background:none;border:0}
+.pm svg{display:block;overflow:visible}
+.pm .halo{fill:none;stroke:var(--ink);stroke-width:2;opacity:0}
+.pm.sel .halo{opacity:1}
+.pm.sel svg{transform:scale(1.35);transform-origin:50% 50%}
+.pm.dim{opacity:.22}
+.pm .under{stroke:var(--ring);fill:var(--ring)}
+.hull{stroke:var(--ink-3);stroke-opacity:.45;stroke-width:1.2;fill:var(--ink);fill-opacity:.035;stroke-dasharray:4 4}
+.hull.on{stroke:var(--ink);stroke-opacity:.8;fill-opacity:.07;stroke-dasharray:none}
+.hlabel{background:none;border:0;pointer-events:none}
+.hlabel span{
+  display:inline-block;transform:translate(-50%,-50%);white-space:nowrap;
+  font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:13px;letter-spacing:.04em;color:var(--ink-2);
+  text-shadow:0 0 3px var(--map-bg),0 0 3px var(--map-bg),0 0 6px var(--map-bg)
+}
+
+/* ---------- pannello: home ---------- */
+.pad{padding:18px 18px 28px;display:flex;flex-direction:column;gap:18px}
+.home h1{margin:0;font-size:24px;font-weight:700;letter-spacing:-.015em;line-height:1.15;text-wrap:balance}
+.home p{margin:0;color:var(--ink-2);max-width:60ch}
+.totals{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.totals div{background:var(--panel);padding:10px 12px;display:flex;flex-direction:column;gap:2px}
+.totals b{font-size:22px;font-weight:600;letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+.totals .sw{display:inline-block;width:9px;height:9px;border-radius:2px;margin-right:6px;vertical-align:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-2);background:var(--panel);padding:5px 10px 5px 8px;border-radius:6px;cursor:pointer;font-size:13px}
+.chip[aria-pressed="false"]{opacity:.42}
+.chip .cnt{color:var(--ink-3);font-size:12px;font-variant-numeric:tabular-nums}
+.chip svg{display:block;overflow:visible}
+.selectrow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.selectrow select{background:var(--panel);border:1px solid var(--line-2);border-radius:6px;padding:6px 8px;min-width:0;flex:1}
+.howto{display:flex;flex-direction:column;gap:8px;border-top:1px solid var(--line);padding-top:14px}
+.howto p{font-size:13px}
+.foot{font-size:12px;color:var(--ink-3)}
+
+/* ---------- pannello: palo ---------- */
+.pole{display:flex;flex-direction:column}
+.phead{
+  position:sticky;top:0;z-index:5;background:var(--surface);border-bottom:1px solid var(--line);
+  padding:10px 18px;display:flex;align-items:center;gap:10px;justify-content:space-between
+}
+.back{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line-2);background:var(--panel);border-radius:6px;padding:5px 10px 5px 7px;cursor:pointer;font-size:13px}
+.nav{display:flex;gap:6px}
+.nav button{border:1px solid var(--line-2);background:var(--panel);border-radius:6px;padding:5px 9px;cursor:pointer;font-family:"IBM Plex Mono",monospace;font-size:12px}
+.nav button:disabled{opacity:.35;cursor:default}
+.ptitle{display:flex;flex-direction:column;gap:6px}
+.ptitle h2{margin:0;display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:28px;font-weight:700;letter-spacing:-.02em;line-height:1}
+.ptitle h2 small{font-size:14px;font-weight:500;color:var(--ink-2);letter-spacing:0}
+.ptitle .coord{font-size:12px;color:var(--ink-3)}
+.statusbox{border:1px solid var(--line);background:var(--panel);border-radius:8px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.statusbox p{margin:0;color:var(--ink-2);font-size:13.5px}
+.pill{display:inline-flex;align-items:center;gap:7px;align-self:flex-start;border-radius:999px;padding:3px 11px 3px 8px;border:1.5px solid currentColor;font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.06em}
+.pill svg{display:block;overflow:visible}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line-2);background:var(--panel);color:var(--ink);border-radius:6px;padding:7px 12px;text-decoration:none;cursor:pointer;font-size:13.5px}
+.btn.primary{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.facts{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px;margin:0}
+.facts dt{color:var(--ink-3)}
+.facts dd{margin:0}
+.carry{display:flex;flex-wrap:wrap;gap:6px}
+.carry a{font-family:"IBM Plex Mono",monospace;font-size:12.5px;border:1px solid var(--r-nuova);color:var(--r-nuova);border-radius:4px;padding:1px 7px;text-decoration:none}
+.carry .miss{border-style:dashed}
+
+/* il palo disegnato */
+.post{--info:140px;--g:12px;position:relative;display:flex;flex-direction:column;gap:12px;padding:22px 0 34px}
+.post::before{
+  content:"";position:absolute;top:4px;bottom:16px;width:13px;
+  left:calc((100% - var(--info) - var(--g)) / 2 - 6.5px);
+  background:linear-gradient(90deg,var(--pole-edge),var(--pole) 35%,var(--pole) 70%,var(--pole-edge));
+  border-radius:4px 4px 0 0
+}
+.post::after{content:"";position:absolute;bottom:14px;left:calc((100% - var(--info) - var(--g)) / 2 - 38px);width:76px;height:3px;border-radius:2px;background:var(--line-2)}
+.post.nopole::before{background:none;border:2px dashed var(--line-2);border-bottom:0}
+.tab{position:relative;display:grid;grid-template-columns:minmax(0,1fr) var(--info);gap:var(--g);align-items:center;scroll-margin-top:70px}
+.tab .pos{position:absolute;left:-2px;top:-9px;font-size:10.5px;color:var(--ink-3);font-family:"IBM Plex Mono",monospace}
+.tab.hit::before{content:"";position:absolute;inset:-7px -8px;border-radius:8px;background:var(--hit-bg);z-index:0}
+.tab.hit>*{position:relative;z-index:1}
+.tab.hit .pos{position:absolute}
+.tinfo{display:flex;flex-direction:column;gap:3px;min-width:0}
+.role{font-family:"Barlow Condensed",sans-serif;font-weight:600;font-size:14px;text-transform:uppercase;letter-spacing:.06em;line-height:1.1}
+.role.nuova,.role.sostituisce{color:var(--r-nuova)}
+.role.recupera{color:var(--r-recupera)}
+.role.resta{color:var(--r-resta)}
+.tinfo .why{font-size:12px;color:var(--ink-2);line-height:1.3}
+.tinfo .code{font-family:"IBM Plex Mono",monospace;font-size:13px;font-weight:500}
+.tinfo .code.miss{font-weight:400;color:var(--ink-3);font-size:11.5px}
+.tinfo .tid{font-family:"IBM Plex Mono",monospace;font-size:11px;color:var(--ink-3)}
+
+/* tabelle segnavia */
+.plate{position:relative;display:flex;filter:drop-shadow(0 1px 1px rgba(0,0,0,.18))}
+.plate .body{
+  background:var(--plate);color:var(--plate-ink);flex:1;min-width:0;border:1px solid var(--plate-edge);
+  padding:6px 10px 7px;display:flex;flex-direction:column;gap:1px;position:relative;z-index:1;min-height:52px;justify-content:center
+}
+.plate.right .body{clip-path:polygon(0 0,calc(100% - 16px) 0,100% 50%,calc(100% - 16px) 100%,0 100%);padding-left:26px;padding-right:22px;border-right:0}
+.plate.left .body{clip-path:polygon(0 50%,16px 0,100% 0,100% 100%,16px 100%);padding-left:22px;padding-right:26px;border-left:0}
+.plate .blaze{position:absolute;top:0;bottom:0;width:13px;z-index:2;background:linear-gradient(180deg,var(--tip) 0 30%,var(--blaze-w) 30% 70%,var(--tip) 70% 100%)}
+.plate.right .blaze{left:1px}
+.plate.left .blaze{right:1px}
+.plate .arrow{position:absolute;top:0;bottom:0;width:16px;background:var(--tip);z-index:2}
+.plate.right .arrow{right:0;clip-path:polygon(0 0,100% 50%,0 100%)}
+.plate.left .arrow{left:0;clip-path:polygon(0 50%,100% 0,100% 100%)}
+.plate .row{display:flex;gap:8px;align-items:baseline;justify-content:space-between}
+.plate .dest{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;font-size:15.5px;line-height:1.18;min-width:0;overflow-wrap:anywhere}
+.plate .time{font-family:"IBM Plex Mono",monospace;font-size:12px;font-weight:500;flex:none;color:var(--plate-ink-2)}
+.tab>.plate{justify-self:center;width:100%;max-width:var(--plate-max,100%)}
+.tab>.plate.loc{width:82%}
+.plate.loc .body{align-items:center;text-align:center;padding:7px 10px}
+.plate .locname{font-family:"Barlow Condensed","Arial Narrow",sans-serif;font-weight:600;font-size:18px;line-height:1.1}
+.plate .localt{font-family:"IBM Plex Mono",monospace;font-size:12px;color:var(--plate-ink-2)}
+.plate .empty{font-size:12px;color:#6A6B60;font-style:italic}
+.plate.ghost{opacity:.55;filter:grayscale(1)}
+
+.empty-post{border:1px dashed var(--line-2);border-radius:8px;padding:18px;text-align:center;color:var(--ink-2)}
+.remove{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.remove li{list-style:none;display:grid;grid-template-columns:18px 1fr;gap:8px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.remove ul{margin:0;padding:0}
+.remove .x{color:var(--r-togli);font-weight:700;line-height:1.3}
+.remove small{display:block;color:var(--ink-3);font-size:12px}
+.linkbox{display:flex;flex-direction:column;gap:6px}
+.linkbox code{font-family:"IBM Plex Mono",monospace;font-size:12px;background:var(--panel);border:1px solid var(--line);border-radius:5px;padding:6px 8px;overflow-wrap:anywhere;color:var(--ink-2)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--surface);padding:8px 14px;border-radius:6px;font-size:13.5px;z-index:3000;box-shadow:var(--shadow)}
+
+/* ---------- telefono ---------- */
+@media (max-width:860px){
+  html,body{height:auto}
+  .app{height:auto;min-height:100%}
+  .main{display:block}
+  .mapwrap{height:58vh;min-height:320px}
+  .side{border-left:0;border-top:1px solid var(--line);overflow:visible}
+  .side.open{position:fixed;inset:0;z-index:2000;overflow:auto;border:0;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+  .brand span{display:none}
+  .searchbox{flex:1 1 100%}
+}
+@media (max-width:420px){ .post{--info:122px;--g:10px} .plate .dest{font-size:14.5px} }
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+
+<div class="app">
+  <header class="bar">
+    <div class="brand"><a href="#" id="homeLink"><b>Posa segnavia Vermiglio</b></a><span>Pali e tabelle come devono essere a fine lavori · 2026</span></div>
+    <div class="searchbox">
+      <label for="q">Cerca codice, palo o destinazione</label>
+      <div class="field">
+        <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="5.2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M11 11l3.6 3.6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        <input id="q" type="search" autocomplete="off" spellcheck="false" placeholder="Codice sul retro (1c45), palo (P034) o destinazione">
+      </div>
+      <div class="results" id="results" hidden></div>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="mapwrap" aria-label="Mappa dei pali">
+      <div id="map"></div>
+      <div class="mapui tr">
+        <button type="button" class="locbtn" id="locate" aria-pressed="false" title="Mostra e segui la mia posizione">
+          <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M10 1.5v3M10 15.5v3M1.5 10h3M15.5 10h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+          <span id="locTxt">Dove sono</span>
+        </button>
+        <button type="button" class="iconbtn" id="fitall" title="Tutti i pali" aria-label="Mostra tutti i pali">
+          <svg width="18" height="18" viewBox="0 0 20 20" aria-hidden="true"><path d="M3 7V3h4M13 3h4v4M17 13v4h-4M7 17H3v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
+        </button>
+      </div>
+      <div class="mapui bl">
+        <div class="seg" id="baseSeg" role="group" aria-label="Sfondo della mappa">
+          <button type="button" data-base="topo" aria-pressed="true">Topo</button>
+          <button type="button" data-base="sat" aria-pressed="false">Satellite</button>
+        </div>
+      </div>
+      <div class="notice" id="notice" hidden></div>
+    </section>
+
+    <aside class="side" id="side">
+      <div class="pad home" id="home">
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <h1>Pali e tabelle segnavia, a lavoro finito</h1>
+          <p>Tocca un palo sulla mappa per vedere come deve essere alla fine: quali tabelle ci vanno, in che ordine, quali sono nuove e quali si recuperano dal palo attuale.</p>
+        </div>
+        <div class="totals" id="totals"></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span class="lbl">Stato del palo</span>
+          <div class="chips" id="chips"></div>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <label class="lbl" for="area">Area di posa</label>
+          <div class="selectrow"><select id="area"><option value="">Tutte le aree</option></select></div>
+        </div>
+        <div class="howto">
+          <span class="lbl">Come si usa sul posto</span>
+          <p><b>Hai una tabella in mano?</b> Scrivi nella ricerca il codice stampato sul retro (per esempio <span class="mono">1c45</span>): si apre il palo dove va montata, con la tabella evidenziata.</p>
+          <p><b>Sei davanti a un palo?</b> Inquadra il QR del palo oppure cerca il suo numero (<span class="mono">P034</span>).</p>
+        </div>
+        <p class="foot">Dati del rilievo aggiornati al 21/09/2026. Le tabelle località sono sempre mostrate in cima al palo.</p>
+      </div>
+
+      <div class="pole" id="pole" hidden></div>
+    </aside>
+  </main>
+</div>
+<div class="toast" id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+<script>
+const DATA = [{"id":"P001","lat":46.2906727,"lon":10.6815487,"st":"Nuovo","a":"Laghetti-Cascata","acc":"strada","d":[5,157,229],"t":[{"id":"P001-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Volpaia","0.15"],["Stavél","0.40"],["Sentiero di Valle n 15",""]],"c":"1c1"},{"id":"P001-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Cascata di Palù","0.30"],["Masi di Palù","1.30"],["Croz de la Luna","4.00"]],"c":"1c2"},{"id":"P001-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Lago di Barco","2.40"],["Lago Piccolo","4.00"]],"c":"1c3"}]},{"id":"P002","lat":46.2896754,"lon":10.6822763,"st":"Ok","a":"Laghetti-Cascata","acc":"lontano","d":[87,51,151],"t":[{"id":"P002-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Volpaia","0.15"],["Stavél","0.15"],["Sentiero di Valle n 15","3.30"]],"c":"1c4"},{"id":"P002-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Cascata di Palù","0.30"],["Masi di Palù","1.30"],["Croz de la Luna","4.00"]],"c":"1c5"},{"id":"P002-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Lago di Barco","2.40"],["Lago Piccolo","4.00"]],"c":"1c6"},{"id":"P002-T4","st":"Nuovo","tp":"L","fr":"S","r":[["Laghetti di San Leonardo",""],["1182 m",""]],"c":"1c7"}]},{"id":"P003","lat":46.2867661,"lon":10.6748123,"st":"Nuovo","a":"Volpaia","acc":"pista","d":[74,5,33],"t":[{"id":"P003-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Volpaia","0.10"],["Stavél","0.35"],["Sentiero di Valle n 15","3.30"]],"c":"1c8"},{"id":"P003-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Laghetti di San Leonardo","0.05"],["Vermiglio",""]],"c":"1c9"}]},{"id":"P004","lat":46.2867007,"lon":10.6748284,"st":"Eliminare","a":"Volpaia","acc":"pista","d":[81,4,37],"t":[{"id":"P004-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P005","lat":46.2860383,"lon":10.6739416,"st":"Ok","a":"Volpaia","acc":"strada","d":[8,3,109],"t":[{"id":"P005-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Volpaia","0.05"],["Stavél","0.30"],["Sentiero di Valle n 15",""]],"c":"1c11"},{"id":"P005-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Laghetti di San Leonardo","0.10"],["Vermiglio",""]],"c":"1c12"}]},{"id":"P006","lat":46.2858245,"lon":10.6727306,"st":"Cambiare","a":"Volpaia","acc":"strada","d":[0,3,19],"t":[{"id":"P006-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Volpaia",""],["1199 m",""]],"c":"1c13"},{"id":"P006-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Masi di Palù","1.25"],["Lago di Barco","2.35"],["Croz de la Luna","3.50"]],"c":"1c14"},{"id":"P006-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Biotopo Corédol","0.10"],["Stavél","0.25"],["Sentiero di Valle n 15",""]],"c":"1c15"},{"id":"P006-T4","st":"Cambiare","tp":"D","fr":"D","r":[["Laghetti di San Leonardo","0.15"],["Vermiglio",""]],"c":"1c16"}]},{"id":"P007","lat":46.2859382,"lon":10.6725113,"st":"Nuovo","a":"Volpaia","acc":"strada","d":[1,2,2],"t":[{"id":"P007-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Biotopo Corédol","0.10"],["Stavél","0.25"],["Sentiero di Valle n 15",""]],"c":"1c17"},{"id":"P007-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Laghetti di San Leonardo","0.15"],["Vermiglio",""]],"c":"1c18"}]},{"id":"P008","lat":46.2837097,"lon":10.671358,"st":"Cambiare","a":"Volpaia","acc":"strada","d":[8,0,86],"t":[{"id":"P008-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Póia di Stavél","0.20"],["Stavél","0.30"],["Cadin","0.45"]],"c":"1c19"},{"id":"P008-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Masi di Palù","1.15"],["Lago di Barco","2.25"],["Croz de la Luna","3.40"]],"c":"1c20"},{"id":"P008-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Laghetti di San Leonardo","0.20"],["Vermiglio",""]],"c":"1c21"}]},{"id":"P009","lat":46.2764868,"lon":10.6616041,"st":"Cambiare","a":"Stavel","acc":"pista","d":[106,1,61],"t":[{"id":"P009-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Stavél","0.05"],["Cadin","0.20"],["Velon","0.50"]],"c":"1c22"},{"id":"P009-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Póia di Stavél","0.10"],["Volpaia","0.30"],["Vermiglio",""]],"c":"1c23"}]},{"id":"P010","lat":46.2773257,"lon":10.6608283,"st":"Cambiare","a":"Stavel","acc":"strada","d":[2,32,1],"t":[{"id":"P010-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Viane","0.45"],["Vermiglio","1.15"],["Sentiero di Valle n 15",""]],"c":"1c24"},{"id":"P010-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Biotopo Corédol","0.15"],["Volpaia","0.25"],["Sentiero di Valle n 15",""]],"c":"1c25"}]},{"id":"P011","lat":46.2771804,"lon":10.6605182,"st":"Nuovo","a":"Stavel","acc":"strada","d":[7,11,30],"t":[{"id":"P011-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Stavél",""],["1243 m",""]],"c":"1c26"},{"id":"P011-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Viane","0.45"],["Vermiglio","1.15"]],"c":"1c27"},{"id":"P011-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Cadin","0.15"],["Velon","0.45"],["Malga Pecé","1.35"]],"c":"1c28"}]},{"id":"P012","lat":46.2764467,"lon":10.6597031,"st":"Ok","a":"Stavel","acc":"strada","d":[4,1,128],"t":[{"id":"P012-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Cadin","0.10"],["Velon","0.45"],["Malga Pecé","1.35"]],"c":"1c29"}]},{"id":"P013","lat":46.2689052,"lon":10.6564563,"st":"Cambiare","a":"Velon-Pecé","acc":"pista","d":[560,0,148],"t":[{"id":"P013-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Velon","0.20"],["Malga Pecé","1.10"]],"c":"1c30"}]},{"id":"P014","lat":46.2738804,"lon":10.6557157,"st":"Ok","a":"Velon-Pecé","acc":"pista","d":[101,0,96],"t":[{"id":"P014-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Forte Pozzi alti","1.30"],["Rifugio Denza","3.00"]],"c":"1c31"},{"id":"P014-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Velon","0.15"],["Malga Pecé","1.05"]],"c":"1c32"},{"id":"P014-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Cadin","0.20"],["Stavél","0.30"],["Vermiglio",""]],"c":"1c33"}]},{"id":"P015","lat":46.2739404,"lon":10.6482618,"st":"Nuovo","a":"Velon-Pecé","acc":"strada","d":[7,7,169],"t":[{"id":"P015-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Malga Pecé","0.50"],["Pont dei Alpini","1.05"],["Passo Tonale","2.10"]],"c":"1c34"},{"id":"P015-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P015-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Carbonère","0.50"],["Pozzi bassi","1.25"],["Forte Pozzi alti","1.40"]],"c":"1c36"},{"id":"P015-T4","st":"Nuovo","tp":"D","fr":"D","r":[["Forte Velon","0.45"]],"c":"1c37"},{"id":"P015-T5","st":"Nuovo","tp":"D","fr":"S","r":[["Cadin","0.35"],["Stavél","0.45"],["Vermiglio",""]],"c":"1c38"}]},{"id":"P016","lat":46.2726827,"lon":10.6409143,"st":"Ok","a":"Velon-Pecé","acc":"pista","d":[65,6,271],"t":[{"id":"P016-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Velon","0.35"],["Velon","0.15"]],"c":"1c39"},{"id":"P016-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Pecé","0.40"],["Pont dei Alpini","0.55"],["Passo Tonale","2.00"]],"c":"1c40"},{"id":"P016-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Cadin","0.45"],["Stavél","1.00"],["Vermiglio",""]],"c":"1c41"}]},{"id":"P017","lat":46.2669795,"lon":10.6327885,"st":"Ok","a":"Velon-Pecé","acc":"pista","d":[671,2,20],"t":[{"id":"P017-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Malga Pecé","0.25"],["Passo Tonale","1.50"]],"c":"1c42"},{"id":"P017-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Velon","0.30"],["Stavél","1.10"],["Vermiglio",""]],"c":"1c43"},{"id":"P017-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Pont dei Alpini","0.35"]],"c":"1c44"}]},{"id":"P018","lat":46.2657318,"lon":10.6260374,"st":"Cambiare","a":"Velon-Pecé","acc":"pista","d":[230,1,133],"t":[{"id":"P018-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Pecé","0.15"],["Pont dei Alpini","0.35"],["Passo Tonale","1.45"]],"c":"1c45"},{"id":"P018-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Forte Velon","0.50"],["Velon","1.00"]],"c":"1c46"}]},{"id":"P019","lat":46.2637007,"lon":10.6219923,"st":"Cambiare","a":"Velon-Pecé","acc":"pista","d":[213,0,63],"t":[{"id":"P019-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Plazza Belina","0.15"],["Pont dei Alpini","0.25"],["Ràseghe","1.15"]],"c":"1c47"},{"id":"P019-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Malga Pecé","0.05"],["Passo Tonale","1.30"]],"c":"1c48"},{"id":"P019-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Forte Velon","1.00"],["Velon","1.10"]],"c":"1c49"}]},{"id":"P020","lat":46.2587825,"lon":10.6145783,"st":"Ok","a":"Raseghe","acc":"sentiero","d":[439,37,2],"t":[{"id":"P020-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P021","lat":46.2583166,"lon":10.6162423,"st":"Eliminare","a":"Raseghe","acc":"sentiero","d":[562,143,4],"t":[{"id":"P021-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P022","lat":46.2586143,"lon":10.6189932,"st":"Ok","a":"Velon-Pecé","acc":"sentiero","d":[707,290,1],"t":[{"id":"P022-T1","st":"Eliminare","tp":"D","fr":"S","r":[["(Sentiero n 28!; da eliminare",""]],"c":""}]},{"id":"P023","lat":46.2714595,"lon":10.633331,"st":"Cambiare","a":"Velon-Pecé","acc":"pista","d":[340,1,483],"t":[{"id":"P023-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Pecé","0.30"],["Pont dei Alpini","0.50"],["Passo Tonale","2.00"]],"c":"1c53"},{"id":"P023-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Velon","0.35"],["Velon","0.45"]],"c":"1c54"},{"id":"P023-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Area pic nic","0.15"],["Viscle","0.15"]],"c":"1c55"}]},{"id":"P024","lat":46.2741177,"lon":10.6376255,"st":"Cambiare","a":"Velon-Pecé","acc":"pista","d":[228,12,43],"t":[{"id":"P024-T1","st":"Ok","tp":"D","fr":"S","r":[["Malga Pecé","0.35"],["Pont dei Alpini","0.55"],["Passo Tonale","2.05"]],"c":""},{"id":"P024-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Velon","0.30"],["Velon","0.40"]],"c":"1c57"}]},{"id":"P025","lat":46.2968901,"lon":10.6669773,"st":"Ok","a":"Verniana","acc":"strada","d":[16,15,24],"t":[{"id":"P025-T1","st":"Ok","tp":"D","fr":"D","r":[["Malga Saviana","0.40"],["Malga Boai","1.30"]],"c":""},{"id":"P025-T2","st":"Ok","tp":"D","fr":"S","r":[["Malga Verniana","0.30"],["Malga Mezöl","1.15"]],"c":""},{"id":"P025-T3","st":"Ok","tp":"L","fr":"S","r":[["Verniana",""],["1755 m",""]],"c":""}]},{"id":"P026","lat":46.2970175,"lon":10.6663057,"st":"Ok","a":"Verniana","acc":"pista","d":[60,8,28],"t":[{"id":"P026-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Vermiglio",""]],"c":"1c61"}]},{"id":"P027","lat":46.2997683,"lon":10.657847,"st":"Ok","a":"Verniana","acc":"pista","d":[614,0,2],"t":[{"id":"P027-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Verniana","0.15"],["Malga Mezöl","1.00"],["Bait de Mezöl","1.00"]],"c":"1c62"},{"id":"P027-T2","st":"Ok","tp":"D","fr":"S","r":[["Malga Saviana","0.25"],["Malga Boai","1.00"]],"c":""},{"id":"P027-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Verniana","0.15"],["Vermiglio",""]],"c":"1c64"}]},{"id":"P028","lat":46.2995415,"lon":10.6563514,"st":"Ok","a":"Verniana","acc":"pista","d":[508,1,8],"t":[{"id":"P028-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Bait de Mezöl","0.55"],["Malga Mezöl","0.55"]],"c":"1c65"},{"id":"P028-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Verniana","0.15"],["Malga Saviana","0.25"],["Vermiglio",""]],"c":"1c66"}]},{"id":"P029","lat":46.3008268,"lon":10.65002,"st":"Solo segno rosso","a":"","acc":"strada","d":[1,1,1],"t":[{"id":"P029-T1","st":"Ok","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P030","lat":46.3069235,"lon":10.6387611,"st":"Cambiare","a":"Saviana","acc":"sentiero","d":[683,1100,9],"t":[{"id":"P030-T1","st":"Ok","tp":"D","fr":"D","r":[["Matazin","0.40"],["Saviana","1.10"]],"c":""},{"id":"P030-T2","st":"Ok","tp":"D","fr":"S","r":[["Malga Verniana","0.40"],["Masi di Verniana","1.00"],["Vermiglio","2.00"]],"c":""},{"id":"P030-T3","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P031","lat":46.3106192,"lon":10.6584244,"st":"Solo segno rosso","a":"","acc":"sentiero","d":[765,770,8],"t":[{"id":"P031-T1","st":"Ok","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P032","lat":46.311735,"lon":10.6602912,"st":"Ok","a":"Saviana","acc":"sentiero","d":[711,740,0],"t":[{"id":"P032-T1","st":"Eliminare","tp":"D","fr":"S","r":[["Matazin","0.30"],["Verniana","1.40"]],"c":""}]},{"id":"P033","lat":46.3041317,"lon":10.6683144,"st":"Ok","a":"Saviana","acc":"pista","d":[349,3,26],"t":[{"id":"P033-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Verniana","0.45"],["Malga Mezöl","1.25"]],"c":"1c73"}]},{"id":"P034","lat":46.2519235,"lon":10.6109563,"st":"Ok","a":"Raseghe","acc":"sentiero","d":[987,431,4],"t":[{"id":"P034-T1","st":"Ok","tp":"L","fr":"S","r":[["Ràseghe",""],["1748 m",""]],"c":""},{"id":"P034-T2","st":"Ok","tp":"D","fr":"S","r":[["Passo Tonale","1.00"]],"c":""},{"id":"P034-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Tonale Beach","0.15"],["Bait de le Ràseghe","0.25"]],"c":"1c76"},{"id":"P034-T4","st":"Ok","tp":"D","fr":"S","r":[["Alpe Presena","0.05"],["Malga Pecé","0.45"],["Pont dei Alpini",""]],"c":""},{"id":"P034-T5","st":"Nuovo","tp":"D","fr":"D","r":[["Alveo Presena","1.35"],["Passo Paradiso","3.05"],["Capanna Presena","3.35"]],"c":"1c78"}]},{"id":"P035","lat":46.2478599,"lon":10.6040895,"st":"Nuovo","a":"Raseghe","acc":"pista","d":[1401,6,1],"t":[{"id":"P035-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Alveo Presena","0.20"],["Passo Paradiso","1.50"],["Capanna Presena","2.20"]],"c":"1c79"},{"id":"P035-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Passo Tonale","1.10"]],"c":"1c80"},{"id":"P035-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Ràseghe","1.00"],["Tonale Beach","1.15"],["Malga Pecé","1.45"]],"c":"1c81"}]},{"id":"P036","lat":46.2457143,"lon":10.6012166,"st":"Ok","a":"Raseghe","acc":"pista","d":[1591,9,247],"t":[{"id":"P036-T1","st":"Ok","tp":"D","fr":"D","r":[["Palestra di roccia",""]],"c":""}]},{"id":"P037","lat":46.2415176,"lon":10.6004642,"st":"Cambiare","a":"Raseghe","acc":"pista","d":[1956,8,9],"t":[{"id":"P037-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Passo Paradiso","1.25"],["Capanna Presena","1.55"]],"c":"1c83"}]},{"id":"P038","lat":46.2956927,"lon":10.6847788,"st":"Nuovo","a":"Verniana","acc":"strada","d":[6,15,70],"t":[{"id":"P038-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Splazzi Balarini","0.05"],["Verniana","1.10"],["Saviana","2.00"]],"c":"1c84"},{"id":"P038-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Vie de Tonal","0.10"],["Mezöl","1.55"],["Strino","1.50"]],"c":"1c85"}]},{"id":"P039","lat":46.2952266,"lon":10.6839751,"st":"Cambiare","a":"Verniana","acc":"pista","d":[66,0,5],"t":[{"id":"P039-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Splazzi Balarini","0.15"],["Verniana","1.00"],["Saviana","1.50"]],"c":"1c86"},{"id":"P039-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Mezöl","1.45"],["Strino","1.40"]],"c":"1c87"}]},{"id":"P040","lat":46.2951592,"lon":10.6831108,"st":"Non necessario","a":"Verniana","acc":"sentiero","d":[90,26,0],"t":[{"id":"P040-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Splazzi Balarini","0.10"],["Acqua ferruginosa","0.10"]],"c":"1c88"}]},{"id":"P041","lat":46.2940773,"lon":10.6772729,"st":"Ok","a":"Verniana","acc":"pista","d":[29,7,2],"t":[{"id":"P041-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P042","lat":46.2949912,"lon":10.6742722,"st":"Ok","a":"Verniana","acc":"pista","d":[144,9,2],"t":[{"id":"P042-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P043","lat":46.2947728,"lon":10.6711803,"st":"Ok","a":"Verniana","acc":"pista","d":[175,2,3],"t":[{"id":"P043-T1","st":"Ok","tp":"D","fr":"S","r":[["Val Verniana",""],["Masi Verniana",""],["Ex Malga Verniana",""]],"c":""}]},{"id":"P044","lat":46.2955516,"lon":10.6688766,"st":"Nuovo","a":"Verniana","acc":"pista","d":[88,4,1],"t":[{"id":"P044-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Verniana","0.20"],["Malga Verniana","0.45"]],"c":"1c92"}]},{"id":"P045","lat":46.2962065,"lon":10.6799739,"st":"Cambiare","a":"Verniana","acc":"pista","d":[289,11,4],"t":[{"id":"P045-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Plazzöla","0.40"],["Verniana","0.55"],["Saviana","1.35"]],"c":"1c93"},{"id":"P045-T2","st":"Ok","tp":"D","fr":"S","r":[["Splazzi Balarini","0.10"],["Acqua ferruginosa","0.15"],["Vermiglio",""]],"c":""},{"id":"P045-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Vie de Tonal","0.30"],["Strada Statale",""]],"c":"1c95"},{"id":"P045-T4","st":"Eliminare","tp":"D","fr":"S","r":[["Acqua ferruginosa","0.15"],["Vermiglio",""]],"c":""}]},{"id":"P046","lat":46.2960694,"lon":10.6815444,"st":"Cambiare","a":"Verniana","acc":"sentiero","d":[238,132,1],"t":[{"id":"P046-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Acqua ferruginosa","0.05"],["Vermiglio",""]],"c":"1c97"},{"id":"P046-T2","st":"Ok","tp":"L","fr":"S","r":[["Splazzi Balarini",""],["1439 m",""]],"c":""}]},{"id":"P047","lat":46.29786,"lon":10.6903873,"st":"Ok","a":"Verniana","acc":"strada","d":[1,221,268],"t":[{"id":"P047-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Dazi","0.10"],["Vie de Tonal","0.15"],["Verniana","1.20"]],"c":"1c99"}]},{"id":"P048","lat":46.2895734,"lon":10.6850111,"st":"Cambiare","a":"Laghetti-Cascata","acc":"pista","d":[267,8,78],"t":[{"id":"P048-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Cascata di Palù","0.20"],["Masi di Palù","1.20"],["Croz de la Luna","3.50"]],"c":"1c100"},{"id":"P048-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Laghetti di San Leonardo","0.05"],["Vermiglio",""]],"c":"1c101"},{"id":"P048-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Lago di Barco","2.30"],["Lago Piccolo","3.45"]],"c":"1c102"}]},{"id":"P049","lat":46.2886678,"lon":10.6837257,"st":"Ok","a":"Laghetti-Cascata","acc":"pista","d":[243,7,5],"t":[{"id":"P049-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Cascata di Palù","0.20"],["Masi di Palù","1.20"],["Croz de la Luna","3.50"]],"c":"1c103"},{"id":"P049-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Laghetti di San Leonardo","0.05"],["Vermiglio",""]],"c":"1c104"}]},{"id":"P050","lat":46.2894618,"lon":10.6893969,"st":"Non necessario","a":"Laghetti-Cascata","acc":"sentiero","d":[294,274,11],"t":[{"id":"P050-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Cascata di Palù",""],["1258 m",""]],"c":"1c105"}]},{"id":"P051","lat":46.2898197,"lon":10.6892835,"st":"Ok","a":"Laghetti-Cascata","acc":"sentiero","d":[258,239,1],"t":[{"id":"P051-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Palù","1.05"],["Mandre di Palù","1.10"],["Croz de la Luna","3.35"]],"c":"1c106"},{"id":"P051-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P051-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Vermiglio",""]],"c":"1c108"},{"id":"P051-T4","st":"Ok","tp":"D","fr":"D","r":[["Cascata di Palù","0.05"],["Laghetti di San Leonardo","0.15"]],"c":""}]},{"id":"P052","lat":46.2889025,"lon":10.6893218,"st":"Solo segno rosso","a":"Laghetti-Cascata","acc":"sentiero","d":[356,262,2],"t":[{"id":"P052-T1","st":"Ok","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P053","lat":46.2914382,"lon":10.6899149,"st":"Nuovo","a":"Laghetti-Cascata","acc":"sentiero","d":[72,61,7],"t":[{"id":"P053-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Cascata di Palù","0.20"],["Masi di Palù","1.20"]],"c":"1c111"},{"id":"P053-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Laghetti di San Leonardo","0.10"]],"c":"1c112"}]},{"id":"P054","lat":46.2819522,"lon":10.6522962,"st":"Solo segno rosso","a":"","acc":"pista","d":[125,7,347],"t":[{"id":"P054-T1","st":"Ok","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P055","lat":46.2809635,"lon":10.6447679,"st":"Cambiare","a":"Strino","acc":"pista","d":[129,12,22],"t":[{"id":"P055-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Vermiglio","1.00"]],"c":"1c114"},{"id":"P055-T2","st":"Ok","tp":"D","fr":"D","r":[["Strino","0.35"],["Forte Zacarana","1.50"],["Passo Tonale","2.00"]],"c":""},{"id":"P055-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Forte Strino","0.10"],["Strada Statale",""]],"c":"1c116"}]},{"id":"P056","lat":46.2827655,"lon":10.6342882,"st":"Cambiare","a":"Strino","acc":"pista","d":[47,3,70],"t":[{"id":"P056-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Strino","0.30"],["Vermiglio",""]],"c":"1c117"},{"id":"P056-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Mèro","0.30"],["Forte Zacarana","1.15"],["Passo Tonale","1.25"]],"c":"1c118"},{"id":"P056-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Mezöl","1.00"],["Bait de Mezöl","1.25"],["Malga Verniana","1.45"]],"c":"1c119"},{"id":"P056-T4","st":"Nuovo","tp":"D","fr":"S","r":[["Malga Strino","0.30"],["Laghetti di Strino","2.50"],["Cima Rèdival","4.00"]],"c":"1c120"}]},{"id":"P057","lat":46.2821237,"lon":10.6337018,"st":"Cambiare","a":"Strino","acc":"strada","d":[14,26,4],"t":[{"id":"P057-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Forte Strino","0.30"],["Vermiglio",""]],"c":"1c121"},{"id":"P057-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Mèro","0.30"],["Forte Zacarana","1.15"],["Passo Tonale","1.25"]],"c":"1c122"},{"id":"P057-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Mezöl","1.00"],["Bait de Mezöl","1.20"],["Malga Verniana","1.45"]],"c":"1c123"}]},{"id":"P058","lat":46.2788562,"lon":10.6333015,"st":"Cambiare","a":"Zaccarana-Biolca","acc":"pista","d":[270,3,3],"t":[{"id":"P058-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Strino","0.30"],["Forte Strino","0.50"],["Vermiglio",""]],"c":"1c124"}]},{"id":"P059","lat":46.2788562,"lon":10.6333016,"st":"Eliminare","a":"Zaccarana-Biolca","acc":"pista","d":[270,3,3],"t":[{"id":"P059-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P060","lat":46.2788815,"lon":10.6330732,"st":"Cambiare","a":"Zaccarana-Biolca","acc":"pista","d":[287,5,15],"t":[{"id":"P060-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Forte Mèro","0.15"],["Ospizio S. Bartolomeo","1.00"],["Passo Tonale","1.10"]],"c":"1c126"},{"id":"P060-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Zacarana","1.00"],["Sentiero del Bózzerlait","0.40"],["Cima Biólca","2.05"]],"c":"1c127"}]},{"id":"P061","lat":46.2830735,"lon":10.628453,"st":"Cambiare","a":"Strino","acc":"pista","d":[51,0,258],"t":[{"id":"P061-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Strino","0.20"],["Laghetti di Strino","2.30"],["Cima Rèdival","3.40"]],"c":"1c128"},{"id":"P061-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Strino","0.15"],["Malga Mezöl","0.50"],["Bait de Mezöl","1.15"]],"c":"1c129"}]},{"id":"P062","lat":46.2863926,"lon":10.6870513,"st":"Cambiare","a":"Palù-Croz dela Luna","acc":"pista","d":[602,11,25],"t":[{"id":"P062-T1","st":"Ok","tp":"D","fr":"S","r":[["Masi di Palù","0.35"],["Lago di Barco","1.45"],["Lago Piccolo","3.00"]],"c":""},{"id":"P062-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Croz de la Luna","3.05"],["Solcar","1.00"]],"c":"1c131"},{"id":"P062-T3","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P062-T4","st":"Nuovo","tp":"D","fr":"D","r":[["Volpaia","0.30"],["Vermiglio",""]],"c":"1c133"}]},{"id":"P063","lat":46.286502,"lon":10.6873041,"st":"Non necessario","a":"Palù-Croz dela Luna","acc":"pista","d":[607,4,12],"t":[{"id":"P063-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Cascata di Palù","0.20"],["Laghetti di San Leonardo","0.35"],["Vermiglio",""]],"c":"1c134"},{"id":"P063-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Masi di Palù","0.35"],["Lago di Barco","1.45"],["Lago Piccolo","3.00"]],"c":"1c135"}]},{"id":"P064","lat":46.2888904,"lon":10.6956498,"st":"Cambiare","a":"Palù-Croz dela Luna","acc":"pista","d":[539,11,457],"t":[{"id":"P064-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Palù","0.20"],["Mandre di Palù","0.25"],["Pradac'","2.05"]],"c":"1c136"},{"id":"P064-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Lago di Barco","1.30"],["Lago Piccolo","2.45"]],"c":"1c137"},{"id":"P064-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Volpaia","0.40"],["Vermiglio",""]],"c":"1c138"}]},{"id":"P065","lat":46.2906897,"lon":10.7007366,"st":"Ok","a":"Palù-Croz dela Luna","acc":"pista","d":[801,0,526],"t":[{"id":"P065-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Lago di Barco","1.20"],["Lago Piccolo","2.35"]],"c":"1c139"},{"id":"P065-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Palù","0.20"],["Mandre di Palù","0.25"],["Pradac'","2.00"]],"c":"1c140"},{"id":"P065-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Volpaia","0.45"],["Vermiglio",""]],"c":"1c141"}]},{"id":"P066","lat":46.2809366,"lon":10.6949554,"st":"Nuovo","a":"Palù-Croz dela Luna","acc":"pista","d":[1285,8,5],"t":[{"id":"P066-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Solcar","0.40"],["Pradac'","1.40"]],"c":"1c142"},{"id":"P066-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Masi di Palù","0.05"],["Volpaia","0.50"],["Vermiglio",""]],"c":"1c143"}]},{"id":"P067","lat":46.2841637,"lon":10.6944552,"st":"Ok","a":"Palù-Croz dela Luna","acc":"pista","d":[931,1,349],"t":[{"id":"P067-T1","st":"Ok","tp":"L","fr":"S","r":[["Palù",""],["1567 m",""]],"c":""}]},{"id":"P068","lat":46.2857193,"lon":10.694543,"st":"Nuovo","a":"Palù-Croz dela Luna","acc":"pista","d":[773,12,516],"t":[{"id":"P068-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Volpaia","0.45"],["Vermiglio",""]],"c":"1c145"},{"id":"P068-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Masi di Palù","0.05"],["Mandre di Palù","0.10"],["Pradac'","1.50"]],"c":"1c146"}]},{"id":"P069","lat":46.291298,"lon":10.672869,"st":"Ok","a":"Verniana","acc":"pista","d":[89,1,150],"t":[{"id":"P069-T1","st":"Ok","tp":"D","fr":"S","r":[["Dazi","0.20"],["Vermiglio",""]],"c":""},{"id":"P069-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Malga Mezöl","1.30"],["Bait de Mezöl","1.50"]],"c":"1c148"}]},{"id":"P070","lat":46.291535,"lon":10.673377,"st":"Ok","a":"Verniana","acc":"pista","d":[111,2,164],"t":[{"id":"P070-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Mezöl","1.30"],["Bait de Mezöl","1.50"]],"c":"1c149"},{"id":"P070-T2","st":"Ok","tp":"D","fr":"D","r":[["Dazi","0.20"],["Vermiglio",""]],"c":""}]},{"id":"P071","lat":46.291543,"lon":10.670878,"st":"Solo segno rosso","a":"Verniana","acc":"lontano","d":[201,92,266],"t":[{"id":"P071-T1","st":"Ok","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P072","lat":46.287519,"lon":10.650553,"st":"Nuovo","a":"Mezol","acc":"pista","d":[698,5,6],"t":[{"id":"P072-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Malga Mezöl","0.05"],["Bait de Mezöl","0.25"],["Corégia","1.00"]],"c":"1c152"},{"id":"P072-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Fosina",""],["Vermiglio","0.40"]],"c":"1c153"},{"id":"P072-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Malga Strino","1.15"],["Forte Zacarana","2.00"]],"c":"1c154"}]},{"id":"P073","lat":46.287631,"lon":10.651042,"st":"Nuovo","a":"Mezol","acc":"pista","d":[690,7,11],"t":[{"id":"P073-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Bait de Mezöl","0.25"],["Corégia","1.00"]],"c":"1c155"},{"id":"P073-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Malga Mezöl","0.05"],["Verniana","0.45"]],"c":"1c156"}]},{"id":"P074","lat":46.289481,"lon":10.648936,"st":"Nuovo","a":"Mezol","acc":"sentiero","d":[950,89,8],"t":[{"id":"P074-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Bait de Mezöl","0.15"],["Corégia","0.50"]],"c":"1c157"}]},{"id":"P075","lat":46.291116,"lon":10.652821,"st":"Cambiare","a":"Mezol","acc":"sentiero","d":[930,229,1],"t":[{"id":"P075-T1","st":"Ok","tp":"D","fr":"S","r":[["Corégia","0.35"],["Malga Strino","0.50"]],"c":""},{"id":"P075-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P075-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Verniana","0.40"],["Saviana","1.10"]],"c":"1c160"},{"id":"P075-T4","st":"Ok","tp":"L","fr":"S","r":[["Bait de Mezöl",""],["1997 m",""]],"c":""},{"id":"P075-T5","st":"Nuovo","tp":"D","fr":"D","r":[["Fosina","0.20"],["Vermiglio",""]],"c":"1c162"}]},{"id":"P076","lat":46.2891678,"lon":10.6180273,"st":"Cambiare","a":"Strino","acc":"pista","d":[1102,12,0],"t":[{"id":"P076-T1","st":"Cambiare","tp":"L","fr":"S","r":[["Malga Strino",""],["1948 m",""]],"c":"1c163"},{"id":"P076-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Malga Mezöl","0.50"],["Bait de Mezöl","0.50"]],"c":"1c164"}]},{"id":"P077","lat":46.289143,"lon":10.617559,"st":"Ok","a":"Strino","acc":"sentiero","d":[1128,35,1],"t":[{"id":"P077-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Sentiero del Bózzerlait","0.20"],["Forte Zacarana","0.40"],["Passo Tonale","2.15"]],"c":"1c165"}]},{"id":"P078","lat":46.280668,"lon":10.623857,"st":"Ok","a":"Zaccarana-Biolca","acc":"sentiero","d":[461,425,4],"t":[{"id":"P078-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Città Morta","1.35"],["Monte Tonale Orientale","1.55"],["Torrione d'Albiolo","3.10"]],"c":"1c166"}]},{"id":"P079","lat":46.2841544,"lon":10.6088474,"st":"Cambiare","a":"Zaccarana-Biolca","acc":"sentiero","d":[1557,885,14],"t":[{"id":"P079-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Cima Biólca",""],["2499 m",""]],"c":"1c167"}]},{"id":"P080","lat":46.2852237,"lon":10.6036976,"st":"Cambiare","a":"Zaccarana-Biolca","acc":"sentiero","d":[1689,1180,5],"t":[{"id":"P080-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Cima Biólca","0.10"],["Forte Zacarana","1.05"]],"c":"1c168"},{"id":"P080-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Città Morta","0.05"],["Forte Zacarana","1.35"]],"c":"1c169"},{"id":"P080-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Monte Tonale Orientale","0.35"],["Torrione d'Albiolo","2.10"]],"c":"1c170"}]},{"id":"P081","lat":46.2843898,"lon":10.5990751,"st":"Ok","a":"Zaccarana-Biolca","acc":"sentiero","d":[1321,1296,3],"t":[{"id":"P081-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Cima Biólca","0.15"],["Forte Zacarana","1.10"]],"c":"1c171"}]},{"id":"P082","lat":46.300661,"lon":10.6977727,"st":"Cambiare","a":"Dasaré","acc":"strada","d":[4,193,200],"t":[{"id":"P082-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P082-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P082-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Dasaré","0.20"],["Boai","2.00"],["Cima Boai","5.00"]],"c":"1c174"},{"id":"P082-T4","st":"Nuovo","tp":"D","fr":"D","r":[["Cortina","0.10"],["Croz de Ciciane","0.25"],["Ossana","0.50"]],"c":"1c175"}]},{"id":"P083","lat":46.3095163,"lon":10.7118419,"st":"Cambiare","a":"Dasaré","acc":"pista","d":[666,1,143],"t":[{"id":"P083-T1","st":"Ok","tp":"D","fr":"D","r":[["Comasine","0.45"],["Sentiero dei Minatori","0.05"]],"c":""},{"id":"P083-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Dasaré","0.20"],["Vermiglio",""]],"c":"1c177"},{"id":"P083-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Masi di Boai","1.00"],["Malga Boai","1.30"],["Cima Boai","4.00"]],"c":"1c178"}]},{"id":"P084","lat":46.3078039,"lon":10.696144,"st":"Eliminare","a":"Boai","acc":"pista","d":[457,22,54],"t":[{"id":"P084-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P085","lat":46.3090101,"lon":10.6964531,"st":"Cambiare","a":"Boai","acc":"pista","d":[540,1,188],"t":[{"id":"P085-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Masi di Boai","0.30"],["Malga Boai","0.50"],["Cima Boai","3.40"]],"c":"1c180"},{"id":"P085-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Dasaré","0.35"],["Vermiglio",""]],"c":"1c181"}]},{"id":"P086","lat":46.3107959,"lon":10.689427,"st":"Cambiare","a":"Boai","acc":"pista","d":[1038,2,80],"t":[{"id":"P086-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Cassé","0.35"],["Campo di Boai","0.50"]],"c":"1c182"},{"id":"P086-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Boai","0.20"],["Pra del Pèro","0.45"],["Cima Boai","3.10"]],"c":"1c183"},{"id":"P086-T3","st":"Ok","tp":"L","fr":"S","r":[["Masi di Boai",""],["1802 m",""]],"c":""},{"id":"P086-T4","st":"Nuovo","tp":"D","fr":"D","r":[["Dasaré","1.10"],["Vermiglio",""]],"c":"1c185"}]},{"id":"P087","lat":46.3107035,"lon":10.6864749,"st":"Eliminare","a":"Boai","acc":"pista","d":[1084,3,266],"t":[{"id":"P087-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P088","lat":46.3107683,"lon":10.6863743,"st":"Non necessario","a":"Boai","acc":"pista","d":[1093,2,276],"t":[{"id":"P088-T1","st":"Ok","tp":"L","fr":"S","r":[["Malga Boai",""],["1933 m",""]],"c":""}]},{"id":"P089","lat":46.3107966,"lon":10.6856066,"st":"Eliminare","a":"Boai","acc":"pista","d":[1118,0,334],"t":[{"id":"P089-T1","st":"Eliminare","tp":"L","fr":"S","r":[],"c":""},{"id":"P089-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P089-T3","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P090","lat":46.3103223,"lon":10.6818833,"st":"Cambiare","a":"Boai","acc":"pista","d":[1148,0,393],"t":[{"id":"P090-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Pra del Pèro","0.20"],["Larici secolari","0.35"],["Cima Boai","2.40"]],"c":"1c191"},{"id":"P090-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Boai","0.25"],["Dasaré","1.35"],["Vermiglio",""]],"c":"1c192"},{"id":"P090-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Saviana","0.30"],["Malga Verniana","1.00"]],"c":"1c193"}]},{"id":"P091","lat":46.3094096,"lon":10.677163,"st":"Cambiare","a":"Boai","acc":"pista","d":[771,6,78],"t":[{"id":"P091-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Larici secolari","0.15"],["Campo di Boai","0.30"],["Cima Boai","2.20"]],"c":"1c194"},{"id":"P091-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Boai","0.35"],["Dasaré","1.45"],["Vermiglio",""]],"c":"1c195"},{"id":"P091-T3","st":"Ok","tp":"L","fr":"S","r":[["Pra del Pèro",""],["2059 m",""]],"c":""}]},{"id":"P092","lat":46.3104798,"lon":10.6766373,"st":"Cambiare","a":"Boai","acc":"sentiero","d":[778,56,3],"t":[{"id":"P092-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Larici secolari","0.10"],["Campo di Boai","0.25"]],"c":"1c197"},{"id":"P092-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Masi di Boai","0.45"],["Dasaré","1.50"],["Vermiglio",""]],"c":"1c198"},{"id":"P092-T3","st":"Cambiare","tp":"D","fr":"S","r":[["Saviana","0.35"],["Cima Boai","2.15"]],"c":"1c199"},{"id":"P092-T4","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P093","lat":46.3118371,"lon":10.6746528,"st":"Eliminare","a":"Boai","acc":"sentiero","d":[727,254,0],"t":[{"id":"P093-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P093-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P094","lat":46.3117239,"lon":10.6746031,"st":"Non necessario","a":"Boai","acc":"sentiero","d":[716,246,7],"t":[{"id":"P094-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Saviana","0.30"],["Cima Boai","2.10"]],"c":"1c203"},{"id":"P094-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Pra del Pèro","0.20"],["Masi di Boai","1.00"],["Vermiglio",""]],"c":"1c204"}]},{"id":"P095","lat":46.3137907,"lon":10.6782369,"st":"Eliminare","a":"Boai","acc":"lontano","d":[1078,443,34],"t":[{"id":"P095-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P095-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P095-T3","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P096","lat":46.3150618,"lon":10.682925,"st":"Cambiare","a":"Boai","acc":"sentiero","d":[1452,429,1],"t":[{"id":"P096-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Larici secolari","0.10"],["Pra del Pèro","0.20"],["Cima Boai","2.00"]],"c":"1c208"},{"id":"P096-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Cassé","0.20"],["Masi di Boai","0.40"],["Vermiglio",""]],"c":"1c209"},{"id":"P096-T3","st":"Nuovo","tp":"L","fr":"S","r":[["Campo di Boai",""],["2150 m",""]],"c":"1c210"}]},{"id":"P097","lat":46.3136008,"lon":10.6880517,"st":"Eliminare","a":"Boai","acc":"sentiero","d":[1353,43,22],"t":[{"id":"P097-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P097-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P098","lat":46.3138417,"lon":10.6884118,"st":"Nuovo","a":"Boai","acc":"sentiero","d":[1352,29,3],"t":[{"id":"P098-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Campo di Boai","0.25"],["Cima Boai","2.25"]],"c":"1c213"},{"id":"P098-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Masi di Boai","0.25"],["Dasaré","1.35"],["Vermiglio",""]],"c":"1c214"},{"id":"P098-T3","st":"Nuovo","tp":"L","fr":"S","r":[["Cassé",""],["2000 m",""]],"c":"1c215"}]},{"id":"P099","lat":46.3093987,"lon":10.6904094,"st":"Nuovo","a":"Boai","acc":"pista","d":[874,1,13],"t":[{"id":"P099-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Masi di Boai","0.05"],["Malga Boai","0.25"],["Cima Boai","3.15"]],"c":"1c216"},{"id":"P099-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Boai bas","0.20"],["Plazzoléta","0.45"],["Vermiglio",""]],"c":"1c217"},{"id":"P099-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Dasaré","1.00"],["Vermiglio",""]],"c":"1c218"}]},{"id":"P100","lat":46.3061887,"lon":10.6922816,"st":"Eliminare","a":"Boai","acc":"sentiero","d":[519,292,6],"t":[{"id":"P100-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P101","lat":46.3059957,"lon":10.6917659,"st":"Nuovo","a":"Boai","acc":"sentiero","d":[494,247,6],"t":[{"id":"P101-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Boai bas",""],["1626 m",""]],"c":"1c220"},{"id":"P101-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Masi di Boai","0.35"],["Malga Boai","0.55"]],"c":"1c221"},{"id":"P101-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Plazzoléta","0.25"],["Vermiglio",""]],"c":"1c222"}]},{"id":"P102","lat":46.3026868,"lon":10.6972846,"st":"Nuovo","a":"Plazoleta","acc":"sentiero","d":[222,403,5],"t":[{"id":"P102-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Plazzoléta",""],["1464 m",""]],"c":"1c223"},{"id":"P102-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Boai bas","0.45"],["Masi di Boai","1.20"],["Malga Boai","1.45"]],"c":"1c224"},{"id":"P102-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Vermiglio",""]],"c":"1c225"}]},{"id":"P103","lat":46.3004548,"lon":10.6930259,"st":"Nuovo","a":"Plazoleta","acc":"sentiero","d":[79,384,0],"t":[{"id":"P103-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Plazzoléta","0.25"],["Boai bas","1.10"],["Malga Boai","2.10"]],"c":"1c226"}]},{"id":"P104","lat":46.3002739,"lon":10.6924894,"st":"Ok","a":"Plazoleta","acc":"sentiero","d":[46,350,4],"t":[{"id":"P104-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Plazzoléta","0.25"],["Boai bas","1.10"],["Malga Boai","2.10"]],"c":"1c227"}]},{"id":"P105","lat":46.2986228,"lon":10.6923138,"st":"Ok","a":"Verniana","acc":"strada","d":[4,293,144],"t":[{"id":"P105-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P106","lat":46.2682973,"lon":10.6912389,"st":"Non necessario","a":"Palù-Croz dela Luna","acc":"sentiero","d":[2301,1096,3],"t":[{"id":"P106-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Pradac'",""],["2110 m",""]],"c":"1c229"}]},{"id":"P107","lat":46.281176,"lon":10.6890747,"st":"Cambiare","a":"Palù-Croz dela Luna","acc":"pista","d":[1168,6,3],"t":[{"id":"P107-T1","st":"Ok","tp":"D","fr":"S","r":[["Masi di Palù","0.30"],["Mandre di Palù","0.20"],["Vermiglio",""]],"c":""},{"id":"P107-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Croz de la Luna","2.20"]],"c":"1c231"},{"id":"P107-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Pradac'","1.00"]],"c":"1c232"}]},{"id":"P108","lat":46.2712586,"lon":10.6729972,"st":"Cambiare","a":"Stavel","acc":"pista","d":[1088,8,10],"t":[{"id":"P108-T1","st":"Ok","tp":"D","fr":"D","r":[["Croz de la Luna","2.00"]],"c":""},{"id":"P108-T2","st":"Ok","tp":"D","fr":"S","r":[["Volpaia","1.00"],["Vermiglio",""]],"c":""}]},{"id":"P109","lat":46.2497646,"lon":10.6136915,"st":"Ok","a":"Raseghe","acc":"sentiero","d":[1282,607,6],"t":[{"id":"P109-T1","st":"Ok","tp":"D","fr":"S","r":[["Bait de le Ràseghe","0.10"]],"c":""},{"id":"P109-T2","st":"Ok","tp":"L","fr":"S","r":[["Tonale Beach",""],["1750 m",""]],"c":""}]},{"id":"P110","lat":46.2513799,"lon":10.6146893,"st":"Nuovo","a":"Raseghe","acc":"sentiero","d":[1149,549,1],"t":[{"id":"P110-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Tonale Beach","0.05"],["Bait de le Ràseghe","0.15"]],"c":"1c237"}]},{"id":"P111","lat":46.2528351,"lon":10.6140821,"st":"Ok","a":"Raseghe","acc":"sentiero","d":[985,380,4],"t":[{"id":"P111-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Tonale Beach","0.10"],["Bait de le Ràseghe","0.20"]],"c":"1c238"},{"id":"P111-T2","st":"Ok","tp":"D","fr":"S","r":[["Passo Tonale","1.05"]],"c":""}]},{"id":"P112","lat":46.2566995,"lon":10.6090147,"st":"Ok","a":"Raseghe","acc":"pista","d":[435,3,4],"t":[{"id":"P112-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Ràseghe","0.25"],["Tonale Beach","0.35"],["Bait de le Ràseghe","0.45"]],"c":"1c240"}]},{"id":"P113","lat":46.2597728,"lon":10.6080056,"st":"Cambiare","a":"Raseghe","acc":"pista","d":[85,4,7],"t":[{"id":"P113-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Sentiero dei Rododendri",""],["Passo Tonale","0.40"]],"c":"1c241"},{"id":"P113-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Ràseghe","0.30"],["Tonale Beach","0.40"],["Bait de le Ràseghe","0.50"]],"c":"1c242"}]},{"id":"P114","lat":46.2601393,"lon":10.6070447,"st":"Ok","a":"Raseghe","acc":"pista","d":[31,1,82],"t":[{"id":"P114-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Bait de le Ràseghe","1.00"],["Tonale Beach","0.50"],["Malga Pecé","0.50"]],"c":"1c243"},{"id":"P114-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P115","lat":46.2691245,"lon":10.5963188,"st":"Ok","a":"Zaccarana-Biolca","acc":"strada","d":[5,1,446],"t":[{"id":"P115-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Città Morta","1.45"],["Monte Tonale Orientale","2.15"],["Lago Valbiolo","0.20"]],"c":"1c245"}]},{"id":"P116","lat":46.2634353,"lon":10.5909873,"st":"Nuovo","a":"Zaccarana-Biolca","acc":"strada","d":[3,164,46],"t":[{"id":"P116-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Ospizio S. Bartolomeo","0.15"],["Lago Valbiolo","0.40"],["Malga Valbiolo","1.15"]],"c":"1c246"},{"id":"P116-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Forte Zacarana","1.30"],["Forte Mèro","0.55"],["Malga Strino","2.00"]],"c":"1c247"},{"id":"P116-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Città Morta","2.05"],["Monte Tonale Orientale","2.35"],["Passo dei Contrabbandieri","2.35"]],"c":"1c248"}]},{"id":"P117","lat":46.2572252,"lon":10.5849895,"st":"Ok","a":"Raseghe","acc":"strada","d":[2,3,68],"t":[{"id":"P117-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Sentiero dei Rododendri",""],["Ràseghe","1.00"],["Tonale Beach","1.10"]],"c":"1c249"},{"id":"P117-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Alveo Presena","1.40"],["Passo Paradiso","3.10"],["Capanna Presena","3.40"]],"c":"1c250"}]},{"id":"P118","lat":46.2590236,"lon":10.6061428,"st":"Cambiare","a":"Raseghe","acc":"pista","d":[152,3,5],"t":[{"id":"P118-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Sentiero dei Rododendri",""],["Passo Tonale","0.40"],["Alveo Presena","1.30"]],"c":"1c251"},{"id":"P118-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Ràseghe","0.30"],["Tonale Beach","0.40"],["Bait de le Ràseghe","0.50"]],"c":"1c252"}]},{"id":"P119","lat":46.2575576,"lon":10.6037432,"st":"Ok","a":"Raseghe","acc":"pista","d":[341,1,240],"t":[{"id":"P119-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Sentiero dei Rododendri",""],["Passo Tonale","0.30"]],"c":"1c253"},{"id":"P119-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Ràseghe","0.40"],["Tonale Beach","0.50"],["Bait de le Ràseghe","1.00"]],"c":"1c254"}]},{"id":"P120","lat":46.2610777,"lon":10.6085913,"st":"Eliminare","a":"Raseghe","acc":"strada","d":[8,3,154],"t":[{"id":"P120-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P121","lat":46.2820648,"lon":10.6607442,"st":"Ok","a":"Stavel","acc":"lontano","d":[190,267,38],"t":[{"id":"P121-T1","st":"Ok","tp":"D","fr":"D","r":[["Viane","0.15"],["Vermiglio","0.45"],["Sentiero di Valle n 15",""]],"c":""},{"id":"P121-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Stavél","0.20"],["Sentiero di Valle n 15",""]],"c":"1c257"}]},{"id":"P122","lat":46.2823179,"lon":10.6614355,"st":"Nuovo","a":"Stavel","acc":"sentiero","d":[187,272,1],"t":[{"id":"P122-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Viane","0.15"],["Vermiglio","0.45"],["Sentiero di Valle n 15",""]],"c":"1c258"},{"id":"P122-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Stavél","0.20"],["Sentiero di Valle n 15",""]],"c":"1c259"}]},{"id":"P123","lat":46.2801024,"lon":10.6594185,"st":"Ok","a":"Stavel","acc":"sentiero","d":[214,66,3],"t":[{"id":"P123-T1","st":"Ok","tp":"D","fr":"D","r":[["Viane","0.30"],["Vermiglio","1.00"],["Sentiero di Valle n 15",""]],"c":""},{"id":"P123-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Stavél","0.15"],["Sentiero di Valle n 15",""]],"c":"1c261"}]},{"id":"P124","lat":46.2795356,"lon":10.6593994,"st":"Ok","a":"Stavel","acc":"pista","d":[151,6,1],"t":[{"id":"P124-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Viane","0.30"],["Vermiglio","1.00"],["Sentiero di Valle n 15",""]],"c":"1c262"},{"id":"P124-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Stavél","0.15"],["Sentiero di Valle n 15",""]],"c":"1c263"}]},{"id":"P125","lat":46.2857334,"lon":10.6659859,"st":"Ok","a":"","acc":"strada","d":[10,3,7],"t":[{"id":"P125-T1","st":"Ok","tp":"D","fr":"D","r":[["Stavél","0.30"],["Sentiero di Valle n 15",""]],"c":""},{"id":"P125-T2","st":"Ok","tp":"D","fr":"S","r":[["Ponte tibetano","0.15"],["Vermiglio","0.30"],["Sentiero di Valle n 15",""]],"c":""},{"id":"P125-T3","st":"Ok","tp":"L","fr":"S","r":[["Viane",""],["1328 m",""]],"c":""}]},{"id":"P126","lat":46.2859204,"lon":10.667627,"st":"Cambiare","a":"Volpaia","acc":"pista","d":[115,18,8],"t":[{"id":"P126-T1","st":"Ok","tp":"D","fr":"D","r":[["Ponte tibetano","0.15"],["Vermiglio","0.30"],["Sentiero di Valle n 15",""]],"c":""},{"id":"P126-T2","st":"Ok","tp":"D","fr":"S","r":[["Stavél","0.30"],["Sentiero di Valle n 15",""]],"c":""}]},{"id":"P127","lat":46.2859579,"lon":10.6659751,"st":"Cambiare","a":"Volpaia","acc":"strada","d":[2,22,32],"t":[{"id":"P127-T1","st":"Ok","tp":"D","fr":"D","r":[["Ponte tibetano","0.15"],["Vermiglio","0.30"],["Sentiero di Valle n 15",""]],"c":""},{"id":"P127-T2","st":"Ok","tp":"D","fr":"S","r":[["Stavél","0.30"],["Sentiero di Valle n 15",""]],"c":""}]},{"id":"P128","lat":46.2763762,"lon":10.6532883,"st":"Eliminare","a":"Velon-Pecé","acc":"strada","d":[8,2,272],"t":[{"id":"P128-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P129","lat":46.3031014,"lon":10.7087094,"st":"Cambiare","a":"Dasaré","acc":"pista","d":[171,1,5],"t":[{"id":"P129-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Croz de Ciciane","0.15"],["Dasaré","0.25"],["Comasine","1.20"]],"c":"1c272"},{"id":"P129-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Ossana","0.40"]],"c":"1c273"}]},{"id":"P130","lat":46.3053315,"lon":10.7124937,"st":"Nuovo","a":"Dasaré","acc":"sentiero","d":[216,95,1],"t":[{"id":"P130-T1","st":"Nuovo","tp":"D","fr":"D","r":[["Dasaré","0.15"],["Sentiero dei Minatori","0.25"],["Comasine","1.10"]],"c":"1c274"}]},{"id":"P131","lat":46.3068332,"lon":10.7157123,"st":"Cambiare","a":"Dasaré","acc":"lontano","d":[321,149,99],"t":[{"id":"P131-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Dasaré","0.20"]],"c":"1c275"}]},{"id":"P132","lat":46.3073597,"lon":10.7134311,"st":"Cambiare","a":"Dasaré","acc":"sentiero","d":[419,205,3],"t":[{"id":"P132-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Colem","0.25"],["Sentiero dei Minatori","0.30"],["Comasine","1.10"]],"c":"1c276"},{"id":"P132-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Dasaré","0.15"],["Vermiglio",""]],"c":"1c277"}]},{"id":"P133","lat":46.3010506,"lon":10.7019556,"st":"Ok","a":"Dasaré","acc":"strada","d":[0,9,395],"t":[{"id":"P133-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Croz de Ciciane","0.20"],["Colem","0.50"],["Ossana","0.45"]],"c":"1c278"}]},{"id":"P134","lat":46.2801008,"lon":10.6426506,"st":"Ok","a":"Strino","acc":"strada","d":[24,66,6],"t":[{"id":"P134-T1","st":"Ok","tp":"D","fr":"D","r":[["Strino","0.45"],["Forte Zacarana","2.00"],["Passo Tonale","2.10"]],"c":""}]},{"id":"P135","lat":46.2798825,"lon":10.6436209,"st":"Cambiare","a":"Strino","acc":"pista","d":[31,1,4],"t":[{"id":"P135-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Strino","0.50"],["Forte Zacarana","2.05"],["Passo Tonale","2.15"]],"c":"1c280"},{"id":"P135-T2","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P136","lat":46.3073571,"lon":10.6964517,"st":"Nuovo","a":"Boai","acc":"pista","d":[407,6,7],"t":[{"id":"P136-T1","st":"Nuovo","tp":"D","fr":"S","r":[["Dasaré","0.30"],["Vermiglio",""]],"c":"1c282"},{"id":"P136-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Masi di Boai","0.40"],["Malga Boai","1.00"],["Cima Boai","3.50"]],"c":"1c283"}]},{"id":"P137","lat":46.305066,"lon":10.706054,"st":"Cambiare","a":"Dasaré","acc":"strada","d":[7,12,98],"t":[{"id":"P137-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Masi di Boai","1.20"],["Malga Boai","1.35"],["Cima Boai","4.30"]],"c":"1c284"},{"id":"P137-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Sentiero dei Minatori","0.15"]],"c":"1c285"},{"id":"P137-T3","st":"Nuovo","tp":"D","fr":"D","r":[["Dasaré","0.05"],["Vermiglio","0.25"]],"c":"1c286"}]},{"id":"P138","lat":46.3038556,"lon":10.7052879,"st":"Ok","a":"Dasaré","acc":"strada","d":[7,7,1],"t":[{"id":"P138-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Masi di Boai","1.25"],["Malga Boai","1.40"],["Cima Boai","4.30"]],"c":"1c287"},{"id":"P138-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Vermiglio","0.20"]],"c":"1c288"},{"id":"P138-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Colem","0.40"],["Sentiero dei Minatori","0.45"],["Comasine","1.25"]],"c":"1c289"},{"id":"P138-T4","st":"Ok","tp":"L","fr":"S","r":[["Dasaré",""],["1346 m",""]],"c":""}]},{"id":"P139","lat":46.3060309,"lon":10.6669069,"st":"Non necessario","a":"Saviana","acc":"pista","d":[146,19,1],"t":[{"id":"P139-T1","st":"Cambiare","tp":"L","fr":"S","r":[["Malga Saviana",""],["1917 m",""]],"c":"1c291"}]},{"id":"P140","lat":46.2778248,"lon":10.6426463,"st":"Ok","a":"Velon-Pecé","acc":"sentiero","d":[162,105,3],"t":[{"id":"P140-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Forte Velon","0.10"]],"c":"1c292"},{"id":"P140-T2","st":"Nuovo","tp":"D","fr":"D","r":[["Velon","0.20"]],"c":"1c293"},{"id":"P140-T3","st":"Nuovo","tp":"D","fr":"S","r":[["Malga Pecé","0.50"],["Pont dei Alpini","1.10"],["Passo Tonale","2.20"]],"c":"1c294"}]},{"id":"P141","lat":46.2774749,"lon":10.6421544,"st":"Cambiare","a":"Velon-Pecé","acc":"sentiero","d":[210,154,4],"t":[{"id":"P141-T1","st":"Cambiare","tp":"D","fr":"D","r":[["Forte Velon","0.15"],["Velon","0.20"]],"c":"1c295"},{"id":"P141-T2","st":"Nuovo","tp":"D","fr":"S","r":[["Malga Pecé","0.45"],["Pont dei Alpini","1.05"],["Passo Tonale","2.15"]],"c":"1c296"}]},{"id":"P142","lat":46.2976082,"lon":10.7022467,"st":"Eliminare","a":"Poia Cortina","acc":"pista","d":[32,2,26],"t":[{"id":"P142-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""}]},{"id":"P143","lat":46.30016,"lon":10.7042513,"st":"Ok","a":"","acc":"strada","d":[1,82,345],"t":[{"id":"P143-T1","st":"Ok","tp":"D","fr":"S","r":[["Cortina","0.10"]],"c":""},{"id":"P143-T2","st":"Ok","tp":"L","fr":"S","r":[["Màrgen",""],["1156 m",""]],"c":""}]},{"id":"P144","lat":46.278301,"lon":10.6442298,"st":"Cambiare","a":"Velon-Pecé","acc":"pista","d":[128,6,44],"t":[{"id":"P144-T1","st":"Eliminare","tp":"D","fr":"D","r":[],"c":""},{"id":"P144-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Velon","0.20"],["Malga Pecé","1.00"],["Passo Tonale","2.25"]],"c":"1c301"},{"id":"P144-T3","st":"Cambiare","tp":"L","fr":"S","r":[["Forte Velon",""],["1507 m",""]],"c":"1c302"}]},{"id":"P145","lat":46.306018,"lon":10.659296,"st":"Non necessario","a":"Saviana","acc":"sentiero","d":[633,562,3],"t":[{"id":"P145-T1","st":"Nuovo","tp":"L","fr":"S","r":[["Matazin",""],["2180 m",""]],"c":"1c303"}]},{"id":"P146","lat":46.2802058,"lon":10.6633529,"st":"Ok","a":"Stavel","acc":"strada","d":[3,0,198],"t":[{"id":"P146-T1","st":"Ok","tp":"D","fr":"S","r":[["Viane","0.40"],["Vermiglio","1.10"],["Sentiero di Valle n 15",""]],"c":""},{"id":"P146-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Stavél","0.10"],["Sentiero di Valle n 15",""]],"c":"1c305"}]},{"id":"P147","lat":46.307231,"lon":10.671922,"st":"Cambiare","a":"Saviana","acc":"pista","d":[328,1,2],"t":[{"id":"P147-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Saviana","0.15"],["Malga Verniana","0.45"]],"c":"1c306"},{"id":"P147-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Malga Boai","0.30"],["Masi di Boai","0.40"]],"c":"1c307"},{"id":"P147-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Saviana Bassa","0.20"],["Vermiglio","1.00"]],"c":"1c308"}]},{"id":"P148","lat":46.297854,"lon":10.705136,"st":"Ok","a":"Poia Cortina","acc":"pista","d":[210,2,108],"t":[{"id":"P148-T1","st":"Eliminare","tp":"D","fr":"S","r":[],"c":""},{"id":"P148-T2","st":"Cambiare","tp":"D","fr":"D","r":[["Laghetti di San Leonardo",""],["Vermiglio",""]],"c":"1c310"},{"id":"P148-T3","st":"Ok","tp":"L","fr":"S","r":[["Poia di Cortina","1135m"]],"c":""}]},{"id":"P149","lat":46.292545,"lon":10.659782,"st":"Cambiare","a":"Mezol","acc":"pista","d":[725,3,22],"t":[{"id":"P149-T1","st":"Cambiare","tp":"D","fr":"S","r":[["Bait de Mezöl","0.20"],["Coregia","0.55"]],"c":""},{"id":"P149-T2","st":"Cambiare","tp":"D","fr":"S","r":[["Malga Mezöl","0.20"],["Malga Strino","1.35"]],"c":""},{"id":"P149-T3","st":"Cambiare","tp":"D","fr":"D","r":[["Masi di Verniana","0.30"],["Malga Saviana","0.45"],["Vermiglio",""]],"c":""}]}];
+
+/* ---------- dizionari ---------- */
+const STATI = [
+  {k:"Nuovo",            col:"var(--st-nuovo)",     shape:"tri",     pill:"Palo nuovo",
+   txt:"Qui oggi non c'è un palo: va posato nuovo e poi montate le tabelle nell'ordine sotto."},
+  {k:"Cambiare",         col:"var(--st-cambiare)",  shape:"square",  pill:"Palo da sostituire",
+   txt:"Il palo va sostituito: posa quello nuovo, sposta le tabelle da recuperare, monta le nuove e togli il palo vecchio."},
+  {k:"Ok",               col:"var(--st-ok)",        shape:"circle",  pill:"Palo ok",
+   txt:"Il palo resta dov'è. Si lavora solo sulle tabelle."},
+  {k:"Eliminare",        col:"var(--st-eliminare)", shape:"cross",   pill:"Palo da eliminare",
+   txt:"Il palo va rimosso insieme a tutte le sue tabelle. A fine lavori qui non resta nulla."},
+  {k:"Non necessario",   col:"var(--st-neutro)",    shape:"diamond", pill:"Palo non necessario",
+   txt:"Qui non va posato nessun palo."},
+  {k:"Solo segno rosso", col:"var(--st-neutro)",    shape:"ring",    pill:"Solo segno rosso",
+   txt:"Nessuna tabella: qui c'è solo il segno bianco-rosso sul sentiero."}
+];
+const SM = Object.fromEntries(STATI.map(s => [s.k, s]));
+const ROLE = {
+  nuova:       {lbl:"Nuova",          why:"da portare e montare"},
+  sostituisce: {lbl:"Nuova",          why:"sostituisce la vecchia, che va tolta"},
+  recupera:    {lbl:"Da recuperare",  why:"smontala dal palo attuale e rimontala qui"},
+  resta:       {lbl:"Resta",          why:"già montata, non va toccata"}
+};
+const ACC = {strada:"in macchina, su strada", pista:"in macchina, su strada", sentiero:"a piedi, su sentiero", lontano:"a piedi, fuori sentiero mappato"};
+
+/* ---------- utilità ---------- */
+const SVGNS = "http://www.w3.org/2000/svg";
+function h(tag, cls, txt){ const e = document.createElement(tag); if (cls) e.className = cls; if (txt != null) e.textContent = txt; return e; }
+function sv(tag, a){ const e = document.createElementNS(SVGNS, tag); for (const k in a) e.setAttribute(k, a[k]); return e; }
+function fold(s){ return (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, ""); }
+function shapeSVG(kind, col, k){
+  k = k || 1;
+  if (kind === "circle") return `<circle class="under" r="${6.6*k}"/><circle r="${5*k}" fill="${col}"/>`;
+  if (kind === "square") return `<rect class="under" x="${-6*k}" y="${-6*k}" width="${12*k}" height="${12*k}"/><rect x="${-4.5*k}" y="${-4.5*k}" width="${9*k}" height="${9*k}" fill="${col}"/>`;
+  if (kind === "tri")    return `<path class="under" d="M0 ${-8*k} L ${7.2*k} ${4.6*k} L ${-7.2*k} ${4.6*k} Z"/><path d="M0 ${-5.8*k} L ${5.2*k} ${3.2*k} L ${-5.2*k} ${3.2*k} Z" fill="${col}"/>`;
+  if (kind === "cross")  return `<path d="M${-4.3*k} ${-4.3*k} L ${4.3*k} ${4.3*k} M ${-4.3*k} ${4.3*k} L ${4.3*k} ${-4.3*k}" stroke="var(--ring)" stroke-width="${5.2*k}" stroke-linecap="round" fill="none"/><path d="M${-4.3*k} ${-4.3*k} L ${4.3*k} ${4.3*k} M ${-4.3*k} ${4.3*k} L ${4.3*k} ${-4.3*k}" stroke="${col}" stroke-width="${2.8*k}" stroke-linecap="round" fill="none"/>`;
+  if (kind === "ring")   return `<circle r="${4.6*k}" fill="none" stroke="var(--ring)" stroke-width="${4.4*k}"/><circle r="${4.6*k}" fill="none" stroke="${col}" stroke-width="${2.2*k}"/>`;
+  return `<path class="under" d="M0 ${-7.6*k} L ${7.6*k} 0 L 0 ${7.6*k} L ${-7.6*k} 0 Z"/><path d="M0 ${-5.6*k} L ${5.6*k} 0 L 0 ${5.6*k} L ${-5.6*k} 0 Z" fill="none" stroke="${col}" stroke-width="${2*k}"/>`;
+}
+function shapeEl(state, k){
+  const st = SM[state] || SM.Ok;
+  const s = sv("svg", {width:14, height:14, viewBox:"-8 -8 16 16", "aria-hidden":"true"});
+  s.innerHTML = shapeSVG(st.shape, st.col, k || .9);
+  return s;
+}
+let toastT;
+function toast(msg){ const t = document.getElementById("toast"); t.textContent = msg; t.hidden = false; clearTimeout(toastT); toastT = setTimeout(() => t.hidden = true, 2600); }
+
+/* ---------- indici ---------- */
+const BYID = new Map(DATA.map(p => [p.id, p]));
+const TAB = new Map(), CODE = new Map();
+DATA.forEach(p => p.t.forEach(t => { t.p = p; TAB.set(t.id, t); if (t.c) CODE.set(t.c.toLowerCase(), t); }));
+const AREE = [...new Set(DATA.map(p => p.a).filter(Boolean))].sort((a, b) => a.localeCompare(b, "it"));
+
+/* come deve essere il palo a fine lavori */
+function assetto(p){
+  const fin = [], via = [];
+  if (p.st === "Eliminare"){ p.t.forEach(t => via.push({t, why:"elim"})); return {fin, via}; }
+  if (p.st === "Solo segno rosso") return {fin, via};
+  const loc = [], dir = [];
+  p.t.forEach(t => {
+    if (t.st === "Eliminare"){ via.push({t, why:"elim"}); return; }
+    if (t.st === "Ok" && !t.r.length) return;
+    let role;
+    if (t.st === "Nuovo") role = "nuova";
+    else if (t.st === "Cambiare"){ role = "sostituisce"; via.push({t, why:"vecchia"}); }
+    else role = p.st === "Cambiare" ? "recupera" : "resta";
+    (t.tp === "L" ? loc : dir).push({t, role});
+  });
+  return {fin: loc.concat(dir), via};
+}
+DATA.forEach(p => { p.as = assetto(p); });
+
+/* ---------- mappa ---------- */
+let map = null, markers = new Map(), hulls = new Map(), selected = null;
+const visible = new Set(STATI.map(s => s.k));
+let areaSel = "";
+
+function initMap(){
+  const el = document.getElementById("map");
+  if (!window.L){
+    el.innerHTML = '<p style="padding:16px;color:var(--ink-2)">La mappa non si è caricata (manca la connessione alla libreria). Le schede dei pali funzionano lo stesso: usa la ricerca.</p>';
+    return;
+  }
+  // la mappa resta dentro il rettangolo dei pali, con un piccolo margine
+  const ZONA = L.latLngBounds(DATA.map(p => [p.lat, p.lon])).pad(0.08);
+  map = L.map(el, {zoomControl:true, attributionControl:true, zoomSnap:.5, maxZoom:19,
+                   maxBounds: ZONA, maxBoundsViscosity: 1});
+  const limitaZoom = () => { map.setMinZoom(Math.floor(map.getBoundsZoom(ZONA, false) * 2) / 2); };
+  map.on("resize", limitaZoom);
+  map.zoomControl.setPosition("topleft");
+  const bases = {
+    topo: L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {maxNativeZoom:17, maxZoom:19, subdomains:"abc", bounds:ZONA,
+      attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://opentopomap.org">OpenTopoMap</a>'}),
+    sat:  L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {maxNativeZoom:18, maxZoom:19, bounds:ZONA,
+      attribution:"Immagini © Esri"})
+  };
+  let cur = bases.topo, loaded = 0, failed = 0;
+  Object.values(bases).forEach(b => { b.on("tileload", () => loaded++); b.on("tileerror", () => failed++); });
+  cur.addTo(map);
+  setTimeout(() => {
+    if (!loaded && failed){
+      const n = document.getElementById("notice");
+      n.textContent = "Lo sfondo della mappa qui non si carica: i pali restano cliccabili e navigabili.";
+      n.hidden = false;
+    }
+  }, 4500);
+  document.querySelectorAll("#baseSeg button").forEach(b => b.addEventListener("click", () => {
+    const nb = bases[b.dataset.base]; if (nb === cur) return;
+    map.removeLayer(cur); cur = nb; cur.addTo(map);
+    document.querySelectorAll("#baseSeg button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  }));
+
+  // sagome delle aree
+  AREE.forEach(a => {
+    const pts = DATA.filter(p => p.a === a).map(p => [p.lat, p.lon]);
+    const ring = hullOf(pts, 70);
+    if (ring.length < 3) return;
+    const poly = L.polygon(ring, {className:"hull", interactive:false}).addTo(map);
+    const c = centroid(pts);
+    const lab = L.marker(c, {interactive:false, keyboard:false, icon:L.divIcon({className:"hlabel", html:`<span>${a}</span>`, iconSize:[0,0]})}).addTo(map);
+    hulls.set(a, {poly, lab});
+  });
+
+  // pali
+  DATA.forEach(p => {
+    const st = SM[p.st] || SM.Ok;
+    const icon = L.divIcon({className:"pm", iconSize:[26,26], iconAnchor:[13,13],
+      html:`<svg width="26" height="26" viewBox="-13 -13 26 26"><circle class="halo" r="10.5"/>${shapeSVG(st.shape, st.col, 1)}</svg>`});
+    const m = L.marker([p.lat, p.lon], {icon, title:`${p.id} · ${st.pill}${p.a ? " · " + p.a : ""}`, keyboard:true, riseOnHover:true});
+    m.on("click", () => go(p.id));
+    m.addTo(map);
+    markers.set(p.id, m);
+  });
+  fitAll();
+  limitaZoom();
+
+  document.getElementById("fitall").addEventListener("click", () => { areaSel ? fitArea(areaSel) : fitAll(); });
+  document.getElementById("locate").addEventListener("click", () => watchId === null ? startTrack() : stopTrack());
+}
+
+/* ---------- la mia posizione (seguita mentre ci si muove) ---------- */
+let me = null, meDot = null, meAcc = null, watchId = null, firstFix = false;
+function startTrack(){
+  if (!navigator.geolocation){ toast("Questo dispositivo non fornisce la posizione"); return; }
+  const btn = document.getElementById("locate");
+  btn.setAttribute("aria-pressed", "true"); btn.classList.add("wait");
+  document.getElementById("locTxt").textContent = "Cerco…";
+  firstFix = true;
+  watchId = navigator.geolocation.watchPosition(onPos, onPosErr, {enableHighAccuracy:true, maximumAge:5000, timeout:20000});
+}
+function stopTrack(){
+  if (watchId !== null) navigator.geolocation.clearWatch(watchId);
+  watchId = null; me = null;
+  if (meDot){ map.removeLayer(meDot); map.removeLayer(meAcc); meDot = meAcc = null; }
+  const btn = document.getElementById("locate");
+  btn.setAttribute("aria-pressed", "false"); btn.classList.remove("wait");
+  document.getElementById("locTxt").textContent = "Dove sono";
+  updateMeDist();
+}
+function onPos(pos){
+  me = {lat: pos.coords.latitude, lon: pos.coords.longitude, acc: Math.round(pos.coords.accuracy || 0)};
+  const ll = [me.lat, me.lon];
+  if (!meDot){
+    meAcc = L.circle(ll, {radius: me.acc, className: "meacc", interactive:false}).addTo(map);
+    meDot = L.circleMarker(ll, {radius:7, weight:3, className:"medot", interactive:false}).addTo(map);
+  } else { meAcc.setLatLng(ll).setRadius(me.acc); meDot.setLatLng(ll); }
+  const btn = document.getElementById("locate"); btn.classList.remove("wait");
+  document.getElementById("locTxt").textContent = me.acc ? `± ${me.acc} m` : "Posizione attiva";
+  if (firstFix){ firstFix = false; map.setView(ll, Math.max(map.getZoom(), 16)); }
+  updateMeDist();
+}
+function onPosErr(err){
+  const msg = err && err.code === 1 ? "Permesso di posizione negato: attivalo nelle impostazioni del browser"
+            : err && err.code === 3 ? "La posizione non arriva: prova all'aperto"
+            : "Non riesco a leggere la posizione";
+  toast(msg);
+  if (!me || (err && err.code === 1)) stopTrack();
+}
+function metri(a, b){
+  const R = 6371000, r = Math.PI / 180, dl = (b.lat - a.lat) * r, dg = (b.lon - a.lon) * r;
+  const x = Math.sin(dl/2)**2 + Math.cos(a.lat*r) * Math.cos(b.lat*r) * Math.sin(dg/2)**2;
+  return 2 * R * Math.asin(Math.sqrt(x));
+}
+function fmtDist(m){ return m < 1000 ? `${Math.round(m / 5) * 5} m` : `${(m / 1000).toFixed(m < 10000 ? 1 : 0).replace(".", ",")} km`; }
+function updateMeDist(){
+  const el = document.getElementById("dme"); if (!el) return;
+  const dt = el.previousElementSibling, off = !me || !selected;
+  el.hidden = dt.hidden = off;
+  if (off) return;
+  el.textContent = fmtDist(metri(me, selected));
+}
+function fitAll(){ if (map) map.fitBounds(DATA.map(p => [p.lat, p.lon]), {padding:[30,30]}); }
+function fitArea(a){ if (map) map.fitBounds(DATA.filter(p => p.a === a).map(p => [p.lat, p.lon]), {padding:[50,50], maxZoom:16}); }
+
+/* inviluppo convesso gonfiato di r metri */
+function hullOf(pts, r){
+  const lat0 = pts.reduce((s, p) => s + p[0], 0) / pts.length, kx = Math.cos(lat0 * Math.PI / 180), M = 111320;
+  const P = [];
+  pts.forEach(([la, lo]) => { for (let i = 0; i < 12; i++){ const a = i * Math.PI / 6; P.push([lo * kx * M + r * Math.cos(a), la * M + r * Math.sin(a)]); } });
+  P.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const cross = (o, a, b) => (a[0]-o[0])*(b[1]-o[1]) - (a[1]-o[1])*(b[0]-o[0]);
+  const lo = [], up = [];
+  for (const p of P){ while (lo.length >= 2 && cross(lo[lo.length-2], lo[lo.length-1], p) <= 0) lo.pop(); lo.push(p); }
+  for (let i = P.length - 1; i >= 0; i--){ const p = P[i]; while (up.length >= 2 && cross(up[up.length-2], up[up.length-1], p) <= 0) up.pop(); up.push(p); }
+  return lo.slice(0, -1).concat(up.slice(0, -1)).map(([x, y]) => [y / M, x / kx / M]);
+}
+function centroid(pts){ return [pts.reduce((s, p) => s + p[0], 0) / pts.length, pts.reduce((s, p) => s + p[1], 0) / pts.length]; }
+
+function refreshMarkers(){
+  if (!map) return;
+  DATA.forEach(p => {
+    const m = markers.get(p.id);
+    const show = visible.has(p.st) || (selected && selected.id === p.id);
+    if (show && !map.hasLayer(m)) m.addTo(map);
+    if (!show && map.hasLayer(m)) map.removeLayer(m);
+    const el = m.getElement(); if (!el) return;
+    el.classList.toggle("sel", !!selected && selected.id === p.id);
+    el.classList.toggle("dim", !!areaSel && p.a !== areaSel);
+  });
+  hulls.forEach((v, a) => { const e = v.poly.getElement(); if (e) e.classList.toggle("on", a === areaSel); });
+}
+
+/* ---------- pannello iniziale ---------- */
+function buildHome(){
+  let nuove = 0, recupera = 0, elim = 0, vecchie = 0;
+  DATA.forEach(p => { p.as.fin.forEach(f => { if (f.role === "nuova" || f.role === "sostituisce") nuove++; if (f.role === "recupera") recupera++; });
+                      p.as.via.forEach(v => v.why === "elim" ? elim++ : vecchie++); });
+  const T = document.getElementById("totals");
+  [[DATA.length, "pali", null], [nuove, "tabelle nuove da montare", "var(--r-nuova)"],
+   [recupera, "da recuperare dal palo attuale", "var(--r-recupera)"], [elim + vecchie, "tabelle vecchie da togliere", "var(--r-togli)"]]
+   .forEach(([n, t, c]) => { const d = h("div"); const b = h("b", null, String(n)); const s = h("span", "lbl");
+     if (c){ const sw = h("span", "sw"); sw.style.background = c; s.appendChild(sw); } s.appendChild(document.createTextNode(t)); d.append(b, s); T.appendChild(d); });
+
+  const C = document.getElementById("chips");
+  STATI.forEach(st => {
+    const n = DATA.filter(p => p.st === st.k).length;
+    const b = h("button", "chip"); b.type = "button"; b.setAttribute("aria-pressed", "true");
+    b.append(shapeEl(st.k, .95), document.createTextNode(st.pill), h("span", "cnt", String(n)));
+    b.addEventListener("click", () => {
+      const on = b.getAttribute("aria-pressed") === "true";
+      b.setAttribute("aria-pressed", String(!on));
+      on ? visible.delete(st.k) : visible.add(st.k);
+      refreshMarkers();
+    });
+    C.appendChild(b);
+  });
+  const S = document.getElementById("area");
+  AREE.forEach(a => { const o = h("option", null, `${a} (${DATA.filter(p => p.a === a).length} pali)`); o.value = a; S.appendChild(o); });
+  S.addEventListener("change", () => { areaSel = S.value; refreshMarkers(); areaSel ? fitArea(areaSel) : fitAll(); });
+}
+
+/* ---------- disegno di una tabella ---------- */
+function plateEl(t){
+  if (t.tp === "L"){
+    const pl = h("div", "plate loc"), body = h("div", "body");
+    const txt = t.r.flat().filter(Boolean);
+    const name = txt.find(x => !/\d\s*m$/i.test(x)) || txt[0] || "";
+    const alt = txt.find(x => /\d\s*m$/i.test(x) && x !== name) || "";
+    if (!txt.length) body.appendChild(h("div", "empty", "senza testo nel rilievo"));
+    else { body.appendChild(h("div", "locname", name)); if (alt) body.appendChild(h("div", "localt", alt.replace(/(\d)m$/, "$1 m"))); }
+    pl.appendChild(body); return pl;
+  }
+  const side = t.fr === "D" ? "right" : "left";
+  const pl = h("div", "plate " + side);
+  pl.appendChild(h("div", "arrow"));
+  const body = h("div", "body");
+  body.appendChild(h("div", "blaze"));
+  if (!t.r.length) body.appendChild(h("div", "empty", "senza testo nel rilievo"));
+  t.r.forEach(([d, tm]) => { const r = h("div", "row"); r.append(h("div", "dest", d), h("div", "time", tm)); body.appendChild(r); });
+  pl.appendChild(body);
+  pl.setAttribute("aria-label", `Freccia a ${side === "right" ? "destra" : "sinistra"}: ` + t.r.map(x => x.join(" ")).join(", "));
+  return pl;
+}
+function destText(t){ return t.r.map(x => x[0]).filter(Boolean).join(" · ") || "senza testo"; }
+
+/* ---------- scheda del palo ---------- */
+const side = document.getElementById("side"), home = document.getElementById("home"), pane = document.getElementById("pole");
+
+function renderPole(p, hitId){
+  const st = SM[p.st] || SM.Ok;
+  pane.textContent = "";
+
+  // barra in alto: indietro + palo precedente/successivo nella stessa area
+  const head = h("div", "phead");
+  const back = h("button", "back"); back.type = "button";
+  back.innerHTML = '<svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Mappa';
+  back.addEventListener("click", closePole);
+  const same = DATA.filter(q => q.a && q.a === p.a);
+  const i = same.indexOf(p);
+  const nav = h("div", "nav");
+  const prev = h("button", null, i > 0 ? "‹ " + same[i-1].id : "‹");
+  const next = h("button", null, i >= 0 && i < same.length - 1 ? same[i+1].id + " ›" : "›");
+  prev.type = next.type = "button";
+  prev.disabled = !(i > 0); next.disabled = !(i >= 0 && i < same.length - 1);
+  prev.title = "Palo precedente nell'area"; next.title = "Palo successivo nell'area";
+  prev.addEventListener("click", () => go(same[i-1].id));
+  next.addEventListener("click", () => go(same[i+1].id));
+  nav.append(prev, next);
+  head.append(back, nav);
+  pane.appendChild(head);
+
+  const wrap = h("div", "pad");
+  pane.appendChild(wrap);
+
+  // titolo
+  const tt = h("div", "ptitle");
+  const h2 = h("h2"); h2.append(document.createTextNode("Palo " + p.id)); if (p.a) h2.appendChild(h("small", null, "area " + p.a));
+  tt.append(h2, h("span", "coord mono", `${p.lat.toFixed(6)}, ${p.lon.toFixed(6)}`));
+  wrap.appendChild(tt);
+
+  // stato del palo
+  const sb = h("div", "statusbox");
+  const pill = h("span", "pill"); pill.style.color = st.col; pill.append(shapeEl(p.st, 1), document.createTextNode(st.pill));
+  sb.append(pill, h("p", null, st.txt));
+  wrap.appendChild(sb);
+
+  // azioni
+  const act = h("div", "actions");
+  const cp = h("button", "btn", "Copia link del palo"); cp.type = "button";
+  cp.addEventListener("click", () => copyLink(poleURL(p.id)));
+  act.append(cp);
+  wrap.appendChild(act);
+
+  // fatti
+  const fin = p.as.fin, via = p.as.via;
+  const dl = h("dl", "facts");
+  const add = (k, v) => { dl.append(h("dt", null, k), typeof v === "string" ? h("dd", null, v) : (() => { const d = h("dd"); d.appendChild(v); return d; })()); };
+  if (p.acc) add("Accesso", ACC[p.acc] || p.acc);
+  const [ds, dp, dse] = p.d;
+  const dd = [];
+  const dstr = [ds, dp].filter(x => x != null);
+  if (dstr.length) dd.push(`strada ${Math.min(...dstr)} m`); if (dse != null) dd.push(`sentiero ${dse} m`);
+  if (dd.length) add("Distanze", dd.join(" · "));
+  add("Distanza da te", "…"); dl.lastChild.id = "dme";
+  if (fin.length) add("A fine lavori", `${fin.length} ${fin.length === 1 ? "tabella" : "tabelle"} sul palo`);
+  const carry = fin.filter(f => f.role === "nuova" || f.role === "sostituisce");
+  if (carry.length){
+    const c = h("div", "carry");
+    carry.forEach(f => { const a = h("a", f.t.c ? "" : "miss", f.t.c || "senza codice"); a.href = "#" + f.t.id; a.title = destText(f.t); c.appendChild(a); });
+    add("Da portare", c);
+  }
+  wrap.appendChild(dl);
+
+  // il palo a fine lavori
+  const sec = h("div"); sec.style.display = "flex"; sec.style.flexDirection = "column"; sec.style.gap = "4px";
+  sec.appendChild(h("span", "lbl", "Come deve essere a fine lavori"));
+  if (!fin.length){
+    const e = h("div", "empty-post", p.st === "Eliminare" ? "Nessun palo e nessuna tabella: il palo va tolto."
+                                      : p.st === "Solo segno rosso" ? "Nessuna tabella: solo il segno bianco-rosso." : "Nessuna tabella su questo palo.");
+    sec.appendChild(e);
+  } else {
+    const post = h("div", "post" + (p.st === "Non necessario" ? " nopole" : ""));
+    fin.forEach((f, k) => {
+      const t = f.t, R = ROLE[f.role];
+      const art = h("article", "tab"); art.id = "tab-" + t.id;
+      if (hitId && hitId === t.id) art.classList.add("hit");
+      art.appendChild(h("span", "pos", String(k + 1)));
+      art.appendChild(plateEl(t));
+      const info = h("div", "tinfo");
+      info.append(h("span", "role " + f.role, R.lbl), h("span", "why", R.why));
+      if (f.role === "nuova" || f.role === "sostituisce"){
+        info.appendChild(t.c ? h("span", "code", "2026 · " + t.c) : h("span", "code miss", "codice non ancora registrato"));
+      }
+      info.appendChild(h("span", "tid", t.id));
+      art.appendChild(info);
+      post.appendChild(art);
+    });
+    sec.appendChild(post);
+  }
+  wrap.appendChild(sec);
+
+  // da togliere
+  const rm = [];
+  if (p.st === "Cambiare") rm.push(["Il palo attuale", "da togliere dopo aver spostato le tabelle da recuperare"]);
+  if (p.st === "Eliminare") rm.push(["Il palo", "da togliere con tutte le tabelle elencate sotto"]);
+  via.forEach(v => {
+    if (v.why === "vecchia") rm.push([`Vecchia tabella: ${destText(v.t)}`, `sostituita dalla nuova ${v.t.c || "(codice non ancora registrato)"}`]);
+    else rm.push([v.t.r.length ? `Tabella: ${destText(v.t)}` : (v.t.tp === "L" ? "Tabella località" : "Tabella di direzione"), "da togliere, non va rimontata · " + v.t.id]);
+  });
+  if (rm.length){
+    const box = h("div"); box.style.display = "flex"; box.style.flexDirection = "column"; box.style.gap = "6px";
+    box.appendChild(h("span", "lbl", "Da togliere dal palo attuale"));
+    const r = h("div", "remove"), ul = h("ul");
+    rm.forEach(([a, b]) => { const li = h("li"); const d = h("div"); d.append(document.createTextNode(a), h("small", null, b)); li.append(h("span", "x", "×"), d); ul.appendChild(li); });
+    r.appendChild(ul); box.appendChild(r); wrap.appendChild(box);
+  }
+
+
+  home.hidden = true; pane.hidden = false;
+  side.classList.add("open");
+  side.scrollTop = 0;
+  if (hitId){ const a = document.getElementById("tab-" + hitId); if (a) setTimeout(() => a.scrollIntoView({block:"center", behavior:"smooth"}), 60); }
+  document.title = `${p.id} · Posa segnavia Vermiglio`;
+  updateMeDist();
+}
+
+function poleURL(id){ return location.href.split("#")[0] + "#" + id; }
+function copyLink(u){
+  const done = () => toast("Link copiato");
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(u).then(done, () => toast(u));
+  else toast(u);
+}
+
+/* ---------- indirizzi: #P034 · #P034-T5 · #1c78 ---------- */
+function resolve(raw){
+  const s = (raw || "").trim().replace(/^#/, "");
+  if (!s) return null;
+  let m = s.match(/^p\s*0*(\d{1,3})(?:\s*-\s*t\s*(\d+))?$/i);
+  if (m){
+    const pid = "P" + m[1].padStart(3, "0");
+    const p = BYID.get(pid); if (!p) return {miss:s};
+    if (m[2]){ const t = TAB.get(`${pid}-T${m[2]}`); return t ? {p, t} : {p}; }
+    return {p};
+  }
+  m = s.match(/^1?\s*c\s*0*(\d{1,3})$/i);
+  if (m){ const t = CODE.get("1c" + m[1]); return t ? {p:t.p, t} : {miss:s, code:true}; }
+  return null;
+}
+function route(){
+  const r = resolve(decodeURIComponent(location.hash));
+  if (!r){ showHome(); return; }
+  if (r.miss){ showHome(); toast(r.code ? `Il codice ${r.miss} non è registrato` : `Il palo ${r.miss} non esiste`); return; }
+  selected = r.p;
+  renderPole(r.p, r.t && r.t.id);
+  refreshMarkers();
+  if (map){ map.invalidateSize(); map.setView([r.p.lat, r.p.lon], Math.max(map.getZoom(), 15), {animate:true}); }
+}
+function showHome(){
+  selected = null; pane.hidden = true; home.hidden = false; side.classList.remove("open");
+  document.title = "Posa segnavia Vermiglio"; refreshMarkers();
+}
+function go(id){
+  if (location.hash === "#" + id){ route(); return; }
+  history.pushState({app:1}, "", "#" + id); route();
+}
+function closePole(){
+  if (history.state && history.state.app){ history.back(); return; }
+  history.replaceState(null, "", location.pathname + location.search); showHome();
+}
+window.addEventListener("popstate", route);
+window.addEventListener("hashchange", route);
+document.getElementById("homeLink").addEventListener("click", e => { e.preventDefault(); history.replaceState(null, "", location.pathname + location.search); showHome(); fitAll(); });
+
+/* ---------- ricerca ---------- */
+const q = document.getElementById("q"), res = document.getElementById("results");
+let hits = [], hi = -1;
+function search(v){
+  res.textContent = ""; hits = []; hi = -1;
+  const s = v.trim(); if (!s){ res.hidden = true; return; }
+  const r = resolve(s);
+  if (r && !r.miss){
+    hits.push({id: r.t ? r.t.id : r.p.id, t: r.t ? `${r.t.c ? r.t.c + " → " : ""}${destText(r.t)}` : `Palo ${r.p.id}`, s: `${r.p.id} · ${r.p.a || "senza area"} · ${(SM[r.p.st]||SM.Ok).pill}`, lbl: r.p.id});
+  }
+  const f = fold(s);
+  if (f.length >= 2){
+    DATA.forEach(p => {
+      if (hits.length >= 14) return;
+      const m = p.t.find(t => t.r.some(x => fold(x[0]).includes(f)));
+      if (m && !(r && r.p === p)) hits.push({id: m.id, t: destText(m), s: `${p.id} · ${p.a || "senza area"}`, lbl: p.id});
+      else if (!m && fold(p.a).includes(f) && !(r && r.p === p)) hits.push({id: p.id, t: `Area ${p.a}`, s: `${p.id} · ${(SM[p.st]||SM.Ok).pill}`, lbl: p.id});
+    });
+  }
+  if (!hits.length){
+    res.appendChild(h("div", "none", r && r.miss ? (r.code ? `Il codice ${s} non è registrato.` : `Il palo ${s} non esiste.`) : "Nessun palo trovato. Prova con il codice (1c45), il palo (P034) o una destinazione."));
+  }
+  hits.forEach((x, k) => {
+    const b = h("button"); b.type = "button";
+    b.append(h("span", "rid", x.lbl), h("span", "rt", x.t), h("span", "rs", x.s));
+    b.addEventListener("click", () => pick(k));
+    res.appendChild(b);
+  });
+  res.hidden = false;
+}
+function pick(k){ const x = hits[k]; if (!x) return; res.hidden = true; q.blur(); go(x.id); }
+q.addEventListener("input", () => search(q.value));
+q.addEventListener("focus", () => { if (q.value.trim()) search(q.value); });
+q.addEventListener("keydown", e => {
+  const bs = [...res.querySelectorAll("button")];
+  if (e.key === "ArrowDown" && bs.length){ e.preventDefault(); hi = (hi + 1) % bs.length; }
+  else if (e.key === "ArrowUp" && bs.length){ e.preventDefault(); hi = (hi - 1 + bs.length) % bs.length; }
+  else if (e.key === "Enter"){ e.preventDefault(); pick(hi >= 0 ? hi : 0); return; }
+  else if (e.key === "Escape"){ res.hidden = true; return; }
+  else return;
+  bs.forEach((b, i) => b.classList.toggle("on", i === hi));
+});
+document.addEventListener("click", e => { if (!e.target.closest(".searchbox")) res.hidden = true; });
+
+/* ---------- larghezza massima delle tabelle ----------
+   Tutte le tabelle hanno la stessa larghezza massima: quella che serve alla riga più lunga
+   (destinazione + tempo) fra tutte le tabelle, misurata con i caratteri veri della pagina. */
+function measurePlates(){
+  const probe = h("div", "plate right");
+  probe.style.cssText = "position:absolute;visibility:hidden;left:-9999px;top:0;width:600px";
+  probe.innerHTML = '<div class="body"><div class="row"><div class="dest">x</div><div class="time">0.00</div></div></div>';
+  document.body.appendChild(probe);
+  const q = sel => getComputedStyle(probe.querySelector(sel));
+  const cd = q(".dest"), ct = q(".time"), cb = q(".body"), cr = q(".row");
+  const ctx = document.createElement("canvas").getContext("2d");
+  const w = (txt, c) => { ctx.font = `${c.fontStyle} ${c.fontWeight} ${c.fontSize} ${c.fontFamily}`; return ctx.measureText(txt).width; };
+  const gap = parseFloat(cr.columnGap) || 8;
+  let max = 0;
+  DATA.forEach(p => p.t.forEach(t => {
+    if (t.tp !== "D") return;
+    t.r.forEach(([d, tm]) => { max = Math.max(max, w(d, cd) + (tm ? gap + w(tm, ct) : 0)); });
+  }));
+  const extra = parseFloat(cb.paddingLeft) + parseFloat(cb.paddingRight) + parseFloat(cb.borderLeftWidth) + parseFloat(cb.borderRightWidth);
+  probe.remove();
+  document.documentElement.style.setProperty("--plate-max", Math.ceil(max + extra + 4) + "px");
+}
+measurePlates();
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(measurePlates);
+if (window.matchMedia) matchMedia("(max-width:420px)").addEventListener("change", measurePlates);
+
+/* ---------- avvio ---------- */
+buildHome();
+initMap();
+route();
+</script>
+
+</body>
+</html>
