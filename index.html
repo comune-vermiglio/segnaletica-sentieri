@@ -19,7 +19,7 @@
   --pole:#9A8468; --pole-edge:#7E6A51;
   --st-nuovo:#3B72C9; --st-cambiare:#A28A00; --st-ok:#12907E; --st-eliminare:#CE3441; --st-neutro:#6B7378;
   --r-nuova:#3B72C9; --r-recupera:#B06A00; --r-resta:#12907E; --r-togli:#CE3441;
-  --ring:#FFFFFF; --me:#1F6FEB; --hit:#F2C200; --hit-bg:rgba(242,194,0,.22);
+  --ring:#FFFFFF; --me:#1F6FEB; --marker:#C0392E; --hit:#F2C200; --hit-bg:rgba(242,194,0,.22);
   --focus:#1B211E;
   --shadow:0 1px 2px rgba(27,33,30,.07), 0 6px 18px rgba(27,33,30,.07);
 }
@@ -33,7 +33,7 @@
     --pole:#8C7A62; --pole-edge:#6E5F4B;
     --st-nuovo:#5A8CD8; --st-cambiare:#B79C10; --st-ok:#1DA694; --st-eliminare:#DE4C57; --st-neutro:#8B948C;
     --r-nuova:#6A9BE6; --r-recupera:#D9922A; --r-resta:#1DA694; --r-togli:#E2606A;
-    --ring:#101311; --me:#4C8DF6; --hit:#FFD43B; --hit-bg:rgba(255,212,59,.16);
+    --ring:#101311; --me:#4C8DF6; --marker:#D9483B; --hit:#FFD43B; --hit-bg:rgba(255,212,59,.16);
     --focus:#E9EDE6;
     --shadow:0 1px 2px rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.3);
   }
@@ -47,7 +47,7 @@
   --pole:#8C7A62; --pole-edge:#6E5F4B;
   --st-nuovo:#5A8CD8; --st-cambiare:#B79C10; --st-ok:#1DA694; --st-eliminare:#DE4C57; --st-neutro:#8B948C;
   --r-nuova:#6A9BE6; --r-recupera:#D9922A; --r-resta:#1DA694; --r-togli:#E2606A;
-  --ring:#101311; --me:#4C8DF6; --hit:#FFD43B; --hit-bg:rgba(255,212,59,.16);
+  --ring:#101311; --me:#4C8DF6; --marker:#D9483B; --hit:#FFD43B; --hit-bg:rgba(255,212,59,.16);
   --focus:#E9EDE6;
   --shadow:0 1px 2px rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.3);
 }
@@ -377,7 +377,7 @@ html.noscroll,html.noscroll body{overflow:hidden}
           <p><b>Hai una tabella in mano?</b> Scrivi nella ricerca il codice stampato sul retro (per esempio <span class="mono">1c45</span>): si apre il palo dove va montata, con la tabella evidenziata.</p>
           <p><b>Sei davanti a un palo?</b> Inquadra il QR del palo oppure cerca il suo numero (<span class="mono">P034</span>).</p>
         </div>
-        <p class="foot">Dati del rilievo aggiornati al 21/09/2026. Le tabelle località sono sempre mostrate in cima al palo.</p>
+        <p class="foot">Dati del rilievo aggiornati al 22/09/2026. Le tabelle località sono sempre mostrate in cima al palo.</p>
       </div>
 
       <div class="pole" id="pole" hidden></div>
@@ -435,10 +435,10 @@ function shapeSVG(kind, col, k){
   if (kind === "ring")   return `<circle r="${4.6*k}" fill="none" stroke="var(--ring)" stroke-width="${4.4*k}"/><circle r="${4.6*k}" fill="none" stroke="${col}" stroke-width="${2.2*k}"/>`;
   return `<path class="under" d="M0 ${-7.6*k} L ${7.6*k} 0 L 0 ${7.6*k} L ${-7.6*k} 0 Z"/><path d="M0 ${-5.6*k} L ${5.6*k} 0 L 0 ${5.6*k} L ${-5.6*k} 0 Z" fill="none" stroke="${col}" stroke-width="${2*k}"/>`;
 }
-function shapeEl(state, k){
+function shapeEl(state, k, col){
   const st = SM[state] || SM.Ok;
   const s = sv("svg", {width:14, height:14, viewBox:"-8 -8 16 16", "aria-hidden":"true"});
-  s.innerHTML = shapeSVG(st.shape, st.col, k || .9);
+  s.innerHTML = shapeSVG(st.shape, col || st.col, k || .9);
   return s;
 }
 let toastT;
@@ -524,7 +524,7 @@ function initMap(){
   DATA.forEach(p => {
     const st = SM[p.st] || SM.Ok;
     const icon = L.divIcon({className:"pm", iconSize:[26,26], iconAnchor:[13,13],
-      html:`<svg width="26" height="26" viewBox="-13 -13 26 26"><circle class="halo" r="10.5"/>${shapeSVG(st.shape, st.col, 1)}</svg>`});
+      html:`<svg width="26" height="26" viewBox="-13 -13 26 26"><circle class="halo" r="10.5"/>${shapeSVG(st.shape, "var(--marker)", 1)}</svg>`});
     const m = L.marker([p.lat, p.lon], {icon, title:`${p.id} · ${st.pill}${p.a ? " · " + p.a : ""}`, keyboard:true, riseOnHover:true});
     m.on("click", () => go(p.id));
     m.addTo(map);
@@ -634,7 +634,7 @@ function buildHome(){
   STATI.forEach(st => {
     const n = DATA.filter(p => p.st === st.k).length;
     const b = h("button", "chip"); b.type = "button"; b.setAttribute("aria-pressed", "true");
-    b.append(shapeEl(st.k, .95), document.createTextNode(st.pill), h("span", "cnt", String(n)));
+    b.append(shapeEl(st.k, .95, "var(--marker)"), document.createTextNode(st.pill), h("span", "cnt", String(n)));
     b.addEventListener("click", () => {
       const on = b.getAttribute("aria-pressed") === "true";
       b.setAttribute("aria-pressed", String(!on));
@@ -777,23 +777,6 @@ function renderPole(p, hitId){
     sec.appendChild(post);
   }
   wrap.appendChild(sec);
-
-  // da togliere
-  const rm = [];
-  if (p.st === "Cambiare") rm.push(["Il palo attuale", "da togliere dopo aver spostato le tabelle da recuperare"]);
-  if (p.st === "Eliminare") rm.push(["Il palo", "da togliere con tutte le tabelle elencate sotto"]);
-  via.forEach(v => {
-    if (v.why === "vecchia") rm.push([`Vecchia tabella: ${destText(v.t)}`, `sostituita dalla nuova ${v.t.c || "(codice non ancora registrato)"}`]);
-    else rm.push([v.t.r.length ? `Tabella: ${destText(v.t)}` : (v.t.tp === "L" ? "Tabella località" : "Tabella di direzione"), "da togliere, non va rimontata · " + v.t.id]);
-  });
-  if (rm.length){
-    const box = h("div"); box.style.display = "flex"; box.style.flexDirection = "column"; box.style.gap = "6px";
-    box.appendChild(h("span", "lbl", "Da togliere dal palo attuale"));
-    const r = h("div", "remove"), ul = h("ul");
-    rm.forEach(([a, b]) => { const li = h("li"); const d = h("div"); d.append(document.createTextNode(a), h("small", null, b)); li.append(h("span", "x", "×"), d); ul.appendChild(li); });
-    r.appendChild(ul); box.appendChild(r); wrap.appendChild(box);
-  }
-
 
   home.hidden = true; pane.hidden = false;
   side.classList.add("open");
