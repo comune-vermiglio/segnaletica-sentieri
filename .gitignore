@@ -2,3 +2,4 @@ _tile_cache/
 _tmp_qr/
 schede_pdf/
 .DS_Store
+__pycache__/
